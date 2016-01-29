@@ -22,6 +22,7 @@ namespace caloobject
     void update();
     void update(int multi, float energy);
 
+    inline const int getNTracks(){return _ntracks;}
     inline const float getEfficiency(){return (float)_efficiency/_ntracks;} //could be used after each event or at the end of the analysis or whenever you want
     inline const float getMultiplicity(){return (float)_multiplicity/_efficiency;} //could be used after each event or at the end of the analysis or whenever you want
 
