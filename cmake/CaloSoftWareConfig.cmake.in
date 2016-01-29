@@ -1,0 +1,69 @@
+##############################################################################
+# cmake configuration file for CaloSoftWare
+#
+# requires:
+#   MacroCheckPackageLibs.cmake for checking package libraries
+#
+# returns following variables:
+#
+#   CaloSoftWare_FOUND      : set to TRUE if CaloSoftWare found
+#       if FIND_PACKAGE called with REQUIRED and COMPONENTS arguments
+#       CaloSoftWare_FOUND is only set to TRUE if ALL components are also found
+#       if REQUIRED is NOT set components may or may not be available
+#
+#   CaloSoftWare_ROOT       : path to this CaloSoftWare installation
+#   CaloSoftWare_VERSION    : package version
+#   CaloSoftWare_LIBRARIES  : list of CaloSoftWare libraries (NOT including COMPONENTS)
+#   CaloSoftWare_INCLUDE_DIRS  : list of paths to be used with INCLUDE_DIRECTORIES
+#   CaloSoftWare_LIBRARY_DIRS  : list of paths to be used with LINK_DIRECTORIES
+#   CaloSoftWare_COMPONENT_LIBRARIES      : list of CaloSoftWare component libraries
+#   CaloSoftWare_${COMPONENT}_FOUND       : set to TRUE or FALSE for each library
+#   CaloSoftWare_${COMPONENT}_LIBRARY     : path to individual libraries
+#   CaloSoftWare_${COMPONENT}_LIB_DEPENDS : individual library dependencies
+#
+# @author Jan Engels, Desy
+##############################################################################
+
+SET( CaloSoftWare_ROOT "@CMAKE_INSTALL_PREFIX@" )
+SET( CaloSoftWare_VERSION "@CaloSoftWare_VERSION@" )
+
+
+# ---------- include dirs -----------------------------------------------------
+# do not store find results in cache
+SET( CaloSoftWare_INCLUDE_DIRS CaloSoftWare_INCLUDE_DIRS-NOTFOUND )
+MARK_AS_ADVANCED( CaloSoftWare_INCLUDE_DIRS )
+
+FIND_PATH( CaloSoftWare_INCLUDE_DIRS
+	NAMES CaloObject/CaloHit.h 
+	PATHS ${CaloSoftWare_ROOT}/include
+	NO_DEFAULT_PATH
+)
+
+
+
+# ---------- libraries --------------------------------------------------------
+INCLUDE( "@PROJECT_SOURCE_DIR@/cmake/MacroCheckPackageLibs.cmake" )
+
+# only standard libraries should be passed as arguments to CHECK_PACKAGE_LIBS
+# additional components are set by cmake in variable PKG_FIND_COMPONENTS
+# first argument should be the package name
+CHECK_PACKAGE_LIBS( CaloSoftWare CaloSoftWare )
+
+
+
+
+# ---------- libraries dependencies -------------------------------------------
+# this sets CaloSoftWare_${COMPONENT}_LIB_DEPENDS variables
+INCLUDE( "${CaloSoftWare_ROOT}/lib/cmake/CaloSoftWareLibDeps.cmake" )
+ 
+
+
+
+# ---------- final checking ---------------------------------------------------
+INCLUDE( FindPackageHandleStandardArgs )
+# set CaloSoftWare_FOUND to TRUE if all listed variables are TRUE and not empty
+# CaloSoftWare_COMPONENT_VARIABLES will be set if FIND_PACKAGE is called with REQUIRED argument
+FIND_PACKAGE_HANDLE_STANDARD_ARGS( CaloSoftWare DEFAULT_MSG CaloSoftWare_ROOT CaloSoftWare_INCLUDE_DIRS CaloSoftWare_LIBRARIES ${CaloSoftWare_COMPONENT_VARIABLES} )
+
+SET( CaloSoftWare_FOUND ${CaloSoftWare_FOUND} )
+

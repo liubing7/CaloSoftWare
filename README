@@ -1,0 +1,5 @@
+BUILD and install: 
+
+$ mkdir build
+$ cmake -DCLHEP_DIR=${CLHEP} ../
+$ make install
