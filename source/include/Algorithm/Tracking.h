@@ -16,8 +16,10 @@ namespace algorithm
   struct TrackingParameterSetting{
     float maxTransverseRatio;
     float chiSquareLimit;
+    bool printDebug;
   TrackingParameterSetting() : maxTransverseRatio(0.05) , 
-                               chiSquareLimit(100) 
+                               chiSquareLimit(100),
+                               printDebug(false)
                                {;}
   };
 

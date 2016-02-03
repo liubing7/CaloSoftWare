@@ -6,6 +6,7 @@
 #include <cmath>
 #include <vector>
 
+#include "Algorithm/Distance.h"
 #include "CLHEP/Vector/ThreeVector.h"
 /*!
  * Class LinearFit3D.
@@ -26,8 +27,6 @@ namespace algorithm{
     float _params[4];
     float _paramsError[4];
     void ComputeChi2();
-    CLHEP::Hep3Vector VectorFromRealLine( const CLHEP::Hep3Vector& );
-    CLHEP::Hep3Vector GetNormaleProjection( const CLHEP::Hep3Vector& );
 
   public :
     LinearFit3D( std::vector<CLHEP::Hep3Vector> &pos , std::vector<int> &ClustersSize);

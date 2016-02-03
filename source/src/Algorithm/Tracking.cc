@@ -28,12 +28,12 @@ namespace algorithm
     _transverseRatio = (eigenValues.at(0)+eigenValues.at(1)) / eigenValues.at(2);
     delete pca;
     if( _transverseRatio > settings.maxTransverseRatio ){
-      std::cout << "_transverseRatio = " << _transverseRatio << std::endl;
+      if( settings.printDebug ) std::cout << "_transverseRatio = " << _transverseRatio << std::endl;
       return;
     }
     algorithm::LinearFit3D *fit=new algorithm::LinearFit3D(clusterPos,clusterSize);
     if( fit->getChi2() > settings.chiSquareLimit ){
-      std::cout << "chiSquare = " << fit->getChi2() << std::endl;
+      if( settings.printDebug ) std::cout << "chiSquare = " << fit->getChi2() << std::endl;
       delete fit;
       return;
     }

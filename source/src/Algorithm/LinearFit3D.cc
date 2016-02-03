@@ -57,32 +57,13 @@ namespace algorithm
   {
 
     _chi2 = 0;
+    algorithm::Distance<CLHEP::Hep3Vector,float *> dist;
     for( unsigned int i=0 ; i<_positions.size() ; i++ ) {
-      float d = GetNormaleProjection( _positions.at(i) ).mag();
+      float d=dist.getDistance(_positions.at(i),_params);
       float mult = _clusterSize.at(i);
       float err = mult/sqrt(12/100.);
       _chi2 += (d/err)*(d/err);
     }
     _chi2=_chi2/(_positions.size()-1);
   }
-
-  // The position of the projection of the point on the real line
-  CLHEP::Hep3Vector LinearFit3D::VectorFromRealLine(const CLHEP::Hep3Vector& vec) 
-  {
-
-    CLHEP::Hep3Vector x0( _params[0], _params[2] , 0. );
-    CLHEP::Hep3Vector x1( _params[0] + _params[1], _params[2] + _params[3] , 1. );
-    CLHEP::Hep3Vector u = (x1-x0);
-    u.setMag( (vec-x1).mag() * cos( u.angle( vec-x1 ) ) );
-
-    return  (x1 + u);
-  }
-
-
-  // The vector that join the given point (vec) and his normal projection on the line
-  CLHEP::Hep3Vector LinearFit3D::GetNormaleProjection(const CLHEP::Hep3Vector& vec) 
-  {
-    return ( vec - VectorFromRealLine(vec) );
-  }
-
 }

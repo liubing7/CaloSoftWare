@@ -29,7 +29,7 @@ namespace algorithm
   public:
     InteractionFinder(){;}
     ~InteractionFinder(){;}
-    bool Run(std::vector<caloobject::CaloCluster*> &clusters, float *params);
+    bool Run(std::vector<caloobject::CaloCluster*> &clusters, const float *params);
     void SetInteractionFinderParameterSetting(InteractionFinderParameterSetting params){settings=params;}
   private:
     InteractionFinderParameterSetting settings;

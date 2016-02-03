@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cstdlib>
 
 #include "CaloObject/CaloHit.h"
 #include "CaloObject/CaloCluster.h"
@@ -68,7 +69,49 @@ namespace algorithm
 	  return -10;
 	}
       }
+      float getDistanceInLayer(S* s,caloobject::CaloTrack *t)
+      {
+	CLHEP::Hep3Vector trackImpact(t->getTrackParameters()[0]+t->getTrackParameters()[1]*s->getPosition().z(), 
+				      t->getTrackParameters()[2]+t->getTrackParameters()[3]*s->getPosition().z(), 
+				      s->getPosition().z());
+	return (trackImpact-s->getPosition()).mag();
+      }
     }; 
+
+  template <typename S> 
+    class Distance<S, float*>
+    { 
+    public :  
+      Distance(){;} 
+      ~Distance(){;} 
+      
+      float getDistance(S s,float* trackParams)
+      {
+	/*
+	  point s(x,y,z)
+	  track T : x_t = trackparam[0] + trackparam[1]*z_t => plan equation; normal vector Nx(-1,0,trackparam[1])
+	  track T : y_t = trackparam[2] + trackparam[3]*z_t => plan equation; normal vector Ny(0,-1,trackparam[3])
+	  track T orientation vector u  : u = Nx * Ny
+	  d(s,T) = || vec(Bs) * u || / || u || where B is a point from the track
+	*/
+	
+	//Nx,Ny : plans containing the track
+	CLHEP::Hep3Vector Nx(-1., 0., trackParams[1]);
+	CLHEP::Hep3Vector Ny(0., -1., trackParams[3]);
+	//u : track orientation vector
+	CLHEP::Hep3Vector u=Nx.cross(Ny);
+	
+	//B : a track point 
+	CLHEP::Hep3Vector B(trackParams[0],trackParams[2],0.);
+	
+	if(u.mag()>0)
+	  return ((B-s).cross(u)).mag()/u.mag();
+	else{
+	  std::cout << "ORIENTATION VECTOR u IS NULL => should return exception (hit and track)" << std::endl;
+	  return -10;
+	}
+      }
+    };
 }
 
 #endif

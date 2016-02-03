@@ -10,6 +10,7 @@ namespace caloobject
     _efficiency=0.;
     _efficiency_energy=0.;
     _ntracks=0;
+    _layerZPosition=_layerID*26.131;
   }
 
   void CaloLayer::update()

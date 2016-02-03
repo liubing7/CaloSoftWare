@@ -2,7 +2,7 @@
 
 namespace algorithm
 {
-  bool InteractionFinder::Run(std::vector<caloobject::CaloCluster*> &clusters, float *params)
+  bool InteractionFinder::Run(std::vector<caloobject::CaloCluster*> &clusters, const float *params)
   {
     Distance<caloobject::CaloCluster, CLHEP::Hep3Vector> dist;
     CLHEP::Hep3Vector vec;    
@@ -11,7 +11,7 @@ namespace algorithm
       vec = CLHEP::Hep3Vector(params[0]+params[1]*(*it)->getPosition().z(),
 			      params[2]+params[3]*(*it)->getPosition().z(),
 			      (*it)->getPosition().z());
-      if( (*it)->getHits().size()<settings.minSize || 
+      if( (*it)->getHits().size()<(unsigned int)settings.minSize || 
 	  dist.getDistance( (*it),vec ) < settings.maxRadius )
 	continue;
 
@@ -21,14 +21,15 @@ namespace algorithm
 	vec = CLHEP::Hep3Vector(params[0]+params[1]*(*jt)->getPosition().z(),
 				params[2]+params[3]*(*jt)->getPosition().z(),
 				(*jt)->getPosition().z());
-	if( (*jt)->getHits().size() >= settings.minSize && 
+	if( (*jt)->getHits().size() >= (unsigned int)settings.minSize && 
 	    (*jt)->getPosition().z()-(*it)->getPosition().z() > std::numeric_limits<float>::epsilon() &&
 	    (*jt)->getLayerID()-(*it)->getLayerID() < settings.maxDepth&&
 	    dist.getDistance( (*jt),vec ) < settings.maxRadius )
 	  counter++;
       }
-      if(counter>=settings.minNumberOfCluster)
+      if(counter>=settings.minNumberOfCluster){
 	return true;
+      }
     }
     return false;
   }

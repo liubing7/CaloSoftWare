@@ -15,19 +15,11 @@ namespace algorithm{
  
   
   struct EfficiencyParameterSetting{
-    float edgeX_min;
-    float edgeX_max;
-    float edgeY_min;
-    float edgeY_max;
     float maxRadius;
     bool semiDigitalReadout;
     bool printDebug;
     TrackingParameterSetting trackingParams;
-  EfficiencyParameterSetting() : edgeX_min(-500.0) ,
-                                 edgeX_max(500.0) ,
-                                 edgeY_min(-500.0) ,
-                                 edgeY_max(500.0) ,
-                                 maxRadius(25.0) ,
+  EfficiencyParameterSetting() : maxRadius(25.0) ,
                                  semiDigitalReadout(true) ,
                                  printDebug(false)
                                  {;}
@@ -40,11 +32,14 @@ namespace algorithm{
     ~Efficiency(){;}
     
     inline void SetEfficiencyParameterSetting(EfficiencyParameterSetting params){settings=params;}
+    inline int getAsicKey(){return asicKey;}
+
     void Run(caloobject::CaloLayer *layer, std::vector<caloobject::CaloCluster*> &clusters);
 
   private:
     EfficiencyParameterSetting settings;
-
+    int asicKey;
+    int findAsicKey(CLHEP::Hep3Vector vec, float padSize, int nPadX, int nPadY);
   };
 }
 #endif
