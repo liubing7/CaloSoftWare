@@ -27,8 +27,8 @@ namespace caloobject
 
   SDHCAL_Asic::SDHCAL_Asic(int theKey) : Asic(theKey) , efficiency2(0.0) , efficiency3(0.0) 
   {
-    positions=CLHEP::Hep3Vector( theKey%1000%12 ,
-				 theKey%1000/12 ,
+    positions=CLHEP::Hep3Vector( theKey%1000/12 ,
+				 theKey%1000%12 ,
 				 theKey/1000 );
   }
 
