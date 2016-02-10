@@ -33,10 +33,16 @@ namespace algorithm
     		    << "yExpected = " << yExpected << std::endl;
     	return;
       }
-      asicKey=findAsicKey( CLHEP::Hep3Vector(xExpected,yExpected,layer->getLayerZPosition()), 
+      asicKey=findAsicKey( CLHEP::Hep3Vector(xExpected,yExpected,layer->getLayerID()), 
 			   layer->getSettings().padSize,
 			   layer->getSettings().nPadX,
 			   layer->getSettings().nPadY);
+      expectedPos=CLHEP::Hep3Vector(xExpected,yExpected,layer->getLayerZPosition());
+      if( asicKey<0 || settings.maxAsicKey>48000 ){
+	std::cout << "WARNING bad asic key with the following vector = " << expectedPos << std::endl;
+	delete track;
+	return;
+      }
       if(clustersInLayer.empty()){
     	if( settings.printDebug ) std::cout << "find one empty layer = " << layer->getLayerID() << std::endl;
     	layer->update();
@@ -85,7 +91,7 @@ namespace algorithm
   int Efficiency::findAsicKey(CLHEP::Hep3Vector vec, float padSize, int nPadX, int nPadY)
   {
     float I=round( vec.x()/padSize );
-    float J=round( vec.x()/padSize );
+    float J=round( vec.y()/padSize );
     if(I>nPadX || J>nPadY || I<0 || J<0) return -1;
     int jnum=(J-1)/8;
     int inum=(I-1)/8;

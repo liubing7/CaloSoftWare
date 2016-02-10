@@ -6,6 +6,7 @@ namespace algorithm
 		     caloobject::CaloTrack* &track)
   {
     track=NULL;
+    if( vec.size()==0 ) return;
     _transverseRatio=0.0;
     std::vector<double> x;
     std::vector<double> y;

@@ -18,10 +18,12 @@ namespace algorithm{
     float maxRadius;
     bool semiDigitalReadout;
     bool printDebug;
+    int maxAsicKey;
     TrackingParameterSetting trackingParams;
   EfficiencyParameterSetting() : maxRadius(25.0) ,
                                  semiDigitalReadout(true) ,
-                                 printDebug(false)
+                                 printDebug(false),
+                                 maxAsicKey(48000)
                                  {;}
   };
 
@@ -33,12 +35,13 @@ namespace algorithm{
     
     inline void SetEfficiencyParameterSetting(EfficiencyParameterSetting params){settings=params;}
     inline int getAsicKey(){return asicKey;}
-
+    inline CLHEP::Hep3Vector &getExpectedPosition(){return expectedPos;}
     void Run(caloobject::CaloLayer *layer, std::vector<caloobject::CaloCluster*> &clusters);
 
   private:
     EfficiencyParameterSetting settings;
     int asicKey;
+    CLHEP::Hep3Vector expectedPos;
     int findAsicKey(CLHEP::Hep3Vector vec, float padSize, int nPadX, int nPadY);
   };
 }

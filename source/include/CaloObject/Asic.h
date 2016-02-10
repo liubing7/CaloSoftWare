@@ -22,7 +22,7 @@ namespace caloobject
     inline const float getAsicEfficiency(){return efficiency/ntrack;}
     inline const float getAsicMultiplicity(){return multi/efficiency;}
     inline const float getAsicRMSMultiplicity(){return std::sqrt( rms_multi/efficiency - multi*multi/efficiency/efficiency);}
-    inline const CLHEP::Hep3Vector &getPositions(){return positions;}
+    inline const CLHEP::Hep3Vector &getPosition(){return positions;}
     
     inline void setASIC_ID(int asicnum, int difnum){asic_num=asicnum; dif_num=difnum;}
     inline const int getAsicNum(){return asic_num;}
