@@ -19,30 +19,29 @@ namespace algorithm
     algo_tracking->Run(clusterVec,track);
     delete algo_tracking;
     if(track!=NULL){
-      //missing layerZPosition
-      float xExpected=track->getTrackParameters()[1]*layer->getLayerZPosition()+track->getTrackParameters()[0];
-      float yExpected=track->getTrackParameters()[3]*layer->getLayerZPosition()+track->getTrackParameters()[2];
-      if(xExpected>layer->getSettings().edgeX_max ||
-    	 xExpected<layer->getSettings().edgeX_min ||
-    	 yExpected>layer->getSettings().edgeY_max ||
-    	 yExpected<layer->getSettings().edgeY_min){
+      expectedPos=CLHEP::Hep3Vector(track->getTrackParameters()[1]*layer->getLayerZPosition()+track->getTrackParameters()[0] ,
+				    track->getTrackParameters()[3]*layer->getLayerZPosition()+track->getTrackParameters()[2] ,
+				    layer->getLayerZPosition() );
+      if(expectedPos.x()>layer->getSettings().edgeX_max ||
+    	 expectedPos.x()<layer->getSettings().edgeX_min ||
+    	 expectedPos.y()>layer->getSettings().edgeY_max ||
+    	 expectedPos.y()<layer->getSettings().edgeY_min){
 	delete track;
     	if( settings.printDebug )
     	  std::cout << "expected track impact outside layer " << layer->getLayerID() << ":\t" 
-    		    << "xExpected = " << xExpected << "\t"
-    		    << "yExpected = " << yExpected << std::endl;
+    		    << "expectedPos.x() = " << expectedPos.x() << "\t"
+    		    << "expectedPos.y() = " << expectedPos.y() << std::endl;
     	return;
       }
-      asicKey=findAsicKey( CLHEP::Hep3Vector(xExpected,yExpected,layer->getLayerID()), 
-			   layer->getSettings().padSize,
-			   layer->getSettings().nPadX,
-			   layer->getSettings().nPadY);
-      expectedPos=CLHEP::Hep3Vector(xExpected,yExpected,layer->getLayerZPosition());
-      if( asicKey<0 || settings.maxAsicKey>48000 ){
-	std::cout << "WARNING bad asic key with the following vector = " << expectedPos << std::endl;
-	delete track;
-	return;
-      }
+      // asicKey=findAsicKey( CLHEP::Hep3Vector(xExpected,yExpected,layer->getLayerID()), 
+      // 			   layer->getSettings().padSize,
+      // 			   layer->getSettings().nPadX,
+      // 			   layer->getSettings().nPadY);
+      // if( asicKey<0 || settings.maxAsicKey>48000 ){
+      // 	std::cout << "WARNING bad asic key with the following vector = " << expectedPos << std::endl;
+      // 	delete track;
+      // 	return;
+      // }
       if(clustersInLayer.empty()){
     	if( settings.printDebug ) std::cout << "find one empty layer = " << layer->getLayerID() << std::endl;
     	layer->update();
@@ -88,15 +87,15 @@ namespace algorithm
     }
   }
 
-  int Efficiency::findAsicKey(CLHEP::Hep3Vector vec, float padSize, int nPadX, int nPadY)
-  {
-    float I=round( vec.x()/padSize );
-    float J=round( vec.y()/padSize );
-    if(I>nPadX || J>nPadY || I<0 || J<0) return -1;
-    int jnum=(J-1)/8;
-    int inum=(I-1)/8;
-    int num=inum*12+jnum;
-    return vec.z()*1000+num;
-  }
+  // int Efficiency::findAsicKey(CLHEP::Hep3Vector vec, float padSize, int nPadX, int nPadY)
+  // {
+  //   float I=round( vec.x()/padSize );
+  //   float J=round( vec.y()/padSize );
+  //   if(I>nPadX || J>nPadY || I<0 || J<0) return -1;
+  //   int jnum=(J-1)/8;
+  //   int inum=(I-1)/8;
+  //   int num=inum*12+jnum;
+  //   return vec.z()*1000+num;
+  // }
 
 }

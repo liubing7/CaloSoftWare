@@ -11,16 +11,10 @@ namespace caloobject
     float edgeX_max;
     float edgeY_min;
     float edgeY_max;
-    float padSize;
-    int nPadX;
-    int nPadY;
   LayerParameterSetting() : edgeX_min(-500.0) ,
                             edgeX_max(500.0) ,
                             edgeY_min(-500.0) ,
-                            edgeY_max(500.0) ,
-                            padSize(10.408),
-                            nPadX(96),
-                            nPadY(96)
+                            edgeY_max(500.0)
                             {;}
   };
   
