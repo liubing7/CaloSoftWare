@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-
+#include <limits>
 #include <CLHEP/Vector/ThreeVector.h>
 #include <CaloObject/CaloLayer.h>
 
@@ -19,9 +19,9 @@ namespace caloobject
 
     inline const int getAsicKey(){return key;}
     inline const int getAsicNtrack(){return ntrack;}
-    inline const float getAsicEfficiency(){return efficiency/ntrack;}
-    inline const float getAsicMultiplicity(){return multi/efficiency;}
-    inline const float getAsicRMSMultiplicity(){return std::sqrt( rms_multi/efficiency - multi*multi/efficiency/efficiency);}
+    inline const float getAsicEfficiency(){return ntrack > 0 ? efficiency/ntrack : 0;}
+    inline const float getAsicMultiplicity(){return efficiency > std::numeric_limits<float>::epsilon() ? multi/efficiency : 0.0;}
+    inline const float getAsicRMSMultiplicity(){return efficiency > std::numeric_limits<float>::epsilon() ? std::sqrt( rms_multi/efficiency - multi*multi/efficiency/efficiency) : 0.0;}
     inline const CLHEP::Hep3Vector &getPosition(){return positions;}
     
     inline void setASIC_ID(int asicnum, int difnum){asic_num=asicnum; dif_num=difnum;}

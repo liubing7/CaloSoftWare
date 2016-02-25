@@ -16,9 +16,11 @@ namespace algorithm
   struct TrackingParameterSetting{
     float maxTransverseRatio;
     float chiSquareLimit;
+    float cosThetaLimit;
     bool printDebug;
   TrackingParameterSetting() : maxTransverseRatio(0.05) , 
                                chiSquareLimit(100),
+                               cosThetaLimit(1.0),
                                printDebug(false)
                                {;}
   };
@@ -30,6 +32,7 @@ namespace algorithm
     ~Tracking(){;}
   
     void Run(std::vector<caloobject::CaloCluster*> &vec, caloobject::CaloTrack* &track);
+    void TryToAddAClusterInTrack(caloobject::CaloCluster* cluster, caloobject::CaloTrack* &track);
     
     inline void SetTrackingParameterSetting(TrackingParameterSetting params){settings=params;}
     inline float getTransverseRatio(){return _transverseRatio;}

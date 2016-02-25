@@ -20,16 +20,16 @@ namespace caloobject
       for(unsigned int i=0; i<4; i++) _params[i]=params[i];
     }
 
-    inline const caloobject::CaloCluster* getTrackStartingCluster(){return (*_clusters.begin());}
-    inline const caloobject::CaloCluster* getTrackLastCluster(){return (*(_clusters.end()-1));}
+    inline const caloobject::CaloCluster* getTrackStartingCluster(){return (*clusters.begin());}
+    inline const caloobject::CaloCluster* getTrackLastCluster(){return (*(clusters.end()-1));}
+    inline const std::vector<caloobject::CaloCluster*> getClusters(){return clusters;}
     inline const float getChi2(){return _chi2;}
     inline const float *getTrackParameters(){return _params;} 
-    inline const void addCluster(caloobject::CaloCluster* cluster){_clusters.push_back(cluster); Update();}
+    inline const void addCluster(caloobject::CaloCluster* cluster){clusters.push_back(cluster);}
     
   private:
-    void Update();
 
-    std::vector<caloobject::CaloCluster*> _clusters;
+    std::vector<caloobject::CaloCluster*> clusters;
     float _chi2;
     float _params[4];
   };

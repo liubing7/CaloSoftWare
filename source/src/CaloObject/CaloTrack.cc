@@ -5,12 +5,7 @@ namespace caloobject
 
   CaloTrack::CaloTrack(std::vector<caloobject::CaloCluster*> &vec)
   {
-    _clusters=vec;
-    Update();
+    clusters=vec;
   }
-
-  void CaloTrack::Update()
-  {
-  }
-
+  
 }

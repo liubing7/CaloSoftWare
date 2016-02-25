@@ -9,21 +9,24 @@
 namespace algorithm{
   
   struct AsicKeyFinderParameterSetting{
-    std::vector<int> keyFactor;
+    std::vector<int> keyFactors;
     int nPadX;// number of pads in x direction per layer
     int nPadY;// number of pads in y direction per layer
     int asicNPad;// number of pads in x or y direction per asic (assuming a square)
-    float layerGap;// gap between 2 layers
+    float layerGap;// gap size (in mm) between 2 layers
     float padSize;
     bool printDebug;
-  AsicKeyFinderParameterSetting() : keyFactor(0) ,
-                                    nPadX(96),
+  AsicKeyFinderParameterSetting() : nPadX(96),
                                     nPadY(96),
                                     asicNPad(8),
                                     layerGap(26.131),
                                     padSize(10.408),
                                     printDebug(false)
-                                    {;}
+    {
+      keyFactors.push_back(1);
+      keyFactors.push_back(12);
+      keyFactors.push_back(1000);
+    }
   };
 
 

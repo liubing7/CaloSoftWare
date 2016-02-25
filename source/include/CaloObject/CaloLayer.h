@@ -2,6 +2,7 @@
 #define CALOLAYER_HH
 
 #include <iostream>
+#include <limits>
 
 namespace caloobject
 { 
@@ -39,7 +40,7 @@ namespace caloobject
     
     inline const int getNTracks(){return _ntracks;}
     inline const float getEfficiency(){return (float)_efficiency/_ntracks;} //could be used after each event or at the end of the analysis or whenever you want
-    inline const float getMultiplicity(){return (float)_multiplicity/_efficiency;} //could be used after each event or at the end of the analysis or whenever you want
+    inline const float getMultiplicity(){return _efficiency > std::numeric_limits<float>::epsilon() ? (float)_multiplicity/_efficiency : 0.0;} //could be used after each event or at the end of the analysis or whenever you want
     inline const float getEfficiencyEnergy(){return _efficiency_energy;} //this should be called for each event (if needed)
     inline const int getLayerID(){return _layerID;}
     inline const float getLayerZPosition(){return _layerZPosition;}
