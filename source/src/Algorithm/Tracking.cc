@@ -65,6 +65,10 @@ namespace algorithm
     track=new caloobject::CaloTrack(vec);
     track->setChi2(fit->getChi2());
     track->setTrackParameters(fit->getFitParameters());
+    if( settings.printDebug ) 
+      std::cout << "Tracking::Run << DEBUG : a track has been created at  = " 
+		<< track
+		<< std::endl;
     delete fit;
   }
 

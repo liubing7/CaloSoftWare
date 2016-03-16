@@ -20,7 +20,7 @@ namespace algorithm
     bool printDebug;
   TrackingParameterSetting() : maxTransverseRatio(0.05) , 
                                chiSquareLimit(100),
-                               cosThetaLimit(1.0),
+                               cosThetaLimit(0.0),
                                printDebug(false)
                                {;}
   };
