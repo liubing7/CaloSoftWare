@@ -1,0 +1,10 @@
+lcio
+*.root
+*.xml
+script/
+build/
+lib/
+source/src/*/*~
+source/include/*/*~
+*.cmake
+include/
