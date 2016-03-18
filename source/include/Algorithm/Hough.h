@@ -19,13 +19,13 @@ namespace algorithm
 {
 
   struct HoughParameterSetting{
-    unsigned int thetaSteps;
-    unsigned int minimumNBins;
-    unsigned int maximumClusterSizeForMip;
-    unsigned int maximumNumberOfNeighboursForMip;
-    unsigned int maximumNumberOfCoreNeighboursForMip;
+    int thetaSteps;
+    int minimumNBins;
+    int maximumClusterSizeForMip;
+    int maximumNumberOfNeighboursForMip;
+    int maximumNumberOfCoreNeighboursForMip;
     float transversalDistance;
-    float globalDistance;
+    float isolationDistance;
     float padSize;
     bool printDebug;
   HoughParameterSetting() : thetaSteps(100) ,
@@ -34,7 +34,7 @@ namespace algorithm
       maximumNumberOfNeighboursForMip(2),
       maximumNumberOfCoreNeighboursForMip(0),
       transversalDistance(50.0),
-      globalDistance(100.0),
+      isolationDistance(100.0),
       padSize(10.408),
       printDebug(false)
     {;}
@@ -48,16 +48,17 @@ namespace algorithm
 
   struct HoughObject{
     std::vector<int> thetas;
-    std::vector<int> rhoXVec;
-    std::vector<int> rhoYVec;
+    std::vector<float> rhoXVec;
+    std::vector<float> rhoYVec;
     HoughTag tag;
     caloobject::CaloCluster* cluster;
   };
 
   struct HoughBin{
-    int theta_x, theta_y;
-    int rho_x, rho_y;
-    std::vector<HoughObject> houghObjects;
+    int theta;
+    float rho;
+    bool rmTag;
+    std::vector< HoughObject* > houghObjects;
   };
 
   class Hough
@@ -71,13 +72,16 @@ namespace algorithm
 
   private: 
     void createHoughObjects( std::vector<caloobject::CaloCluster*> &clusters );
-    std::vector< HoughBin > getHoughBins();
-    inline bool TestHoughBinSize( HoughBin a ){ return a.houghObjects.size() < settings.minimumNBins ; }
+    std::vector< HoughBin > getHoughBinsFromZX();
+    HoughBin getBestHoughBinFromZY( HoughBin &inputBin );
     void RemoveIsolatedClusterInHoughBin(HoughBin a);
     void RemoveTrackedObjects(std::vector<HoughBin> &houghBins);
 
     HoughParameterSetting settings;
-    std::vector< HoughObject  > houghObjects;
+    std::vector< HoughObject*  > houghObjects;
+
+    inline bool TestHoughBinSize( HoughBin a ){ return a.houghObjects.size() < settings.minimumNBins ; }
+    static bool HasToBeDeleted( HoughBin a ){ return a.rmTag; }
   };
 
   class SortHoughBinBySize
@@ -87,6 +91,12 @@ namespace algorithm
     static bool Sort(HoughBin a, HoughBin b){return a.houghObjects.size() > b.houghObjects.size() ;} 
   };
 
+  class RemoveTrackedObject
+  { 
+  public:
+    RemoveTrackedObject(){;} 
+    static bool rm(HoughObject* a){return a->tag==fTrack;}
+  };
 }
 
 #endif

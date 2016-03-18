@@ -22,7 +22,7 @@ namespace caloobject
 
     inline const caloobject::CaloCluster* getTrackStartingCluster(){return (*clusters.begin());}
     inline const caloobject::CaloCluster* getTrackLastCluster(){return (*(clusters.end()-1));}
-    inline const std::vector<caloobject::CaloCluster*> getClusters(){return clusters;}
+    inline const std::vector<caloobject::CaloCluster*> &getClusters(){return clusters;}
     inline const float getChi2(){return _chi2;}
     inline const float *getTrackParameters(){return _params;} 
     inline const void addCluster(caloobject::CaloCluster* cluster){clusters.push_back(cluster);}
