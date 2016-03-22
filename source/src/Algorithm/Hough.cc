@@ -104,13 +104,14 @@ namespace algorithm{
     return (*outputBins.begin());
   }
 
-  void Hough::RemoveIsolatedClusterInHoughBin(HoughBin a)
+  void Hough::RemoveIsolatedClusterInHoughBin(HoughBin &a)
   {
-    Distance<caloobject::CaloCluster,caloobject::CaloCluster> dist;
+    //Distance<caloobject::CaloCluster,caloobject::CaloCluster> dist;
     for( std::vector<HoughObject*>::iterator it=a.houghObjects.begin(); it!=a.houghObjects.end(); ++it ){
       std::vector<HoughObject*>::iterator jt;
       for( jt=a.houghObjects.begin(); jt!=a.houghObjects.end(); ++jt ){
-	if( it!=jt && dist.getDistance( (*it)->cluster,(*jt)->cluster ) < settings.isolationDistance )
+	if( it!=jt &&
+	    std::abs( (*it)->cluster->getLayerID()-(*jt)->cluster->getLayerID() ) <= settings.isolationDistance )
 	  break;
       }
       if( jt==a.houghObjects.end() ){
@@ -149,7 +150,9 @@ namespace algorithm{
       if( TestHoughBinSize(bestBin) ) {
 	break;
       }
+      std::cout << "test size before isolation = " << bestBin.houghObjects.size() << std::endl;
       RemoveIsolatedClusterInHoughBin( bestBin );
+      std::cout << "test size after isolation = " << bestBin.houghObjects.size() << std::endl;
       if( TestHoughBinSize( bestBin ) ) {
       	if( settings.printDebug ) 
       	  std::cout << "Hough::runHough << DEBUG : Hough bin size is no longer big enough to create a track after removing isloated clusters" << std::endl;
@@ -163,8 +166,20 @@ namespace algorithm{
     
       algo_Tracking->Run( temp,track );
       if( track!=NULL ){
+	std::cout << "create one track" << std::endl;
+	algo_Tracking->splitTrack(track);
+	for(std::vector<HoughObject*>::iterator jt=houghObjects.begin(); jt!=houghObjects.end(); ++jt){
+	  if( std::find( track->getClusters().begin(), track->getClusters().end(), (*jt)->cluster ) != track->getClusters().end() ) continue;
+	  algo_Tracking->TryToAddAClusterInTrack((*jt)->cluster, track);
+	}
+	if( track->getClusters().size()<settings.minimumNBins ){
+	  delete track;
+	  houghBins.erase(it);
+	  continue;
+	}
+	
        	tracks.push_back(track);
-       	for(std::vector<caloobject::CaloCluster*>::const_iterator jt=track->getClusters().begin(); jt!=track->getClusters().end(); ++jt){
+       	for(std::vector<caloobject::CaloCluster*>::iterator jt=track->getClusters().begin(); jt!=track->getClusters().end(); ++jt){
        	  for(std::vector< HoughObject*  >::iterator kt=houghObjects.begin(); kt!=houghObjects.end(); ++kt){
        	    if( (*kt)->cluster==(*jt) ){
        	      (*kt)->tag=fTrack;

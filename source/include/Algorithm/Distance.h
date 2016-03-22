@@ -71,10 +71,8 @@ namespace algorithm
       }
       float getDistanceInLayer(S* s,caloobject::CaloTrack *t)
       {
-	CLHEP::Hep3Vector trackImpact(t->getTrackParameters()[0]+t->getTrackParameters()[1]*s->getPosition().z(), 
-				      t->getTrackParameters()[2]+t->getTrackParameters()[3]*s->getPosition().z(), 
-				      s->getPosition().z());
-	return (trackImpact-s->getPosition()).mag();
+	CLHEP::Hep3Vector impact=t->expectedTrackProjection(s->getPosition().z());
+	return (impact-s->getPosition()).mag();
       }
     }; 
 

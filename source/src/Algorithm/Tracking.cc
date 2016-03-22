@@ -65,6 +65,7 @@ namespace algorithm
     track=new caloobject::CaloTrack(vec);
     track->setChi2(fit->getChi2());
     track->setTrackParameters(fit->getFitParameters());
+    std::sort( track->getClusters().begin(), track->getClusters().end(), algorithm::ClusteringHelper::SortClusterByLayer );
     if( settings.printDebug ) 
       std::cout << "Tracking::Run << DEBUG : a track has been created at  = " 
 		<< track
@@ -74,6 +75,14 @@ namespace algorithm
 
   void Tracking::TryToAddAClusterInTrack(caloobject::CaloCluster* cluster, caloobject::CaloTrack* &track)
   {
+    if( track->getTrackStartingCluster()->getLayerID()-cluster->getLayerID() > settings.maxDiffBetweenLayer ||
+	cluster->getLayerID()-track->getTrackLastCluster()->getLayerID() > settings.maxDiffBetweenLayer )
+      return;
+    
+    Distance<caloobject::CaloCluster,caloobject::CaloTrack> dist;
+    if( dist.getDistanceInLayer(cluster,track) > settings.maxDistance )
+      return;
+    
     std::vector<caloobject::CaloCluster*> clusters=track->getClusters();
     if( clusters.size()==0 ) return;
     clusters.push_back(cluster);
@@ -134,6 +143,26 @@ namespace algorithm
     track->addCluster(cluster);
     track->setChi2(fit->getChi2());
     track->setTrackParameters(fit->getFitParameters());
+    std::sort( track->getClusters().begin(), track->getClusters().end(), algorithm::ClusteringHelper::SortClusterByLayer );
+    std::cout << "I add a cluster at " << cluster->getLayerID() << std::endl;
     delete fit;
+  }
+
+  void Tracking::splitTrack(caloobject::CaloTrack* track)
+  {
+    int ref=track->getTrackStartingCluster()->getLayerID();
+    for(std::vector<caloobject::CaloCluster*>::iterator it=track->getClusters().begin(); it!=track->getClusters().end(); ++it){
+      if( (*it)->getLayerID()-ref>settings.maxDiffBetweenLayer )
+	break;
+      else
+	ref=(*it)->getLayerID();
+    }
+
+    if( ref != track->getTrackLastCluster()->getLayerID() )
+      std::cout << "I split the track, hum, I split the track, hum..." << std::endl;
+    track->getClusters().erase( std::remove_if( track->getClusters().begin(),
+						track->getClusters().end(),
+						removeClusterFromTrackIfLayerBiggerThanValue(ref) ),
+				track->getClusters().end() );
   }
 }

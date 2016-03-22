@@ -25,7 +25,7 @@ namespace algorithm
     int maximumNumberOfNeighboursForMip;
     int maximumNumberOfCoreNeighboursForMip;
     float transversalDistance;
-    float isolationDistance;
+    int isolationDistance;
     float padSize;
     bool printDebug;
   HoughParameterSetting() : thetaSteps(100) ,
@@ -34,7 +34,7 @@ namespace algorithm
       maximumNumberOfNeighboursForMip(2),
       maximumNumberOfCoreNeighboursForMip(0),
       transversalDistance(50.0),
-      isolationDistance(100.0),
+      isolationDistance(2),
       padSize(10.408),
       printDebug(false)
     {;}
@@ -74,7 +74,7 @@ namespace algorithm
     void createHoughObjects( std::vector<caloobject::CaloCluster*> &clusters );
     std::vector< HoughBin > getHoughBinsFromZX();
     HoughBin getBestHoughBinFromZY( HoughBin &inputBin );
-    void RemoveIsolatedClusterInHoughBin(HoughBin a);
+    void RemoveIsolatedClusterInHoughBin(HoughBin &a);
     void RemoveTrackedObjects(std::vector<HoughBin> &houghBins);
 
     HoughParameterSetting settings;
