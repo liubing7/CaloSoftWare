@@ -144,7 +144,6 @@ namespace algorithm
     track->setChi2(fit->getChi2());
     track->setTrackParameters(fit->getFitParameters());
     std::sort( track->getClusters().begin(), track->getClusters().end(), algorithm::ClusteringHelper::SortClusterByLayer );
-    std::cout << "I add a cluster at " << cluster->getLayerID() << std::endl;
     delete fit;
   }
 
@@ -158,11 +157,13 @@ namespace algorithm
 	ref=(*it)->getLayerID();
     }
 
-    if( ref != track->getTrackLastCluster()->getLayerID() )
-      std::cout << "I split the track, hum, I split the track, hum..." << std::endl;
-    track->getClusters().erase( std::remove_if( track->getClusters().begin(),
-						track->getClusters().end(),
-						removeClusterFromTrackIfLayerBiggerThanValue(ref) ),
-				track->getClusters().end() );
+    if( ref != track->getTrackLastCluster()->getLayerID() ){
+      if( settings.printDebug )
+	std::cout << "Tracking::Run << DEBUG : I split the track, hum, I split the track, hum... at layer " << track->getTrackLastCluster()->getLayerID() << std::endl;
+      track->getClusters().erase( std::remove_if( track->getClusters().begin(),
+						  track->getClusters().end(),
+						  removeClusterFromTrackIfLayerBiggerThanValue(ref) ),
+				  track->getClusters().end() );
+    }
   }
 }

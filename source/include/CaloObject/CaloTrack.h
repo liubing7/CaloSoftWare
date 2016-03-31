@@ -32,6 +32,11 @@ namespace caloobject
 			       _params[2]+_params[3]*z,
 			       z);
     }
+    const float getCosTheta(){
+      	CLHEP::Hep3Vector Nx(-1., 0., _params[1]);
+	CLHEP::Hep3Vector Ny(0., -1., _params[3]);
+	return Nx.cross(Ny).cosTheta();
+    }
   private:
 
     std::vector<caloobject::CaloCluster*> clusters;

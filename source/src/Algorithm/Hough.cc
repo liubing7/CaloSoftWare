@@ -142,17 +142,11 @@ namespace algorithm{
     while(1){
       if(houghBins.empty()) break;
       std::vector< HoughBin >::iterator it=houghBins.begin();
-      std::cout << "houghBins.size() = " << houghBins.size() << "\t"
-		<< "(*it).houghObjects.size() = " << (*it).houghObjects.size()
-		<< std::endl;
-      //getchar();
       HoughBin bestBin=getBestHoughBinFromZY( *it );
       if( TestHoughBinSize(bestBin) ) {
 	break;
       }
-      std::cout << "test size before isolation = " << bestBin.houghObjects.size() << std::endl;
       RemoveIsolatedClusterInHoughBin( bestBin );
-      std::cout << "test size after isolation = " << bestBin.houghObjects.size() << std::endl;
       if( TestHoughBinSize( bestBin ) ) {
       	if( settings.printDebug ) 
       	  std::cout << "Hough::runHough << DEBUG : Hough bin size is no longer big enough to create a track after removing isloated clusters" << std::endl;
@@ -166,7 +160,6 @@ namespace algorithm{
     
       algo_Tracking->Run( temp,track );
       if( track!=NULL ){
-	std::cout << "create one track" << std::endl;
 	algo_Tracking->splitTrack(track);
 	for(std::vector<HoughObject*>::iterator jt=houghObjects.begin(); jt!=houghObjects.end(); ++jt){
 	  if( std::find( track->getClusters().begin(), track->getClusters().end(), (*jt)->cluster ) != track->getClusters().end() ) continue;
