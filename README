@@ -1,5 +1,7 @@
 BUILD and install: 
 
+$ chmod +x getEigen
+$ ./getEigen
 $ mkdir build
 $ cmake -DCLHEP_DIR=${CLHEP} ../
 $ make install
