@@ -1,7 +1,7 @@
 #include "Algorithm/Cluster.h"
 
 namespace algorithm
-{    
+{
   void Cluster::Run(std::vector<caloobject::CaloHit*> &hits,std::vector<caloobject::CaloCluster*> &outClusterVec)
   {
     std::vector<caloobject::CaloHit*> temp;
