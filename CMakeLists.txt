@@ -30,6 +30,9 @@ FOREACH( pkg CLHEP )
     ADD_DEFINITIONS ( ${${pkg}_DEFINITIONS} )
 ENDFOREACH()
 
+FIND_PACKAGE( Eigen3 REQUIRED )
+INCLUDE_DIRECTORIES( ${EIGEN3_INCLUDE_DIR} )
+
 # Define options
 
 # ----- Install doc -----

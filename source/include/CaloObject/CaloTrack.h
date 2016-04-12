@@ -37,6 +37,9 @@ namespace caloobject
 	CLHEP::Hep3Vector Ny(0., -1., _params[3]);
 	return Nx.cross(Ny).cosTheta();
     }
+    inline const CLHEP::Hep3Vector orientationVector(){
+      return CLHEP::Hep3Vector(-1., 0., _params[1]).cross(CLHEP::Hep3Vector(0., -1., _params[3]));
+    }
   private:
 
     std::vector<caloobject::CaloCluster*> clusters;

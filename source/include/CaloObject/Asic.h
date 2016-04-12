@@ -14,8 +14,8 @@ namespace caloobject
   {
   public:
     Asic(int theKey);
-    ~Asic(){;}
-    void Update(caloobject::CaloLayer* layer);
+    virtual ~Asic(){;}
+    virtual void Update(caloobject::CaloLayer* layer);
 
     inline const int getAsicKey(){return key;}
     inline const int getAsicNtrack(){return ntrack;}
