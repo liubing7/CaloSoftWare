@@ -1,9 +1,0 @@
-hg clone https://bitbucket.org/eigen/eigen/
-mv eigen ~/
-mkdir ~/eigen/build
-cd ~/eigen/build
-cmake ../
-make install -j2
-cd -
-export Eigen3_INCLUDE_DIR="~/eigen"
-
