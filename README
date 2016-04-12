@@ -1,7 +1,6 @@
 BUILD and install: 
 
-$ chmod +x getEigen
-$ ./getEigen
+$ source getEigen
 $ mkdir build
-$ cmake -DCLHEP_DIR=${CLHEP} ../
+$ cmake -DCLHEP_DIR=${CLHEP} -DEigen_INCLUDE_DIR=$Eigen3_INCLUDE_DIR ../
 $ make install

@@ -6,7 +6,7 @@ build/
 lib/
 source/src/*/*~
 source/include/*/*~
-*.cmake
+CaloSoftWare*.cmake
 include/
 source/include/Eigen
 source/include/Eigen/*
