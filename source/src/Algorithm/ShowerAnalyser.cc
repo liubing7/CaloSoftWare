@@ -1,0 +1,76 @@
+#include "Algorithm/ShowerAnalyser.h"
+#include "Algorithm/LinearFit3D.h"
+#include "Algorithm/ManipMap.h"
+#include "Algorithm/PCA.h"
+#include <set>
+#include <map>
+
+
+namespace algorithm
+{
+  void ShowerAnalyser::Run(caloobject::Shower* shower)
+  {
+    std::set<int> layers;
+    std::vector<CLHEP::Hep3Vector> hitPos;
+    std::vector<int> clSize; //=1 because it use hits and not clusters
+    std::map<int,float> edep_layerMap;
+    std::vector<double> x,y,z;
+
+    shower->edep=0.0f;
+    shower->f1=0.0f;
+    for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
+      shower->edep+=(*it)->getEnergy();
+      shower->edepPerCell.push_back( (*it)->getEnergy() );
+      layers.insert( (*it)->getCellID()[2] );
+      hitPos.push_back( (*it)->getPosition() );
+      clSize.push_back( 1 );
+
+      if( edep_layerMap[ (*it)->getCellID()[2] ] > 0 )
+	edep_layerMap[ (*it)->getCellID()[2] ] += (*it)->getEnergy() ;
+      else
+	edep_layerMap[ (*it)->getCellID()[2] ] = (*it)->getEnergy() ;
+      
+      if( (*it)->getCellID()[2]<settings.firstSectionLastLayer )
+	shower->f1+=(*it)->getEnergy();
+
+      x.push_back( (*it)->getPosition().x() );
+      y.push_back( (*it)->getPosition().y() );
+      z.push_back( (*it)->getPosition().z() );
+    
+    }
+
+    FindEnergy(shower);
+    
+    shower->f1/=shower->edep;
+
+    shower->showerMax = algorithm::map_max_element(edep_layerMap)->first; //x0 unit
+    shower->edepAtMax = algorithm::map_max_element(edep_layerMap)->second;
+
+    shower->nlayer=layers.size();
+    
+    algorithm::LinearFit3D* algo_LinearFit3D=new algorithm::LinearFit3D(hitPos,clSize);
+    shower->thrust=algo_LinearFit3D->getFitParameters();
+    CLHEP::Hep3Vector orientation = CLHEP::Hep3Vector(-1,0,shower->thrust[1]).cross(CLHEP::Hep3Vector(0,-1,shower->thrust[3]));
+    shower->reconstructedCosTheta = orientation.cosTheta() ;
+    shower->eta = orientation.eta();
+    shower->phi = orientation.phi();
+
+    delete algo_LinearFit3D;
+
+    VectorList vecList;
+    vecList.push_back(x);
+    vecList.push_back(y);
+    vecList.push_back(z);
+    algorithm::PCA* algo_PCA=new algorithm::PCA(vecList);
+    shower->transverseRatio=std::sqrt( algo_PCA->eigenValues()[0]*algo_PCA->eigenValues()[0] +
+				       algo_PCA->eigenValues()[1]*algo_PCA->eigenValues()[1] )/algo_PCA->eigenValues()[2];
+    delete algo_PCA;
+
+  }
+
+  void ShowerAnalyser::FindEnergy(caloobject::Shower* shower)
+  {
+    if( settings.energyCalibrationOption==std::string("SiWEcal") )
+      shower->energy=shower->edep*settings.energyCalibrationFactors.at(0);
+  }
+}

@@ -5,20 +5,7 @@
 #include <limits>
 
 namespace caloobject
-{ 
-  
-  struct LayerParameterSetting{
-    float edgeX_min;
-    float edgeX_max;
-    float edgeY_min;
-    float edgeY_max;
-  LayerParameterSetting() : edgeX_min(-500.0) ,
-                            edgeX_max(500.0) ,
-                            edgeY_min(-500.0) ,
-                            edgeY_max(500.0)
-                            {;}
-  };
-  
+{   
   class CaloLayer
   {
     //friend class algorithm::LayerProperties;
@@ -36,7 +23,7 @@ namespace caloobject
     }
 
     inline void setLayerZPosition(float z){_layerZPosition=z;}
-    inline void setLayerParameterSetting(LayerParameterSetting params){_settings=params;}
+    //    inline void setLayerParameterSetting(LayerParameterSetting params){_settings=params;}
     
     inline const int getNTracks(){return _ntracks;}
     inline const float getEfficiency(){return (float)_efficiency/_ntracks;} //could be used after each event or at the end of the analysis or whenever you want
@@ -45,11 +32,11 @@ namespace caloobject
     inline const int getLayerID(){return _layerID;}
     inline const float getLayerZPosition(){return _layerZPosition;}
     
-    inline const LayerParameterSetting getSettings(){return _settings;}
+    //inline const LayerParameterSetting getSettings(){return _settings;}
 
   private:
     int _layerID;
-    LayerParameterSetting _settings;
+    //LayerParameterSetting _settings;
     float _layerZPosition;
     float _multiplicity;
     float _efficiency;

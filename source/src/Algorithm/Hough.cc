@@ -51,7 +51,7 @@ namespace algorithm{
 	std::vector< HoughBin >::iterator jt;
 	for( jt=outputBins.begin(); jt!=outputBins.end(); ++jt ){
 	  if( (*it)->thetas.at(theta)==(*jt).theta &&
-	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.padSize ){
+	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize ){
 	    (*jt).houghObjects.push_back(*it);
 	    break;
 	  }
@@ -85,7 +85,7 @@ namespace algorithm{
 	std::vector< HoughBin >::iterator jt;
 	for( jt=outputBins.begin(); jt!=outputBins.end(); ++jt ){
 	  if( (*it)->thetas.at(theta)==(*jt).theta &&
-	      fabs( (*it)->rhoYVec.at(theta)-(*jt).rho ) < settings.padSize ){
+	      fabs( (*it)->rhoYVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize ){
 	    (*jt).houghObjects.push_back(*it);
 	    break;
 	  }
@@ -131,10 +131,10 @@ namespace algorithm{
   }
 
   void Hough::runHough(std::vector<caloobject::CaloCluster*> &clusters, std::vector<caloobject::CaloTrack*> &tracks, algorithm::Tracking *algo_Tracking)
-  {      
-    if( algo_Tracking==NULL ){
-      std::cout << "Hough::runHough << ERROR : algo_Tracking is NULL whill it should already be initialised -->> std::abort()" << std::endl;
-      std::abort();
+  {
+    if( NULL==algo_Tracking ){
+      std::cout << "ERROR : an algorithm::Tracking must be initialised before calling Hough::runHough => return" << std::endl;
+      return;
     }
     
     createHoughObjects(clusters);
@@ -199,5 +199,6 @@ namespace algorithm{
       delete (*it);
     }
     houghObjects.clear();
+
   }
 }

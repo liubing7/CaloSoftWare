@@ -12,6 +12,7 @@
 
 #include "CaloObject/CaloCluster.h"
 #include "CaloObject/CaloTrack.h"
+#include "CaloObject/CaloGeom.h"
 #include "Algorithm/Distance.h"
 #include "Algorithm/Tracking.h"
 
@@ -28,6 +29,7 @@ namespace algorithm
     int isolationDistance;
     float padSize;
     bool printDebug;
+    caloobject::GeomParameterSetting geometry;
   HoughParameterSetting() : thetaSteps(100) ,
       minimumNBins(10) ,
       maximumClusterSizeForMip(4),

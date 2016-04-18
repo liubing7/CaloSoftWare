@@ -26,7 +26,8 @@ namespace algorithm
     pcaVec.push_back(z);
     algorithm::PCA* pca=new algorithm::PCA(pcaVec);
     std::vector<double> eigenValues=pca->eigenValues();
-    _transverseRatio = (eigenValues.at(0)+eigenValues.at(1)) / eigenValues.at(2);
+    _transverseRatio = sqrt(eigenValues.at(0)*eigenValues.at(0) +
+			    eigenValues.at(1)*eigenValues.at(1)) / eigenValues.at(2);
     delete pca;
     if( _transverseRatio > settings.maxTransverseRatio ){
       if( settings.printDebug ) std::cout << "Tracking::Run << DEBUG : _transverseRatio = " << _transverseRatio << std::endl;
@@ -105,7 +106,8 @@ namespace algorithm
     pcaVec.push_back(z);
     algorithm::PCA* pca=new algorithm::PCA(pcaVec);
     std::vector<double> eigenValues=pca->eigenValues();
-    _transverseRatio = (eigenValues.at(0)+eigenValues.at(1)) / eigenValues.at(2);
+    _transverseRatio = sqrt(eigenValues.at(0)*eigenValues.at(0) +
+			    eigenValues.at(1)*eigenValues.at(1)) / eigenValues.at(2);
     delete pca;
     if( _transverseRatio > settings.maxTransverseRatio ){
       if( settings.printDebug ) std::cout << "Tracking::Run << DEBUG : _transverseRatio = " << _transverseRatio << std::endl;

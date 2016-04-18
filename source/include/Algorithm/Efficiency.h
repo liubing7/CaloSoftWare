@@ -7,6 +7,7 @@
 
 #include "CaloObject/CaloLayer.h"
 #include "CaloObject/CaloCluster.h"
+#include "CaloObject/CaloGeom.h"
 #include "Algorithm/Tracking.h"
 #include "Algorithm/Distance.h"
 
@@ -18,7 +19,8 @@ namespace algorithm{
     float maxRadius;
     bool semiDigitalReadout;
     bool printDebug;
-    TrackingParameterSetting trackingParams;
+    caloobject::GeomParameterSetting geometry;
+    algorithm::TrackingParameterSetting trackingParams;
   EfficiencyParameterSetting() : maxRadius(25.0) ,
                                  semiDigitalReadout(true) ,
                                  printDebug(false)
@@ -37,7 +39,6 @@ namespace algorithm{
 
   private:
     EfficiencyParameterSetting settings;
-    int asicKey;
     CLHEP::Hep3Vector expectedPos;
   };
 }
