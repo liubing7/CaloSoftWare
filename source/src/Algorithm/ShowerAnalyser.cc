@@ -2,6 +2,7 @@
 #include "Algorithm/LinearFit3D.h"
 #include "Algorithm/ManipMap.h"
 #include "Algorithm/PCA.h"
+#include "Algorithm/Distance.h"
 #include <set>
 #include <map>
 
@@ -49,7 +50,10 @@ namespace algorithm
     shower->nlayer=layers.size();
     
     algorithm::LinearFit3D* algo_LinearFit3D=new algorithm::LinearFit3D(hitPos,clSize);
-    shower->thrust=algo_LinearFit3D->getFitParameters();
+    shower->thrust.clear();
+    for(int i=0; i<4; i++)
+      shower->thrust.push_back(algo_LinearFit3D->getFitParameters()[i]);
+
     CLHEP::Hep3Vector orientation = CLHEP::Hep3Vector(-1,0,shower->thrust[1]).cross(CLHEP::Hep3Vector(0,-1,shower->thrust[3]));
     shower->reconstructedCosTheta = orientation.cosTheta() ;
     shower->eta = orientation.eta();
@@ -66,11 +70,55 @@ namespace algorithm
 				       algo_PCA->eigenValues()[1]*algo_PCA->eigenValues()[1] )/algo_PCA->eigenValues()[2];
     delete algo_PCA;
 
+    SearchShowerInteraction(shower);
+    Profile(shower);
   }
 
   void ShowerAnalyser::FindEnergy(caloobject::Shower* shower)
   {
     if( settings.energyCalibrationOption==std::string("SiWEcal") )
       shower->energy=shower->edep*settings.energyCalibrationFactors.at(0);
+  }
+
+  void ShowerAnalyser::SearchShowerInteraction(caloobject::Shower* shower)
+  {
+    shower->findInteraction_=false;
+    algorithm::InteractionFinder* algo = new algorithm::InteractionFinder();
+    algo->SetInteractionFinderParameterSetting(settings.interactionFinderParams);
+    algo->Run(shower->clusters,shower->getThrust());
+    if( algo->FindInteraction() ){
+      shower->findInteraction_=true;
+      shower->firstIntCluster=algo->getFirstInteractionCluster();
+      shower->startingPosition=algo->getFirstInteractionCluster()->getPosition();
+    }
+  }
+
+  void ShowerAnalyser::Profile(caloobject::Shower* shower)
+  {
+    shower->longitudinal.clear();
+    for(int i=0; i<settings.geometry.nLayers; i++)
+      shower->longitudinal.push_back(0);
+    for(int i=0; i<(int)(settings.maximumRadius/settings.geometry.pixelSize); i++)
+      shower->transverse.push_back(0);
+    
+    int begin=0;
+    if( shower->firstIntCluster!=NULL )
+      begin=shower->firstIntCluster->getLayerID();
+
+
+    Distance<caloobject::CaloHit,CLHEP::Hep3Vector> dist;
+    for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
+      if( (*it)->getCellID()[2]>=begin )
+    	shower->longitudinal.at( (*it)->getCellID()[2]-begin ) +=(*it)->getEnergy();
+
+      CLHEP::Hep3Vector vec(shower->thrust[0]+shower->thrust[1]*(*it)->getPosition().z(),
+			    shower->thrust[2]+shower->thrust[3]*(*it)->getPosition().z(),
+			    (*it)->getPosition().z());
+      int ring=(int)(dist.getDistance( (*it),vec )/settings.geometry.pixelSize );
+      if( ring>(int)(settings.maximumRadius/settings.geometry.pixelSize) )
+	continue;
+      else
+	shower->transverse.at(ring)+=(*it)->getEnergy();
+    }
   }
 }

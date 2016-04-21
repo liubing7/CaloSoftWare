@@ -9,6 +9,7 @@ namespace caloobject
     
     for(std::vector<caloobject::CaloHit*>::iterator it=_hits.begin(); it!=_hits.end(); ++it){
       _clusterPosition+=(*it)->getPosition();
+      _energy+=(*it)->getEnergy();
     }
     _clusterPosition/=_hits.size();
   }

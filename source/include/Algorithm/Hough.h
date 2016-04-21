@@ -29,6 +29,8 @@ namespace algorithm
     int isolationDistance;
     float padSize;
     bool printDebug;
+    bool useAnalogEnergy;
+    float maxEnergy;
     caloobject::GeomParameterSetting geometry;
   HoughParameterSetting() : thetaSteps(100) ,
       minimumNBins(10) ,
@@ -38,7 +40,9 @@ namespace algorithm
       transversalDistance(50.0),
       isolationDistance(2),
       padSize(10.408),
-      printDebug(false)
+      printDebug(false),
+      useAnalogEnergy(false),
+      maxEnergy(0.001) // 1 MeV (MIP arround 85 keV)
     {;}
   };
 

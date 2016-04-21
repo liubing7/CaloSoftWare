@@ -21,6 +21,7 @@ namespace caloobject
     friend class algorithm::ShowerAnalyser;
   public:
     Shower(std::vector<caloobject::CaloHit*> &vec);
+    Shower(std::vector<caloobject::CaloCluster*> &vec);
     ~Shower(){;}
 
     inline const std::vector<caloobject::CaloHit*> &getHits(){return hits;}
@@ -30,7 +31,7 @@ namespace caloobject
     inline float getEnergy(){return energy;}
     inline float getEdep(){return edep;}
     inline int getNlayer(){return nlayer;}
-    inline float* getThrust(){return thrust;}
+    inline std::vector<float> getThrust()const{return thrust;}
     inline float getReconstructedCosTheta(){return reconstructedCosTheta;}
     inline float getTransverseRatio(){return transverseRatio;}
     inline float getEta(){return eta;}
@@ -39,15 +40,21 @@ namespace caloobject
     inline float getShowerMax(){return showerMax;}
     inline float getEdepAtMax(){return edepAtMax;}
     inline std::vector<double> &getEdepPerCell(){return edepPerCell;}
+    inline bool findInteraction(){return findInteraction_;}
+    inline std::vector<double> &getLongitudinal(){return longitudinal;}
+    inline std::vector<double> &getTransverse(){return transverse;}
+    
   protected:
     std::vector<caloobject::CaloHit*> hits;
+    std::vector<caloobject::CaloCluster*> clusters;
+    caloobject::CaloCluster* firstIntCluster;
     CLHEP::Hep3Vector startingPosition;
     float energy;
     float edep;
     std::vector<double> edepPerCell;
     int nlayer;
     //shower thrust ; x = thrust[0] + thrust[1]*z ; y = thrust[2] + thrust[3]*z ; 
-    float *thrust;
+    std::vector<float> thrust;
     float reconstructedCosTheta;
     float transverseRatio;
     float eta;
@@ -56,6 +63,11 @@ namespace caloobject
     float f1; //edep in 10 first layers/total edep
     float showerMax; //x0 unit
     float edepAtMax;
+
+    bool findInteraction_;
+
+    std::vector<double> longitudinal;
+    std::vector<double> transverse;
   };
 
 }

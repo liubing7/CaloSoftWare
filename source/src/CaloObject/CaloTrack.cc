@@ -7,5 +7,4 @@ namespace caloobject
   {
     clusters=vec;
   }
-  
 }

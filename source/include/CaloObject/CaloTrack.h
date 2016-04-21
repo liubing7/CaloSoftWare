@@ -17,14 +17,15 @@ namespace caloobject
 
     inline void setChi2(float chi2){_chi2=chi2;}
     inline void setTrackParameters(float *params){
-      for(unsigned int i=0; i<4; i++) _params[i]=params[i];
+      _params.clear();
+      for(unsigned int i=0; i<4; i++) _params.push_back(params[i]);
     }
 
     inline const caloobject::CaloCluster* getTrackStartingCluster(){return (*clusters.begin());}
     inline const caloobject::CaloCluster* getTrackLastCluster(){return (*(clusters.end()-1));}
     inline std::vector<caloobject::CaloCluster*> &getClusters(){return clusters;} // someone may need to rearrange the vector with sort
     inline const float getChi2(){return _chi2;}
-    inline const float *getTrackParameters(){return _params;} 
+    inline const std::vector<float> getTrackParameters(){return _params;} 
     inline const void addCluster(caloobject::CaloCluster* cluster){clusters.push_back(cluster);}
     const CLHEP::Hep3Vector expectedTrackProjection(float z)
     {
@@ -44,7 +45,7 @@ namespace caloobject
 
     std::vector<caloobject::CaloCluster*> clusters;
     float _chi2;
-    float _params[4];
+    std::vector<float> _params;
   };
 }
 #endif
