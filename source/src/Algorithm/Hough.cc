@@ -6,43 +6,65 @@ namespace algorithm{
 
   void Hough::createHoughObjects(std::vector<caloobject::CaloCluster*> &clusters)
   {
-    Distance<caloobject::CaloCluster,caloobject::CaloCluster> dist;
-    for( std::vector<caloobject::CaloCluster*>::iterator it=clusters.begin(); it!=clusters.end(); ++it ){
-      if( (*it)->getHits().size() > settings.maximumClusterSizeForMip ) {
-	if( settings.printDebug ){
-	  std::cout << "cluster at " << (*it)->getPosition() << " with too many hits : " << (*it)->getHits().size() << std::endl;
-	}
-	continue;
+    std::vector<caloobject::CaloCluster*> mipCandidate;
+    selectNonDensePart( clusters,mipCandidate );
+    for( std::vector<caloobject::CaloCluster*>::iterator it=mipCandidate.begin(); it!=mipCandidate.end(); ++it ){
+      HoughObject *obj=new HoughObject();
+      obj->cluster=(*it);
+      obj->tag=fMip;
+      if( settings.printDebug )	std::cout << (*it)->getPosition() << std::endl;
+      for( unsigned int theta=0; theta<settings.thetaSteps; theta++ ){
+	obj->thetas.push_back(theta);
+	obj->rhoXVec.push_back( (*it)->getPosition().z()*std::cos(-PI/2+theta*PI/settings.thetaSteps) + 
+				(*it)->getPosition().x()*std::sin(-PI/2+theta*PI/settings.thetaSteps) ) ;
+	obj->rhoYVec.push_back( (*it)->getPosition().z()*std::cos(-PI/2+theta*PI/settings.thetaSteps) + 
+				(*it)->getPosition().y()*std::sin(-PI/2+theta*PI/settings.thetaSteps) );
       }
-      unsigned int nNeighbours=0;
-      unsigned int nCoreNeighbours=0;
-      for( std::vector<caloobject::CaloCluster*>::iterator jt=clusters.begin(); jt!=clusters.end(); ++jt ){
-	if( (*it)==(*jt) || fabs( (*it)->getPosition().z()-(*jt)->getPosition().z() ) > std::numeric_limits<float>::epsilon() ) continue;
-	if( dist.getDistance( (*it),(*jt) ) < settings.transversalDistance ){
-	  if( settings.printDebug )
-	    std::cout << "Distance --->>>" << (*it)->getPosition() << "\t" << (*jt)->getPosition() << "\t" << dist.getDistance( (*it),(*jt) ) << std::endl;
-	  nNeighbours++;
-	  if( (*jt)->getHits().size() > settings.maximumClusterSizeForMip ) nCoreNeighbours++;
-	}
-      }
-      if( nNeighbours < settings.maximumNumberOfNeighboursForMip || nCoreNeighbours < settings.maximumNumberOfCoreNeighboursForMip ){
-	HoughObject *obj=new HoughObject();
-	obj->cluster=(*it);
-	obj->tag=fMip;
-	if( settings.printDebug )
-	  std::cout << (*it)->getPosition() << std::endl;
-	for( unsigned int theta=0; theta<settings.thetaSteps; theta++ ){
-	  obj->thetas.push_back(theta);
-	  obj->rhoXVec.push_back( (*it)->getPosition().z()*std::cos(-PI/2+theta*PI/settings.thetaSteps) + 
-				  (*it)->getPosition().x()*std::sin(-PI/2+theta*PI/settings.thetaSteps) ) ;
-	  obj->rhoYVec.push_back( (*it)->getPosition().z()*std::cos(-PI/2+theta*PI/settings.thetaSteps) + 
-				  (*it)->getPosition().y()*std::sin(-PI/2+theta*PI/settings.thetaSteps) );
-	}
-	houghObjects.push_back(obj);
-      }
+      houghObjects.push_back(obj);
     }
   }
 
+  void Hough::selectNonDensePart( std::vector<caloobject::CaloCluster*> &clusters, std::vector<caloobject::CaloCluster*> &mipCandidate )
+  {
+    std::cout << "settings.maximumNumberOfNeighboursForMip = " << settings.maximumNumberOfNeighboursForMip << "\t"
+	      << "settings.maximumNumberOfCoreNeighboursForMip = " << settings.maximumNumberOfCoreNeighboursForMip << std::endl;
+    if( settings.useAnalogEnergy==false ){
+      // use it for sdhcal like detector
+      Distance<caloobject::CaloCluster,caloobject::CaloCluster> dist;
+      for( std::vector<caloobject::CaloCluster*>::iterator it=clusters.begin(); it!=clusters.end(); ++it ){
+	if( (*it)->getHits().size() > settings.maximumClusterSizeForMip ) {
+	  if( settings.printDebug ){
+	    std::cout << "cluster at " << (*it)->getPosition() << " with too many hits : " << (*it)->getHits().size() << std::endl;
+	  }
+	  continue;
+	}
+	int nNeighbours=0;
+	int nCoreNeighbours=0;
+	for( std::vector<caloobject::CaloCluster*>::iterator jt=clusters.begin(); jt!=clusters.end(); ++jt ){
+	  if( (*it)==(*jt) || fabs( (*it)->getPosition().z()-(*jt)->getPosition().z() ) > std::numeric_limits<float>::epsilon() ) continue;
+	  if( dist.getDistance( (*it),(*jt) ) < settings.transversalDistance ){
+	    if( settings.printDebug )
+	      std::cout << "Distance --->>>" << (*it)->getPosition() << "\t" << (*jt)->getPosition() << "\t" << dist.getDistance( (*it),(*jt) ) << std::endl;
+	    nNeighbours++;
+	    if( (*jt)->getHits().size() > settings.maximumClusterSizeForMip ) nCoreNeighbours++;
+	  }
+	}
+	if( nNeighbours > settings.maximumNumberOfNeighboursForMip &&
+	    nCoreNeighbours > settings.maximumNumberOfCoreNeighboursForMip )
+	  continue;
+	else 
+	    mipCandidate.push_back(*it);
+      }
+    }
+    else{
+      // use it for hgcal like detector
+      for( std::vector<caloobject::CaloCluster*>::iterator it=clusters.begin(); it!=clusters.end(); ++it )
+	if( (*it)->getEnergy() < settings.maxEnergy )
+	  mipCandidate.push_back(*it);
+    }
+    
+  }
+  
   std::vector< HoughBin > Hough::getHoughBinsFromZX()
   {
     std::vector< HoughBin > outputBins;

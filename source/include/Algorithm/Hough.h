@@ -78,6 +78,7 @@ namespace algorithm
 
   private: 
     void createHoughObjects( std::vector<caloobject::CaloCluster*> &clusters );
+    void selectNonDensePart( std::vector<caloobject::CaloCluster*> &clusters, std::vector<caloobject::CaloCluster*> &mipCandidate );
     std::vector< HoughBin > getHoughBinsFromZX();
     HoughBin getBestHoughBinFromZY( HoughBin &inputBin );
     void RemoveIsolatedClusterInHoughBin(HoughBin &a);
