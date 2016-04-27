@@ -26,17 +26,25 @@ namespace algorithm{
 
   void Hough::selectNonDensePart( std::vector<caloobject::CaloCluster*> &clusters, std::vector<caloobject::CaloCluster*> &mipCandidate )
   {
+    int count=0;
     std::cout << "settings.maximumNumberOfNeighboursForMip = " << settings.maximumNumberOfNeighboursForMip << "\t"
 	      << "settings.maximumNumberOfCoreNeighboursForMip = " << settings.maximumNumberOfCoreNeighboursForMip << std::endl;
-    if( settings.useAnalogEnergy==false ){
-      // use it for sdhcal like detector
       Distance<caloobject::CaloCluster,caloobject::CaloCluster> dist;
       for( std::vector<caloobject::CaloCluster*>::iterator it=clusters.begin(); it!=clusters.end(); ++it ){
-	if( (*it)->getHits().size() > settings.maximumClusterSizeForMip ) {
-	  if( settings.printDebug ){
-	    std::cout << "cluster at " << (*it)->getPosition() << " with too many hits : " << (*it)->getHits().size() << std::endl;
+	if( settings.useAnalogEnergy==false ){
+	  // use it for sdhcal like detector
+	  if( (*it)->getHits().size() > settings.maximumClusterSizeForMip ) {
+	    if( settings.printDebug ){
+	      std::cout << "cluster at " << (*it)->getPosition() << " with too many hits : " << (*it)->getHits().size() << std::endl;
+	    }
+	    continue;
 	  }
-	  continue;
+	}
+	else{
+	  // use it for hgcal like detector
+	  if( (*it)->getEnergy() > settings.maxEnergy )
+	      continue;
+	  count++;
 	}
 	int nNeighbours=0;
 	int nCoreNeighbours=0;
@@ -46,24 +54,20 @@ namespace algorithm{
 	    if( settings.printDebug )
 	      std::cout << "Distance --->>>" << (*it)->getPosition() << "\t" << (*jt)->getPosition() << "\t" << dist.getDistance( (*it),(*jt) ) << std::endl;
 	    nNeighbours++;
-	    if( (*jt)->getHits().size() > settings.maximumClusterSizeForMip ) nCoreNeighbours++;
+	    if( (*jt)->getHits().size() > settings.maximumClusterSizeForMip && settings.useAnalogEnergy==false ) nCoreNeighbours++;
+	    else if( (*jt)->getEnergy() > settings.maxEnergy && settings.useAnalogEnergy==true ) nCoreNeighbours++;
 	  }
 	}
 	if( nNeighbours > settings.maximumNumberOfNeighboursForMip &&
 	    nCoreNeighbours > settings.maximumNumberOfCoreNeighboursForMip )
 	  continue;
 	else 
-	    mipCandidate.push_back(*it);
-      }
-    }
-    else{
-      // use it for hgcal like detector
-      for( std::vector<caloobject::CaloCluster*>::iterator it=clusters.begin(); it!=clusters.end(); ++it )
-	if( (*it)->getEnergy() < settings.maxEnergy )
 	  mipCandidate.push_back(*it);
-    }
-    
+      }
+      std::cout << "nclusters = " << clusters.size() << "\t"
+		<< "nclustersMIP = " << count << std::endl; 
   }
+
   
   std::vector< HoughBin > Hough::getHoughBinsFromZX()
   {

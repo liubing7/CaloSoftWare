@@ -43,6 +43,8 @@ namespace caloobject
     inline bool findInteraction(){return findInteraction_;}
     inline std::vector<double> &getLongitudinal(){return longitudinal;}
     inline std::vector<double> &getTransverse(){return transverse;}
+    inline std::vector<double> &getDistancesToAxis(){return distanceToAxis;}
+    inline std::vector<double> &getClustersEnergy(){return clustersEnergy;}
     
   protected:
     std::vector<caloobject::CaloHit*> hits;
@@ -68,6 +70,8 @@ namespace caloobject
 
     std::vector<double> longitudinal;
     std::vector<double> transverse;
+    std::vector<double> distanceToAxis;
+    std::vector<double> clustersEnergy;
   };
 
 }

@@ -96,6 +96,8 @@ namespace algorithm
   void ShowerAnalyser::Profile(caloobject::Shower* shower)
   {
     shower->longitudinal.clear();
+    shower->transverse.clear();
+    shower->distanceToAxis.clear();
     for(int i=0; i<settings.geometry.nLayers; i++)
       shower->longitudinal.push_back(0);
     for(int i=0; i<(int)(settings.maximumRadius/settings.geometry.pixelSize); i++)
@@ -108,12 +110,13 @@ namespace algorithm
 
     Distance<caloobject::CaloHit,CLHEP::Hep3Vector> dist;
     for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
-      if( (*it)->getCellID()[2]>=begin )
-    	shower->longitudinal.at( (*it)->getCellID()[2]-begin ) +=(*it)->getEnergy();
+      //if( (*it)->getCellID()[2]>=begin )
+      shower->longitudinal.at( (*it)->getCellID()[2] ) +=(*it)->getEnergy();
 
       CLHEP::Hep3Vector vec(shower->thrust[0]+shower->thrust[1]*(*it)->getPosition().z(),
 			    shower->thrust[2]+shower->thrust[3]*(*it)->getPosition().z(),
 			    (*it)->getPosition().z());
+      shower->distanceToAxis.push_back( dist.getDistance( (*it),vec ) );
       int ring=(int)(dist.getDistance( (*it),vec )/settings.geometry.pixelSize );
       if( ring>(int)(settings.maximumRadius/settings.geometry.pixelSize) )
 	continue;
