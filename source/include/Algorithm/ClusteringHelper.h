@@ -21,10 +21,10 @@ namespace algorithm
     ClusteringHelper(){;}
     ~ClusteringHelper(){;}
     inline void SetClusteringHelperParameterSetting(ClusteringHelperParameterSetting params){settings=params;}
-    static bool SortClusterByLayer(caloobject::CaloCluster* a, caloobject::CaloCluster* b){return a->getPosition().z() < b->getPosition().z();}
-    inline bool IsIsolatedCluster(caloobject::CaloCluster* cl, std::vector<caloobject::CaloCluster*>& list)
+    static bool SortClusterByLayer(caloobject::CaloCluster2D* a, caloobject::CaloCluster2D* b){return a->getPosition().z() < b->getPosition().z();}
+    inline bool IsIsolatedCluster(caloobject::CaloCluster2D* cl, std::vector<caloobject::CaloCluster2D*>& list)
     {
-      for(std::vector<caloobject::CaloCluster*>::iterator it=list.begin(); it!=list.end(); ++it){
+      for(std::vector<caloobject::CaloCluster2D*>::iterator it=list.begin(); it!=list.end(); ++it){
 	if( cl==(*it) ) continue;
 	if( fabs(cl->getPosition().z()-(*it)->getPosition().z())<settings.longitudinalDistance &&
 	    fabs(cl->getPosition().y()-(*it)->getPosition().y())<settings.transversalDistance &&

@@ -1,4 +1,4 @@
-#include "CaloObject/CaloCluster.h"
+#include "CaloObject/CaloCluster2D.h"
 
 namespace caloobject
 {

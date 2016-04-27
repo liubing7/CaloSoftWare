@@ -35,7 +35,7 @@ namespace algorithm{
     
     inline void SetEfficiencyParameterSetting(EfficiencyParameterSetting params){settings=params;}
     inline CLHEP::Hep3Vector &getExpectedPosition(){return expectedPos;}
-    void Run(caloobject::CaloLayer *layer, std::vector<caloobject::CaloCluster*> &clusters);
+    void Run(caloobject::CaloLayer *layer, std::vector<caloobject::CaloCluster2D*> &clusters);
 
   private:
     EfficiencyParameterSetting settings;

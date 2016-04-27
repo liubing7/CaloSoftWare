@@ -57,7 +57,7 @@ namespace algorithm
     std::vector<float> rhoXVec;
     std::vector<float> rhoYVec;
     HoughTag tag;
-    caloobject::CaloCluster* cluster;
+    caloobject::CaloCluster2D* cluster;
   };
 
   struct HoughBin{
@@ -74,11 +74,11 @@ namespace algorithm
     ~Hough(){;}
     
     inline void SetHoughParameterSetting(HoughParameterSetting params){settings=params;}
-    void runHough(std::vector<caloobject::CaloCluster*> &clusters, std::vector<caloobject::CaloTrack*> &tracks, algorithm::Tracking* algo_Tracking);
+    void runHough(std::vector<caloobject::CaloCluster2D*> &clusters, std::vector<caloobject::CaloTrack*> &tracks, algorithm::Tracking* algo_Tracking);
 
   private: 
-    void createHoughObjects( std::vector<caloobject::CaloCluster*> &clusters );
-    void selectNonDensePart( std::vector<caloobject::CaloCluster*> &clusters, std::vector<caloobject::CaloCluster*> &mipCandidate );
+    void createHoughObjects( std::vector<caloobject::CaloCluster2D*> &clusters );
+    void selectNonDensePart( std::vector<caloobject::CaloCluster2D*> &clusters, std::vector<caloobject::CaloCluster2D*> &mipCandidate );
     std::vector< HoughBin > getHoughBinsFromZX();
     HoughBin getBestHoughBinFromZY( HoughBin &inputBin );
     void RemoveIsolatedClusterInHoughBin(HoughBin &a);

@@ -21,7 +21,7 @@ namespace caloobject
     friend class algorithm::ShowerAnalyser;
   public:
     Shower(std::vector<caloobject::CaloHit*> &vec);
-    Shower(std::vector<caloobject::CaloCluster*> &vec);
+    Shower(std::vector<caloobject::CaloCluster2D*> &vec);
     ~Shower(){;}
 
     inline const std::vector<caloobject::CaloHit*> &getHits(){return hits;}
@@ -48,8 +48,8 @@ namespace caloobject
     
   protected:
     std::vector<caloobject::CaloHit*> hits;
-    std::vector<caloobject::CaloCluster*> clusters;
-    caloobject::CaloCluster* firstIntCluster;
+    std::vector<caloobject::CaloCluster2D*> clusters;
+    caloobject::CaloCluster2D* firstIntCluster;
     CLHEP::Hep3Vector startingPosition;
     float energy;
     float edep;

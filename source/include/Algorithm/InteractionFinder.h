@@ -37,14 +37,14 @@ namespace algorithm
   public:
     InteractionFinder(){;}
     ~InteractionFinder(){;}
-    void Run(std::vector<caloobject::CaloCluster*> &clusters, const std::vector<float> params);
+    void Run(std::vector<caloobject::CaloCluster2D*> &clusters, const std::vector<float> params);
     void SetInteractionFinderParameterSetting(InteractionFinderParameterSetting params){settings=params;}
     bool FindInteraction(){return findInteraction;}
-    caloobject::CaloCluster* getFirstInteractionCluster(){return firstCluster;}
+    caloobject::CaloCluster2D* getFirstInteractionCluster(){return firstCluster;}
   private:
     InteractionFinderParameterSetting settings;
     bool findInteraction;
-    caloobject::CaloCluster* firstCluster;
+    caloobject::CaloCluster2D* firstCluster;
   };
 }
 #endif

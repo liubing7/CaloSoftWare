@@ -37,8 +37,8 @@ namespace algorithm
     Tracking(){;}
     ~Tracking(){;}
   
-    void Run(std::vector<caloobject::CaloCluster*> &vec, caloobject::CaloTrack* &track);
-    void TryToAddAClusterInTrack(caloobject::CaloCluster* cluster, caloobject::CaloTrack* &track);
+    void Run(std::vector<caloobject::CaloCluster2D*> &vec, caloobject::CaloTrack* &track);
+    void TryToAddAClusterInTrack(caloobject::CaloCluster2D* cluster, caloobject::CaloTrack* &track);
     void splitTrack(caloobject::CaloTrack*);    
     inline void SetTrackingParameterSetting(TrackingParameterSetting params){settings=params;}
     inline float getTransverseRatio(){return _transverseRatio;}
@@ -56,7 +56,7 @@ namespace algorithm
   //use :
   //track->getClusters().erase( std::remove_if(track->getClusters().begin(), track->getClusters().end(), removeClusterFromTrackIfLayerBiggerThanValue(val) ) , track->getClusters().end() )
   removeClusterFromTrackIfLayerBiggerThanValue(int val) : _value(val) {}
-    bool operator()(caloobject::CaloCluster* cluster) { return cluster->getLayerID() > _value;}
+    bool operator()(caloobject::CaloCluster2D* cluster) { return cluster->getLayerID() > _value;}
   private:
     int _value;
   };

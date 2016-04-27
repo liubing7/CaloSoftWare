@@ -9,11 +9,11 @@
 namespace caloobject
 { 
 
-  class CaloCluster
+  class CaloCluster2D
   {
   public:
-    CaloCluster(std::vector<caloobject::CaloHit*> vec);
-    ~CaloCluster(){_hits.clear();}
+    CaloCluster2D(std::vector<caloobject::CaloHit*> vec);
+    ~CaloCluster2D(){_hits.clear();}
 
     inline std::vector<caloobject::CaloHit*> &getHits() {return _hits;}
     inline CLHEP::Hep3Vector getPosition() const {return _clusterPosition;}
