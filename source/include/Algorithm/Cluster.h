@@ -29,7 +29,7 @@ namespace algorithm
     ~Cluster(){;}
     
     void Run(std::vector<caloobject::CaloHit*> &hits, std::vector<caloobject::CaloCluster2D*> &outClusterVec);
-    inline void SetClusterParameterSetting(clusterParameterSetting val){_settings=val;}
+    inline void SetClusterParameterSetting(clusterParameterSetting val){settings=val;}
 
   private:
     void BuildCluster(std::vector<caloobject::CaloHit*> &temp,
@@ -38,40 +38,7 @@ namespace algorithm
 
     std::vector<caloobject::CaloHit*> _clusterHitList;
     
-    clusterParameterSetting _settings;
+    clusterParameterSetting settings;
   };
-
-  /* class orderClustersWithLayer */
-  /* { */
-  /* public: */
-  /*   orderClustersWithLayer(){;} */
-  /*   bool operator()(caloobject::CaloCluster2D* a, caloobject::CaloCluster2D* b) */
-  /*   {    */
-  /*     return a->getPosition().z() < b->getPosition().z(); */
-  /*   }    */
-  /* }; */
-
-  /* class isolatedCluster */
-  /* { */
-  /* public: */
-  /*   isolatedCluster(){;}// : cluster(cl), clusters(list), depth(dp), transversalDistance(td) {} */
-  /*   bool operator() (caloobject::CaloCluster2D* cl, std::vector<caloobject::CaloCluster2D*>& list, float dp, float td) const//const{    */
-  /*   {      //std::cout << cluster << " " << clusters.size() << " " << depth << " " << transversalDistance << std::endl;       */
-  /*     for(std::vector<caloobject::CaloCluster2D*>::const_iterator it=list.begin(); it!=list.end(); ++it){ */
-  /* 	if( cl==(*it) ) continue; */
-  /* 	if( fabs(cl->getPosition().z()-(*it)->getPosition().z())<dp && */
-  /* 	    fabs(cl->getPosition().y()-(*it)->getPosition().y())<td && */
-  /* 	    fabs(cl->getPosition().x()-(*it)->getPosition().x())<td ){ */
-  /* 	  return false; */
-  /* 	} */
-  /*     } */
-  /*     return true; */
-  /*   } */
-  /*  /\* private: *\/ */
-  /*  /\*  caloobject::CaloCluster2D* cluster; *\/ */
-  /*  /\*  std::vector<caloobject::CaloCluster2D*> clusters; *\/ */
-  /*  /\*  float depth; *\/ */
-  /*  /\*  float transversalDistance; *\/ */
-  /* }; */
 }
 #endif

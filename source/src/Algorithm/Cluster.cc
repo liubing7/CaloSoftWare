@@ -22,11 +22,11 @@ namespace algorithm
     for(std::vector<caloobject::CaloHit*>::iterator it=hits.begin(); it!=hits.end(); ++it){
       if(std::find(temp.begin(), temp.end(), (*it) )!=temp.end() )continue;
       
-      if(!_settings.useDistanceInsteadCellID){
+      if(!settings.useDistanceInsteadCellID){
 	if(
-	   std::fabs( (hit)->getCellID()[0]-(*it)->getCellID()[0] )<=_settings.maxTransversal &&
-	   std::fabs( (hit)->getCellID()[1]-(*it)->getCellID()[1] )<=_settings.maxTransversal &&
-	   std::fabs( (hit)->getCellID()[2]-(*it)->getCellID()[2] )==_settings.maxLongitudinal ){
+	   std::fabs( (hit)->getCellID()[0]-(*it)->getCellID()[0] )<=settings.maxTransversal &&
+	   std::fabs( (hit)->getCellID()[1]-(*it)->getCellID()[1] )<=settings.maxTransversal &&
+	   std::fabs( (hit)->getCellID()[2]-(*it)->getCellID()[2] )==settings.maxLongitudinal ){
 	  _clusterHitList.push_back(*it);
 	  temp.push_back(*it);
 	  this->BuildCluster(temp,hits,*it);
@@ -34,9 +34,9 @@ namespace algorithm
       }
       else{
 	if(
-	   std::fabs( (hit)->getPosition().x()-(*it)->getPosition().x() )<=_settings.maxTransversalDistance &&
-	   std::fabs( (hit)->getPosition().y()-(*it)->getPosition().y() )<=_settings.maxTransversalDistance &&
-	   std::fabs( (hit)->getPosition().z()-(*it)->getPosition().z() )==_settings.maxLongitudinalDistance ){
+	   std::fabs( (hit)->getPosition().x()-(*it)->getPosition().x() )<=settings.maxTransversalDistance &&
+	   std::fabs( (hit)->getPosition().y()-(*it)->getPosition().y() )<=settings.maxTransversalDistance &&
+	   std::fabs( (hit)->getPosition().z()-(*it)->getPosition().z() )==settings.maxLongitudinalDistance ){
 	  _clusterHitList.push_back(*it);
 	  temp.push_back(*it);
 	  this->BuildCluster(temp,hits,*it);
@@ -44,4 +44,5 @@ namespace algorithm
       }
     }
   }
+ 
 }

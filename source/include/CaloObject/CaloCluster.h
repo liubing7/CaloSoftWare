@@ -1,31 +1,52 @@
 #ifndef CALOCLUSTER_HH
 #define CALOCLUSTER_HH
 
-#include "CaloObject/CaloHit.h"
 #include "iostream"
 #include "vector"
+#include <map>
+
 #include "CLHEP/Vector/ThreeVector.h"
 
-namespace caloobject
-{ 
+#include "CaloObject/CaloHit.h"
 
-  class CaloCluster2D
+namespace caloobject
+{
+  class CaloCluster
   {
   public:
-    CaloCluster2D(std::vector<caloobject::CaloHit*> vec);
-    ~CaloCluster2D(){_hits.clear();}
+    CaloCluster(std::vector<caloobject::CaloHit*> &vec);
+    ~CaloCluster(){hits.clear();}
 
-    inline std::vector<caloobject::CaloHit*> &getHits() {return _hits;}
-    inline CLHEP::Hep3Vector getPosition() const {return _clusterPosition;}
-    inline float getEnergy() const {return _energy;}
-    inline int getLayerID() const {return _layerID;}
+    inline std::vector<caloobject::CaloHit*> &getHits() {return hits;}
+    inline CLHEP::Hep3Vector getPosition() const {return clusterPosition;}
+    inline float getEnergy() const {return energy;}
+  protected:
+    std::vector<caloobject::CaloHit*> hits;
+    CLHEP::Hep3Vector clusterPosition;
+    float energy;
+  };
+
+  class CaloCluster2D : public CaloCluster
+  {
+  public:
+    CaloCluster2D(std::vector<caloobject::CaloHit*> &vec);
+    ~CaloCluster2D(){;}
+    inline int getLayerID() const {return layerID;}
 
   private:
-    std::vector<caloobject::CaloHit*> _hits;
-    CLHEP::Hep3Vector _clusterPosition;
-    float _energy;
-    int _layerID;
+    int layerID;
  };
 
+  class CaloCluster3D : public CaloCluster
+  {
+  public:
+    CaloCluster3D(std::vector<caloobject::CaloHit*> &vec);
+    ~CaloCluster3D();
+    inline std::map< int, CLHEP::Hep3Vector > getBarycenter() const {return barycenter;}
+    void printInfo();
+  private:
+
+    std::map< int, CLHEP::Hep3Vector > barycenter;
+  };
 }
 #endif
