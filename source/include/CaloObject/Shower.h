@@ -22,6 +22,7 @@ namespace caloobject
   public:
     Shower(std::vector<caloobject::CaloHit*> &vec);
     Shower(std::vector<caloobject::CaloCluster2D*> &vec);
+    Shower(caloobject::CaloCluster3D* cluster);
     ~Shower(){;}
 
     inline const std::vector<caloobject::CaloHit*> &getHits(){return hits;}

@@ -26,4 +26,14 @@ namespace caloobject
     transverseRatio = 0.0;
     firstIntCluster=NULL;
   }
+
+  Shower::Shower( caloobject::CaloCluster3D* cluster )
+  {
+    hits=cluster->getHits();
+    energy = 0.0;
+    nlayer = 0;
+    reconstructedCosTheta = 0.0;
+    transverseRatio = 0.0;
+    firstIntCluster=NULL;
+  }
 }

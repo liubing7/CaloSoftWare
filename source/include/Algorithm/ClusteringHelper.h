@@ -35,6 +35,19 @@ namespace algorithm
       return true;
     }
     ClusteringHelperParameterSetting settings;
+
   };
+
+  template <typename T, typename S>
+    class SortClusterBySize
+  {
+  public : 
+    SortClusterBySize(){;}
+    ~SortClusterBySize(){;}
+    
+    static bool sort(T* t, S* s){ return t->getHits().size() < s->getHits().size(); }
+  };
+
+
 }
 #endif

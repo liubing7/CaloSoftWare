@@ -62,8 +62,6 @@ namespace algorithm{
       else 
 	mipCandidate.push_back(*it);
     }
-    std::cout << "nclusters = " << clusters.size() << "\t"
-	      << "nclustersMIP = " << count << std::endl; 
   }
 
   
