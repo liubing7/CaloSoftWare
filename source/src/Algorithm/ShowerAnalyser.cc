@@ -19,9 +19,14 @@ namespace algorithm
 
     shower->edep=0.0f;
     shower->f1=0.0f;
+    shower->f2=0.0f;
+    shower->f3=0.0f;
+    shower->f4=0.0f;
+    shower->rmsEdep=0.0f;
     for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
       shower->edep+=(*it)->getEnergy();
       shower->edepPerCell.push_back( (*it)->getEnergy() );
+      shower->rmsEdep+=(*it)->getEnergy()*(*it)->getEnergy();
       layers.insert( (*it)->getCellID()[2] );
       hitPos.push_back( (*it)->getPosition() );
       clSize.push_back( 1 );
@@ -31,19 +36,30 @@ namespace algorithm
       else
 	edep_layerMap[ (*it)->getCellID()[2] ] = (*it)->getEnergy() ;
       
-      if( (*it)->getCellID()[2]<settings.firstSectionLastLayer )
+      if( (*it)->getCellID()[2]<settings.geometry.firstSectionLastLayer )
 	shower->f1+=(*it)->getEnergy();
+      if( (*it)->getCellID()[2]<settings.geometry.secondSectionLastLayer )
+	shower->f2+=(*it)->getEnergy();
+      if( (*it)->getCellID()[2]<settings.geometry.thirdSectionLastLayer )
+	shower->f3+=(*it)->getEnergy();
+      if( (*it)->getCellID()[2]<settings.geometry.fourthSectionLastLayer )
+	shower->f4+=(*it)->getEnergy();
 
       x.push_back( (*it)->getPosition().x() );
       y.push_back( (*it)->getPosition().y() );
       z.push_back( (*it)->getPosition().z() );
     
     }
+    shower->meanEdep=shower->edep/shower->getHits().size();
+    shower->rmsEdep=std::sqrt( shower->rmsEdep/shower->getHits().size() - shower->meanEdep*shower->meanEdep );
 
     FindEnergy(shower);
     
     shower->f1/=shower->edep;
-
+    shower->f2/=shower->edep;
+    shower->f3/=shower->edep;
+    shower->f4/=shower->edep;
+    
     shower->showerMax = algorithm::map_max_element(edep_layerMap)->first; //x0 unit
     shower->edepAtMax = algorithm::map_max_element(edep_layerMap)->second;
 

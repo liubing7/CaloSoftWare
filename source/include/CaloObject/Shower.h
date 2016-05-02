@@ -31,6 +31,8 @@ namespace caloobject
     inline int getNhit(){return hits.size();}
     inline float getEnergy(){return energy;}
     inline float getEdep(){return edep;}
+    inline float getMeanEdep(){return meanEdep;}
+    inline float getRMSEdep(){return rmsEdep;}
     inline int getNlayer(){return nlayer;}
     inline std::vector<float> getThrust()const{return thrust;}
     inline float getReconstructedCosTheta(){return reconstructedCosTheta;}
@@ -38,6 +40,9 @@ namespace caloobject
     inline float getEta(){return eta;}
     inline float getPhi(){return phi;}
     inline float getF1(){return f1;}
+    inline float getF2(){return f2;}
+    inline float getF3(){return f3;}
+    inline float getF4(){return f4;}
     inline float getShowerMax(){return showerMax;}
     inline float getEdepAtMax(){return edepAtMax;}
     inline std::vector<double> &getEdepPerCell(){return edepPerCell;}
@@ -64,6 +69,11 @@ namespace caloobject
     float phi;
     
     float f1; //edep in 10 first layers/total edep
+    float f2; //edep in 20 first layers/total edep
+    float f3; //edep in 30 first layers/total edep
+    float f4; //edep in 40 first layers/total edep
+    float meanEdep;
+    float rmsEdep;
     float showerMax; //x0 unit
     float edepAtMax;
 
