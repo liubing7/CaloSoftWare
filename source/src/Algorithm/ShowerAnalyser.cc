@@ -30,6 +30,7 @@ namespace algorithm
       layers.insert( (*it)->getCellID()[2] );
       hitPos.push_back( (*it)->getPosition() );
       clSize.push_back( 1 );
+      shower->hitTimes.push_back( (*it)->getTime() );
 
       if( edep_layerMap[ (*it)->getCellID()[2] ] > 0 )
 	edep_layerMap[ (*it)->getCellID()[2] ] += (*it)->getEnergy() ;
@@ -126,6 +127,10 @@ namespace algorithm
 
     Distance<caloobject::CaloHit,CLHEP::Hep3Vector> dist;
     for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
+      if( (*it)->getCellID()[2] >= settings.geometry.nLayers ){
+	std::cout << "Problem in ShowerAnalyser::Profile \n\t => Hit found at " << (*it)->getCellID()[2] << " while settings.geometry.nLayers = " << settings.geometry.nLayers << std::endl;
+	continue;
+      }
       //if( (*it)->getCellID()[2]>=begin )
       shower->longitudinal.at( (*it)->getCellID()[2] ) +=(*it)->getEnergy();
 

@@ -12,7 +12,7 @@ namespace caloobject
   class CaloHit
   {
   public:
-    CaloHit(int* cellID, CLHEP::Hep3Vector vec, float energy, int time, 
+    CaloHit(int* cellID, CLHEP::Hep3Vector vec, float energy, float time, 
 	    CLHEP::Hep3Vector posShift);
     // algorithms assume that the zero is located at the middle of the first layer.
 
@@ -28,7 +28,7 @@ namespace caloobject
     int _cellID[3];
     CLHEP::Hep3Vector _hitPosition;
     float _energy;
-    int _time;
+    float _time;
   };
 
 }

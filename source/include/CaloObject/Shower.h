@@ -51,6 +51,7 @@ namespace caloobject
     inline std::vector<double> &getTransverse(){return transverse;}
     inline std::vector<double> &getDistancesToAxis(){return distanceToAxis;}
     inline std::vector<double> &getClustersEnergy(){return clustersEnergy;}
+    inline std::vector<double> &getHitTimes(){return hitTimes;}
     
   protected:
     std::vector<caloobject::CaloHit*> hits;
@@ -60,6 +61,7 @@ namespace caloobject
     float energy;
     float edep;
     std::vector<double> edepPerCell;
+    std::vector<double> hitTimes;
     int nlayer;
     //shower thrust ; x = thrust[0] + thrust[1]*z ; y = thrust[2] + thrust[3]*z ; 
     std::vector<float> thrust;
