@@ -27,7 +27,6 @@ namespace algorithm
     int maximumNumberOfCoreNeighboursForMip;
     float transversalDistance;
     int isolationDistance;
-    float padSize;
     bool printDebug;
     bool useAnalogEnergy;
     float maxEnergy;
@@ -39,7 +38,6 @@ namespace algorithm
       maximumNumberOfCoreNeighboursForMip(0),
       transversalDistance(50.0),
       isolationDistance(2),
-      padSize(10.408),
       printDebug(false),
       useAnalogEnergy(false),
       maxEnergy(0.001) // 1 MeV (MIP arround 85 keV)
