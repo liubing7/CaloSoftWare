@@ -135,14 +135,14 @@ namespace algorithm
       shower->longitudinal.at( (*it)->getCellID()[2] ) +=(*it)->getEnergy();
 
       CLHEP::Hep3Vector vec(shower->thrust[0]+shower->thrust[1]*(*it)->getPosition().z(),
-			    shower->thrust[2]+shower->thrust[3]*(*it)->getPosition().z(),
-			    (*it)->getPosition().z());
+       			    shower->thrust[2]+shower->thrust[3]*(*it)->getPosition().z(),
+       			    (*it)->getPosition().z());
       shower->distanceToAxis.push_back( dist.getDistance( (*it),vec ) );
       int ring=(int)(dist.getDistance( (*it),vec )/settings.geometry.pixelSize );
-      if( ring>(int)(settings.maximumRadius/settings.geometry.pixelSize) )
-	continue;
+      if( ring>(int)(settings.maximumRadius/settings.geometry.pixelSize) || ring<0 )
+       	continue;
       else
-	shower->transverse.at(ring)+=(*it)->getEnergy();
+       	shower->transverse.at(ring)+=(*it)->getEnergy();
     }
   }
 }

@@ -65,7 +65,7 @@ namespace algorithm
 	if(u.mag()>0)
 	  return ((B-H).cross(u)).mag()/u.mag();
 	else{
-	  std::cout << "ORIENTATION VECTOR u IS NULL => should return exception (hit and track)" << std::endl;
+	  std::cout << "ORIENTATION VECTOR u IS NULL => return -10 ( float getDistance(S* s,caloobject::CaloTrack *t) )" << std::endl;
 	  return -10;
 	}
       }
@@ -105,7 +105,7 @@ namespace algorithm
 	if(u.mag()>0)
 	  return ((B-s).cross(u)).mag()/u.mag();
 	else{
-	  std::cout << "ORIENTATION VECTOR u IS NULL => should return exception (hit and track)" << std::endl;
+	  std::cout << "ORIENTATION VECTOR u IS NULL => return -10  ( float getDistance(S s,float* trackParams) ) " << std::endl;
 	  return -10;
 	}
       }
