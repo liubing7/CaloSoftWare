@@ -87,5 +87,18 @@ namespace caloobject
     std::vector<double> clustersEnergy;
   };
 
+  class SDHCALShower : public Shower
+  {
+    friend class algorithm::ShowerAnalyser;
+  public :
+    SDHCALShower( std::vector<caloobject::CaloCluster2D*> &vec );
+    ~SDHCALShower(){;}
+    int *getSDNHits(){return sdnhit;}
+    int getNHitsAtMax(){return nhitAtMax;}
+  protected :
+    int sdnhit[3];
+    int nhitAtMax;
+  };
+
 }
 #endif

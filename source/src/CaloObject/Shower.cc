@@ -36,4 +36,13 @@ namespace caloobject
     transverseRatio = 0.0;
     firstIntCluster=NULL;
   }
+
+  SDHCALShower::SDHCALShower(std::vector<caloobject::CaloCluster2D*> &vec) : Shower(vec)
+  {
+    sdnhit[0] = 0;
+    sdnhit[1] = 0;
+    sdnhit[2] = 0;
+    nhitAtMax = 0;
+  }
+
 }
