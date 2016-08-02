@@ -73,7 +73,7 @@ namespace algorithm{
 	std::vector< HoughBin >::iterator jt;
 	for( jt=outputBins.begin(); jt!=outputBins.end(); ++jt ){
 	  if( (*it)->thetas.at(theta)==(*jt).theta &&
-	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize ){
+	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize + settings.geometry.pixelSize/10.0 ){
 	    (*jt).houghObjects.push_back(*it);
 	    break;
 	  }
@@ -107,7 +107,7 @@ namespace algorithm{
 	std::vector< HoughBin >::iterator jt;
 	for( jt=outputBins.begin(); jt!=outputBins.end(); ++jt ){
 	  if( (*it)->thetas.at(theta)==(*jt).theta &&
-	      fabs( (*it)->rhoYVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize ){
+	      fabs( (*it)->rhoYVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize + settings.geometry.pixelSize/10.0 ){
 	    (*jt).houghObjects.push_back(*it);
 	    break;
 	  }
