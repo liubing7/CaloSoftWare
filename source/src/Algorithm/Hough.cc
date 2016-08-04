@@ -15,10 +15,10 @@ namespace algorithm{
       if( settings.printDebug )	std::cout << (*it)->getPosition() << std::endl;
       for( unsigned int theta=0; theta<settings.thetaSteps; theta++ ){
 	obj->thetas.push_back(theta);
-	obj->rhoXVec.push_back( (*it)->getPosition().z()*std::cos(-PI/2+theta*PI/settings.thetaSteps) + 
-				(*it)->getPosition().x()*std::sin(-PI/2+theta*PI/settings.thetaSteps) ) ;
-	obj->rhoYVec.push_back( (*it)->getPosition().z()*std::cos(-PI/2+theta*PI/settings.thetaSteps) + 
-				(*it)->getPosition().y()*std::sin(-PI/2+theta*PI/settings.thetaSteps) );
+	obj->rhoXVec.push_back( (*it)->getPosition().z()*std::cos(theta*PI/settings.thetaSteps) + 
+				(*it)->getPosition().x()*std::sin(theta*PI/settings.thetaSteps) ) ;
+	obj->rhoYVec.push_back( (*it)->getPosition().z()*std::cos(theta*PI/settings.thetaSteps) + 
+				(*it)->getPosition().y()*std::sin(theta*PI/settings.thetaSteps) );
       }
       houghObjects.push_back(obj);
     }
@@ -26,7 +26,6 @@ namespace algorithm{
 
   void Hough::selectNonDensePart( std::vector<caloobject::CaloCluster2D*> &clusters, std::vector<caloobject::CaloCluster2D*> &mipCandidate )
   {
-    int count=0;
     Distance<caloobject::CaloCluster2D,caloobject::CaloCluster2D> dist;
     for( std::vector<caloobject::CaloCluster2D*>::iterator it=clusters.begin(); it!=clusters.end(); ++it ){
       if( settings.useAnalogEnergy==false ){
@@ -42,7 +41,6 @@ namespace algorithm{
 	// use it for hgcal like detector
 	if( (*it)->getEnergy() > settings.maxEnergy )
 	  continue;
-	count++;
       }
       int nNeighbours=0;
       int nCoreNeighbours=0;
@@ -73,7 +71,7 @@ namespace algorithm{
 	std::vector< HoughBin >::iterator jt;
 	for( jt=outputBins.begin(); jt!=outputBins.end(); ++jt ){
 	  if( (*it)->thetas.at(theta)==(*jt).theta &&
-	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize + settings.geometry.pixelSize/10.0 ){
+	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize ){
 	    (*jt).houghObjects.push_back(*it);
 	    break;
 	  }
