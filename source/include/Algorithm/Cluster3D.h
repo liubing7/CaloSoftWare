@@ -13,10 +13,12 @@ namespace algorithm
   struct cluster3DParameterSetting{
     int maxLongitudinal;
     float maxTransverseDistance;
+    bool useEnergyToWeightPosition;
     bool printDebug;
     caloobject::GeomParameterSetting geometry;
   cluster3DParameterSetting() : maxLongitudinal(3) ,
       maxTransverseDistance(30.0),
+      useEnergyToWeightPosition(false),
       printDebug(false)
     {;}
   };

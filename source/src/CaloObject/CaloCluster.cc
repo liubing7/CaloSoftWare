@@ -3,25 +3,27 @@
 namespace caloobject
 {
 
-  CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec) : hits(vec), energy(0.0)  
+  CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight) : hits(vec), energy(0.0)  
   {
     for(std::vector<caloobject::CaloHit*>::iterator it=hits.begin(); it!=hits.end(); ++it){
-      clusterPosition+=(*it)->getPosition();
+      if( useWeight ) clusterPosition+=(*it)->getPosition()*(*it)->getEnergy();
+      else clusterPosition+=(*it)->getPosition();
       energy+=(*it)->getEnergy();
     }
-    clusterPosition/=hits.size();
+    if( useWeight ) clusterPosition/=(hits.size()*energy);
+    else clusterPosition/=hits.size();
   }
   
   /**********************/
 
-  CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec) : CaloCluster(vec)
+  CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWeight) : CaloCluster(vec,useWeight)
   {
     layerID=hits.at(0)->getCellID()[2];
   }
 
   /**********************/
 
-  CaloCluster3D::CaloCluster3D(std::vector<caloobject::CaloHit*> &vec) : CaloCluster(vec)
+  CaloCluster3D::CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight) : CaloCluster(vec,useWeight)
   {
     std::map<int,int> counter;
     for( std::vector<caloobject::CaloHit*>::iterator it=hits.begin(); it!=hits.end(); ++it ){

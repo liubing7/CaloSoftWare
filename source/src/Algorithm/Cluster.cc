@@ -10,7 +10,7 @@ namespace algorithm
       _clusterHitList.push_back(*it);
       temp.push_back(*it);
       BuildCluster(temp,hits,(*it));
-      caloobject::CaloCluster2D* calocluster=new caloobject::CaloCluster2D(_clusterHitList);
+      caloobject::CaloCluster2D* calocluster=new caloobject::CaloCluster2D(_clusterHitList, settings.useEnergyToWeightPosition );
       outClusterVec.push_back(calocluster);
       _clusterHitList.clear();
     }

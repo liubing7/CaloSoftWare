@@ -28,7 +28,7 @@ namespace algorithm
       _clusterHitList.push_back(*it);
       temp.push_back(*it);
       BuildCluster(temp,hits,(*it),seed,direction);
-      caloobject::CaloCluster3D* calocluster=new caloobject::CaloCluster3D(_clusterHitList);
+      caloobject::CaloCluster3D* calocluster=new caloobject::CaloCluster3D(_clusterHitList, settings.useEnergyToWeightPosition );
       outClusterVec.push_back(calocluster);
       //calocluster->printInfo();
       _clusterHitList.clear();

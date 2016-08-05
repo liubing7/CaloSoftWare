@@ -15,11 +15,13 @@ namespace algorithm
     bool useDistanceInsteadCellID;
     float maxLongitudinalDistance;
     float maxTransversalDistance;
+    bool useEnergyToWeightPosition;
   clusterParameterSetting() : maxLongitudinal(0) ,
                               maxTransversal(1) ,
                               useDistanceInsteadCellID(false),
                               maxLongitudinalDistance(0.0),
-                              maxTransversalDistance(11.0){;}
+                              maxTransversalDistance(11.0),
+                              useEnergyToWeightPosition(false){;}
   };
 
   class Cluster

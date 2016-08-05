@@ -14,7 +14,7 @@ namespace caloobject
   class CaloCluster
   {
   public:
-    CaloCluster(std::vector<caloobject::CaloHit*> &vec);
+    CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight=0);
     ~CaloCluster(){hits.clear();}
 
     inline std::vector<caloobject::CaloHit*> &getHits() {return hits;}
@@ -29,7 +29,7 @@ namespace caloobject
   class CaloCluster2D : public CaloCluster
   {
   public:
-    CaloCluster2D(std::vector<caloobject::CaloHit*> &vec);
+    CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWeight=0);
     ~CaloCluster2D(){;}
     inline int getLayerID() const {return layerID;}
 
@@ -40,7 +40,7 @@ namespace caloobject
   class CaloCluster3D : public CaloCluster
   {
   public:
-    CaloCluster3D(std::vector<caloobject::CaloHit*> &vec);
+    CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight=0);
     ~CaloCluster3D();
     inline std::map< int, CLHEP::Hep3Vector > getBarycenter() const {return barycenter;}
     void printInfo();
