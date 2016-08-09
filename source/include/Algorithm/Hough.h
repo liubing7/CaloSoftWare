@@ -26,6 +26,7 @@ namespace algorithm
     int maximumNumberOfNeighboursForMip;
     int maximumNumberOfCoreNeighboursForMip;
     float transversalDistance;
+    float rhoTolerance;
     int isolationDistance;
     bool printDebug;
     bool useAnalogEnergy;
@@ -37,6 +38,7 @@ namespace algorithm
       maximumNumberOfNeighboursForMip(2),
       maximumNumberOfCoreNeighboursForMip(0),
       transversalDistance(50.0),
+      rhoTolerance(0.1), // 10% (of the pixel size) tolerance for rho to be in the same (theta,rho) HoughBin
       isolationDistance(2),
       printDebug(false),
       useAnalogEnergy(false),

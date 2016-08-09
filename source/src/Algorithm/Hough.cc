@@ -71,7 +71,7 @@ namespace algorithm{
 	std::vector< HoughBin >::iterator jt;
 	for( jt=outputBins.begin(); jt!=outputBins.end(); ++jt ){
 	  if( (*it)->thetas.at(theta)==(*jt).theta &&
-	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize ){
+	      fabs( (*it)->rhoXVec.at(theta)-(*jt).rho ) < settings.geometry.pixelSize + settings.geometry.pixelSize*settings.rhoTolerance ){
 	    (*jt).houghObjects.push_back(*it);
 	    break;
 	  }
