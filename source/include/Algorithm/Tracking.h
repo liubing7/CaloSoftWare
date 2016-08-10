@@ -21,12 +21,14 @@ namespace algorithm
     float cosThetaLimit;
     float maxDistance;
     int maxDiffBetweenLayer;
+    int minNumberOfFiredLayers;
     bool printDebug;
   TrackingParameterSetting() : maxTransverseRatio(0.05) , 
                                chiSquareLimit(100),
                                cosThetaLimit(0.0),
                                maxDistance(15.0),
                                maxDiffBetweenLayer(2),
+                               minNumberOfFiredLayers(6),
                                printDebug(false)
                                {;}
   };

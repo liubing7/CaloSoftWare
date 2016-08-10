@@ -1,5 +1,5 @@
 #include "Algorithm/Tracking.h"
-
+#include "set"
 namespace algorithm
 {
   void Tracking::Run(std::vector<caloobject::CaloCluster2D*> &vec,
@@ -13,13 +13,17 @@ namespace algorithm
     std::vector<double> z;
     std::vector<CLHEP::Hep3Vector> clusterPos;
     std::vector<int> clusterSize;
+    std::set<int> nLayerSet;
     for(std::vector<caloobject::CaloCluster2D*>::iterator it=vec.begin(); it!=vec.end(); ++it){
       clusterPos.push_back( (*it)->getPosition() );
       clusterSize.push_back( (*it)->getHits().size() );
       x.push_back( (*it)->getPosition().x() );
       y.push_back( (*it)->getPosition().y() );
       z.push_back( (*it)->getPosition().z() );
+      nLayerSet.insert( (*it)->getLayerID() );
     }
+    if( nLayerSet.size() < settings.minNumberOfFiredLayers )
+      return;
     std::vector< std::vector<double> > pcaVec;
     pcaVec.push_back(x);
     pcaVec.push_back(y);
