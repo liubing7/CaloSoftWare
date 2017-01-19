@@ -18,6 +18,9 @@ ADD_DEFINITIONS( "-Wno-long-long" )
 INCLUDE_DIRECTORIES( ./include )
 INSTALL_DIRECTORY( ./include DESTINATION . FILES_MATCHING PATTERN "*.h" )
 
+FILE(GLOB_RECURSE toto "include/*.h")
+add_custom_target(headers SOURCES ${toto})
+
 # add library
 AUX_SOURCE_DIRECTORY( ./src/CaloObject library_sources )
 AUX_SOURCE_DIRECTORY( ./src/Algorithm library_sources )

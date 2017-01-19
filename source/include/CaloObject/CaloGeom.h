@@ -30,7 +30,7 @@ namespace caloobject
       xmax(500.0) ,
       ymin(-500.0) ,
       ymax(500.0) ,
-      pixelSize(10.406) ,
+	  pixelSize(10.408) ,
       layerGap(26.131) ,
       firstLayerZ(10.0),
       firstSectionLastLayer(10),

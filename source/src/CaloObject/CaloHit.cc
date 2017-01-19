@@ -3,7 +3,6 @@
 namespace caloobject
 {
 
-
   CaloHit::CaloHit(int* cellID, CLHEP::Hep3Vector vec, float energy, float time, CLHEP::Hep3Vector posShift)
   {
     for(int i=0; i<3; i++)

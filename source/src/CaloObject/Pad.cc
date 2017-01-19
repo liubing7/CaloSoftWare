@@ -50,8 +50,28 @@ double Pad::getMultiplicity() const
 
 double Pad::getMultiplicityError() const
 {
+	//	if ( nDetected.at(0) )
+	//	{
+	//		double rmsLike = multiSum*multiSum*(1 - 1.0/nDetected.at(0) )/nDetected.at(0) ;
+	//		return std::sqrt( rmsLike/nDetected.at(0) ) ;
+	//	}
+	//	else
+	//		return 0.0 ;
+
+
+	if ( !nDetected.at(0) )
+		return 0.0 ;
+
 	double var = multiSquareSum/nDetected.at(0) - (multiSum/nDetected.at(0))*(multiSum/nDetected.at(0)) ;
-	double error = sqrt(var/nDetected.at(0)) ;
+
+	if ( var < std::numeric_limits<double>::epsilon() )
+		var = 1.0/( std::sqrt(12*nDetected.at(0)) ) ;
+
+	double error ;
+	if ( nDetected.at(0) < 2 )
+		error = multiSum/nDetected.at(0) ;
+	else
+		error = sqrt( var/(nDetected.at(0)-1.0) ) ;
 	return error ;
 }
 
@@ -81,7 +101,7 @@ SDHCALPad::~SDHCALPad()
 
 void SDHCALPad::update(CaloCluster2D* cluster)
 {
-	//	std::cout << "Pad : " << id << " , pos : " << position << std::endl ;
+	// std::cout << "Pad : " << id << " , pos : " << position << std::endl ;
 
 	nTracks++ ;
 

@@ -7,46 +7,47 @@
 
 namespace algorithm
 {
-  struct ClusteringHelperParameterSetting{
-    float longitudinalDistance;
-    float transversalDistance;
-  ClusteringHelperParameterSetting() : longitudinalDistance(100) , 
-                                       transversalDistance(200) 
-                                       {;}
-  };
 
-  class ClusteringHelper
-  {
-  public:
-    ClusteringHelper(){;}
-    ~ClusteringHelper(){;}
-    inline void SetClusteringHelperParameterSetting(ClusteringHelperParameterSetting params){settings=params;}
-    static bool SortClusterByLayer(caloobject::CaloCluster2D* a, caloobject::CaloCluster2D* b){return a->getPosition().z() < b->getPosition().z();}
-    inline bool IsIsolatedCluster(caloobject::CaloCluster2D* cl, std::vector<caloobject::CaloCluster2D*>& list)
-    {
-      for(std::vector<caloobject::CaloCluster2D*>::iterator it=list.begin(); it!=list.end(); ++it){
-	if( cl==(*it) ) continue;
-	if( fabs(cl->getPosition().z()-(*it)->getPosition().z())<settings.longitudinalDistance &&
-	    fabs(cl->getPosition().y()-(*it)->getPosition().y())<settings.transversalDistance &&
-	    fabs(cl->getPosition().x()-(*it)->getPosition().x())<settings.transversalDistance ){
-	  return false;
-	}
-      }
-      return true;
-    }
-    ClusteringHelperParameterSetting settings;
+struct ClusteringHelperParameterSetting{
+		float longitudinalDistance;
+		float transversalDistance;
+		ClusteringHelperParameterSetting() : longitudinalDistance(100) ,
+			transversalDistance(200)
+		{;}
+};
 
-  };
+class ClusteringHelper
+{
+	public:
+		ClusteringHelper(){;}
+		~ClusteringHelper(){;}
+		inline void SetClusteringHelperParameterSetting(ClusteringHelperParameterSetting params){settings=params;}
+		static bool SortClusterByLayer(caloobject::CaloCluster2D* a, caloobject::CaloCluster2D* b){return a->getPosition().z() < b->getPosition().z();}
+		inline bool IsIsolatedCluster(caloobject::CaloCluster2D* cl, std::vector<caloobject::CaloCluster2D*>& list)
+		{
+			for(std::vector<caloobject::CaloCluster2D*>::iterator it=list.begin(); it!=list.end(); ++it){
+				if( cl==(*it) ) continue;
+				if( fabs(cl->getPosition().z()-(*it)->getPosition().z())<settings.longitudinalDistance &&
+					fabs(cl->getPosition().y()-(*it)->getPosition().y())<settings.transversalDistance &&
+					fabs(cl->getPosition().x()-(*it)->getPosition().x())<settings.transversalDistance ){
+					return false;
+				}
+			}
+			return true;
+		}
+		ClusteringHelperParameterSetting settings;
 
-  template <typename T, typename S>
-    class SortClusterBySize
-  {
-  public : 
-    SortClusterBySize(){;}
-    ~SortClusterBySize(){;}
-    
-    static bool sort(T* t, S* s){ return t->getHits().size() < s->getHits().size(); }
-  };
+};
+
+template <typename T, typename S>
+class SortClusterBySize
+{
+	public :
+		SortClusterBySize(){;}
+		~SortClusterBySize(){;}
+
+		static bool sort(T* t, S* s){ return t->getHits().size() < s->getHits().size(); }
+};
 
 
 }

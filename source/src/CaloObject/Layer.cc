@@ -34,7 +34,6 @@ std::vector<double> Layer::getEfficienciesError() const
 		else
 			eff = static_cast<double>( nDetected.at(i) )/nTracks ;
 
-
 		effErr = sqrt( eff*(1-eff)/nTracks ) ;
 		toReturn.push_back(effErr) ;
 	}
@@ -51,8 +50,28 @@ double Layer::getMultiplicity() const
 
 double Layer::getMultiplicityError() const
 {
+	//	if ( nDetected.at(0) )
+	//	{
+	//		double rmsLike = multiSum*multiSum*(1 - 1.0/nDetected.at(0) )/nDetected.at(0) ;
+	//		return std::sqrt( rmsLike/nDetected.at(0) ) ;
+	//	}
+	//	else
+	//		return 0.0 ;
+
+
+	if ( !nDetected.at(0) )
+		return 0.0 ;
+
 	double var = multiSquareSum/nDetected.at(0) - (multiSum/nDetected.at(0))*(multiSum/nDetected.at(0)) ;
-	double error = sqrt(var/nDetected.at(0)) ;
+
+	if ( var < std::numeric_limits<double>::epsilon() )
+		var = 1.0/( std::sqrt(12*nDetected.at(0)) ) ;
+
+	double error ;
+	if ( nDetected.at(0) < 2 )
+		error = multiSum/nDetected.at(0) ;
+	else
+		error = sqrt( var/(nDetected.at(0)-1.0) ) ;
 	return error ;
 }
 
@@ -105,8 +124,6 @@ void SDHCALLayer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* clu
 
 	if (cluster)
 	{
-		asic->update(impactPos , cluster) ;
-
 		nDetected.at(0)++ ;
 
 		int maxThr = 0 ;
