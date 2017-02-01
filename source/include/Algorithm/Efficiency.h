@@ -28,27 +28,11 @@ struct EfficiencyParameterSetting
 		{;}
 } ;
 
-
 class Efficiency
 {
 	public :
-		Efficiency(){;}
-		~Efficiency(){;}
-
-		inline void SetEfficiencyParameterSetting(EfficiencyParameterSetting params) { settings = params ; }
-		inline CLHEP::Hep3Vector &getExpectedPosition() { return expectedPos ; }
-		void Run(caloobject::CaloLayer *layer, std::vector<caloobject::CaloCluster2D*> &clusters) ;
-
-	protected :
-		EfficiencyParameterSetting settings ;
-		CLHEP::Hep3Vector expectedPos ;
-} ;
-
-class Efficiency2
-{
-	public :
-		Efficiency2() ;
-		~Efficiency2() ;
+		Efficiency() ;
+		~Efficiency() ;
 
 		inline void SetEfficiencyParameterSetting(EfficiencyParameterSetting params) { settings = params ; }
 		inline CLHEP::Hep3Vector &getExpectedPosition() { return expectedPos ; }

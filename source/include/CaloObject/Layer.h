@@ -17,6 +17,8 @@ class Layer
 
 		void setPosition(CLHEP::Hep3Vector pos) { position = pos ; }
 
+		void setThresholds(const std::vector<double>& thr) ;
+
 		int getNTrack() const { return nTracks ; }
 		double getEfficiency() const { return efficiencies.at(0) ; }
 		virtual const std::vector<double>& getEfficiencies() const { return efficiencies ; }
@@ -33,11 +35,14 @@ class Layer
 		inline const AsicMap& getAsics() const { return asics ; }
 
 
-		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) = 0 ;
+		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
 
 		virtual void buildAsics() = 0 ;
 
+		void reset() ;
 	protected :
+
+
 
 		virtual void updateEfficiencies() ;
 
@@ -46,6 +51,8 @@ class Layer
 
 		double multiSum ;
 		double multiSquareSum ;
+
+		std::vector<double> thresholds ;
 
 		std::vector<double> efficiencies ;
 
@@ -63,7 +70,7 @@ class SDHCALLayer : public Layer
 		SDHCALLayer(int _id , int difL , int difC , int difR) ;
 		virtual ~SDHCALLayer() { ; }
 
-		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
+//		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
 
 
 		static const int asicTab[12][4] ;

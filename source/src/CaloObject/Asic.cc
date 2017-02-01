@@ -19,6 +19,34 @@ Asic::Asic(int _id , int _difID)
 Asic::~Asic()
 {}
 
+void Asic::reset()
+{
+	nTracks = 0 ;
+	nDetected.clear() ;
+	multiSum = 0.0 ;
+	multiSquareSum = 0.0 ;
+
+	thresholds.clear() ;
+	efficiencies.clear() ;
+
+	for ( PadMap::const_iterator it = pads.begin() ; it != pads.end() ; ++it )
+		it->second->reset() ;
+
+}
+
+void Asic::setThresholds(const std::vector<double>& thr)
+{
+	reset() ;
+
+	thresholds = thr ;
+
+	nDetected = std::vector<int>(thresholds.size() , 0) ;
+	efficiencies = std::vector<double>(thresholds.size() , 0.0) ;
+
+	for ( PadMap::const_iterator it = pads.begin() ; it != pads.end() ; ++it )
+		it->second->setThresholds(thresholds) ;
+}
+
 std::vector<double> Asic::getEfficienciesError() const
 {
 	std::vector<double> toReturn ;
@@ -51,15 +79,6 @@ double Asic::getMultiplicity() const
 
 double Asic::getMultiplicityError() const
 {
-	//	if ( nDetected.at(0) )
-	//	{
-	//		double rmsLike = multiSum*multiSum*(1 - 1.0/nDetected.at(0) )/nDetected.at(0) ;
-	//		return std::sqrt( rmsLike/nDetected.at(0) ) ;
-	//	}
-	//	else
-	//		return 0.0 ;
-
-
 	if ( !nDetected.at(0) )
 		return 0.0 ;
 
@@ -76,6 +95,31 @@ double Asic::getMultiplicityError() const
 	return error ;
 }
 
+void Asic::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
+{
+	nTracks++ ;
+
+	Pad* pad = findPad(impactPos) ;
+	pad->update(cluster) ;
+
+	if (cluster)
+	{
+		for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
+		{
+			if ( cluster->getMaxEnergy() > thresholds.at(i) )
+				nDetected.at(i)++ ;
+		}
+
+		if ( cluster->getMaxEnergy() > thresholds.at(0) )
+		{
+			multiSum += cluster->getHits().size() ;
+			multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
+		}
+	}
+
+	updateEfficiencies() ;
+}
+
 void Asic::updateEfficiencies()
 {
 	for ( unsigned int i = 0 ; i < efficiencies.size() ; ++i )
@@ -85,10 +129,6 @@ void Asic::updateEfficiencies()
 SDHCALAsic::SDHCALAsic(int _id, int _difID)
 	: Asic(_id , _difID)
 {
-	nDetected.push_back(0) ; //thr2
-	nDetected.push_back(0) ; //thr3
-	efficiencies.push_back(0.0) ; //thr2
-	efficiencies.push_back(0.0) ; //thr3
 }
 
 void SDHCALAsic::buildPads()
@@ -103,39 +143,6 @@ void SDHCALAsic::buildPads()
 	}
 }
 
-void SDHCALAsic::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
-{
-	//	std::cout << "Dif : " << difID << std::endl ;
-	//	std::cout << "Asic : " << id << " , pos : " << position << std::endl ;
-
-	nTracks++ ;
-
-	Pad* pad = findPad(impactPos) ;
-	pad->update(cluster) ;
-
-	if (cluster)
-	{
-		nDetected.at(0)++ ;
-
-		int maxThr = 0 ;
-		HitVec hits = cluster->getHits() ;
-		for ( HitVec::const_iterator it = hits.begin() ; it != hits.end() ; ++it )
-		{
-			if ( (*it)->getEnergy() > maxThr )
-				maxThr = static_cast<int>( (*it)->getEnergy() ) ;
-		}
-
-		if ( maxThr >=2 )
-			nDetected.at(1)++ ;
-		if ( maxThr >= 3 )
-			nDetected.at(2)++ ;
-
-		multiSum += cluster->getHits().size() ;
-		multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
-	}
-
-	updateEfficiencies() ;
-}
 
 Pad* SDHCALAsic::findPad(const CLHEP::Hep3Vector& pos) const
 {
@@ -156,47 +163,6 @@ Pad* SDHCALAsic::findPad(const CLHEP::Hep3Vector& pos) const
 
 	return it->second ;
 }
-
-//void SDHCALAsic::updateEfficiencies()
-//{
-//	efficiencies.at(0) = nDetected/nTracks ;
-//	efficiencies.at(1) = nDetected2/nTracks ;
-//	efficiencies.at(2) = nDetected3/nTracks ;
-//}
-
-//std::vector<double> SDHCALAsic::getEfficienciesError() const
-//{
-//	std::vector<double> toReturn ;
-
-//	for ( unsigned int i = 0 ; i < efficiencies.size() ; ++i )
-//	{
-//		double eff , effErr ;
-
-//		if ( efficiencies.at(i) == ntrack )
-//		{
-//			eff = 1.0 ;
-//			double falseEff = (ntrack-1.0)/ntrack ;
-//			effErr = std::sqrt(falseEff*(1-falseEff)/ntrack) ;
-//		}
-//		else if ( efficiencies.at(i) == 0 )
-//		{
-//			eff = 0.0 ;
-//			double falseEff = 1.0/ntrack ;
-//			effErr = std::sqrt(falseEff*(1-falseEff)/ntrack) ;
-//		}
-//		else
-//		{
-//			eff = static_cast<double>( efficiencies.at(i) )/ntrack ;
-//			effErr = sqrt( eff*(1-eff)/ntrack ) ;
-//		}
-
-//		toReturn.push_back(effErr) ;
-//	}
-
-//	return toReturn ;
-//}
-
-
 
 const int SDHCALAsic::padTab[8][8] =
 {
@@ -229,77 +195,5 @@ const int SDHCALAsic::jPadTab[64] =
 	2, 0, 0, 1, 1, 2, 2, 3, 3, 4,
 	4, 5, 5, 6
 } ;
-
-
-
-/*
-
-SDHCAL_AsicCustom::SDHCAL_AsicCustom(int theKey) : Asic(theKey)
-{
-	positions=CLHEP::Hep3Vector( theKey%1000%12 ,
-								 theKey%1000/12 ,
-								 theKey/1000 ) ;
-}
-
-void SDHCAL_AsicCustom::Update(caloobject::CaloLayer* layer)
-{
-	ntrack++ ;
-	efficiency += layer->getEfficiency() ;
-	multi += layer->getMultiplicity() ;
-	multisq += layer->getMultiplicity()*layer->getMultiplicity() ;
-	rms_multi = multi*multi ;
-
-	double energy = layer->getEfficiencyEnergy() ;
-
-	for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
-	{
-		if ( energy >= thresholds.at(i) )
-			efficiencies.at(i)++ ;
-	}
-}
-
-std::vector<double> SDHCAL_AsicCustom::getEfficiencies() const
-{
-	std::vector<double> toReturn ;
-
-	for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
-		toReturn.push_back( static_cast<double>( efficiencies.at(i) )/ntrack ) ;
-
-	return toReturn ;
-}
-
-std::vector<double> SDHCAL_AsicCustom::getEfficienciesError() const
-{
-	std::vector<double> toReturn ;
-
-	for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
-	{
-		double eff , effErr ;
-
-		if ( efficiencies.at(i) == ntrack )
-		{
-			eff = 1.0 ;
-			double falseEff = (ntrack-1.0)/ntrack ;
-			effErr = std::sqrt(falseEff*(1-falseEff)/ntrack) ;
-		}
-		else if ( efficiencies.at(i) == 0 )
-		{
-			eff = 0.0 ;
-			double falseEff = 1.0/ntrack ;
-			effErr = std::sqrt(falseEff*(1-falseEff)/ntrack) ;
-		}
-		else
-		{
-			eff = static_cast<double>( efficiencies.at(i) )/ntrack ;
-			effErr = sqrt( eff*(1-eff)/ntrack ) ;
-		}
-
-		toReturn.push_back(effErr) ;
-	}
-
-	return toReturn ;
-}
-
-*/
 
 } //namespace caloobject

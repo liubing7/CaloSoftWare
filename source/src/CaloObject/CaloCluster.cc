@@ -5,13 +5,25 @@ namespace caloobject
 
 CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight) : hits(vec), energy(0.0)
 {
-	for(std::vector<caloobject::CaloHit*>::iterator it=hits.begin(); it!=hits.end(); ++it){
-		if( useWeight ) clusterPosition+=(*it)->getPosition()*(*it)->getEnergy();
-		else clusterPosition+=(*it)->getPosition();
+	maxEnergy = 0.0 ;
+	for(std::vector<caloobject::CaloHit*>::iterator it=hits.begin(); it!=hits.end(); ++it)
+	{
+		if( useWeight )
+			clusterPosition+=(*it)->getPosition()*(*it)->getEnergy();
+		else
+			clusterPosition+=(*it)->getPosition();
+
 		energy+=(*it)->getEnergy();
+
+		if ( (*it)->getEnergy() > maxEnergy )
+			maxEnergy = (*it)->getEnergy() ;
+
 	}
-	if( useWeight ) clusterPosition/=(hits.size()*energy);
-	else clusterPosition/=hits.size();
+
+	if( useWeight )
+		clusterPosition/=(hits.size()*energy);
+	else
+		clusterPosition/=hits.size();
 }
 
 /**********************/

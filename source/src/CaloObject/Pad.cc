@@ -18,6 +18,27 @@ Pad::Pad(int _id)
 Pad::~Pad()
 {}
 
+void Pad::reset()
+{
+	nTracks = 0 ;
+	nDetected.clear() ;
+	multiSum = 0.0 ;
+	multiSquareSum = 0.0 ;
+
+	thresholds.clear() ;
+	efficiencies.clear() ;
+}
+
+void Pad::setThresholds(const std::vector<double>& thr)
+{
+	reset() ;
+
+	thresholds = thr ;
+
+	nDetected = std::vector<int>(thresholds.size() , 0) ;
+	efficiencies = std::vector<double>(thresholds.size() , 0.0) ;
+}
+
 std::vector<double> Pad::getEfficienciesError() const
 {
 	std::vector<double> toReturn ;
@@ -50,15 +71,6 @@ double Pad::getMultiplicity() const
 
 double Pad::getMultiplicityError() const
 {
-	//	if ( nDetected.at(0) )
-	//	{
-	//		double rmsLike = multiSum*multiSum*(1 - 1.0/nDetected.at(0) )/nDetected.at(0) ;
-	//		return std::sqrt( rmsLike/nDetected.at(0) ) ;
-	//	}
-	//	else
-	//		return 0.0 ;
-
-
 	if ( !nDetected.at(0) )
 		return 0.0 ;
 
@@ -89,47 +101,33 @@ void Pad::updateEfficiencies()
 SDHCALPad::SDHCALPad(int _id)
 	: Pad(_id)
 {
-	nDetected.push_back(0) ; //thr2
-	nDetected.push_back(0) ; //thr3
-	efficiencies.push_back(0.0) ; //thr2
-	efficiencies.push_back(0.0) ; //thr3
 }
 
 SDHCALPad::~SDHCALPad()
 {
 }
 
-void SDHCALPad::update(CaloCluster2D* cluster)
+void Pad::update(CaloCluster2D* cluster)
 {
-	// std::cout << "Pad : " << id << " , pos : " << position << std::endl ;
-
 	nTracks++ ;
 
 	if (cluster)
 	{
-		nDetected.at(0)++ ;
-
-		int maxThr = 0 ;
-		HitVec hits = cluster->getHits() ;
-		for ( HitVec::const_iterator it = hits.begin() ; it != hits.end() ; ++it )
+		for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
 		{
-			if ( (*it)->getEnergy() > maxThr )
-				maxThr = static_cast<int>( (*it)->getEnergy() ) ;
+			if ( cluster->getMaxEnergy() > thresholds.at(i) )
+				nDetected.at(i)++ ;
 		}
 
-		if ( maxThr >=2 )
-			nDetected.at(1)++ ;
-		if ( maxThr >= 3 )
-			nDetected.at(2)++ ;
-
-		multiSum += cluster->getHits().size() ;
-		multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
+		if ( cluster->getMaxEnergy() > thresholds.at(0) )
+		{
+			multiSum += cluster->getHits().size() ;
+			multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
+		}
 	}
 
 	updateEfficiencies() ;
 }
-
-
 
 
 

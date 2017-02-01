@@ -24,6 +24,8 @@ class Asic
 		void setLayer(caloobject::Layer* _layer) { layer = _layer ; }
 		void setPosition(CLHEP::Hep3Vector pos) { position = pos ; }
 
+		void setThresholds(const std::vector<double>& thr) ;
+
 		int getNTrack() const { return nTracks ; }
 		double getEfficiency() const { return efficiencies.at(0) ; }
 		virtual const std::vector<double>& getEfficiencies() const { return efficiencies ; }
@@ -40,12 +42,16 @@ class Asic
 		inline const CLHEP::Hep3Vector &getPosition() const { return position ; }
 		inline const PadMap& getPads() const { return pads ; }
 
-		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) = 0 ;
+		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
 
 		virtual void buildPads() = 0 ;
 
 
+		void reset() ;
+
+
 	protected :
+
 
 		virtual void updateEfficiencies() ;
 
@@ -56,6 +62,8 @@ class Asic
 
 		double multiSum ;
 		double multiSquareSum ;
+
+		std::vector<double> thresholds ;
 
 		std::vector<double> efficiencies ;
 
@@ -74,7 +82,7 @@ class SDHCALAsic : public Asic
 		SDHCALAsic(int _id , int _difID) ;
 		virtual ~SDHCALAsic() { ; }
 
-		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
+//		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
 
 
 		static const int padTab[8][8] ;

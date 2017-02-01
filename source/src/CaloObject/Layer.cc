@@ -14,10 +14,40 @@ Layer::Layer(int _id)
 	multiSquareSum = 0.0 ;
 
 	efficiencies.push_back(0.0) ;
+
+	thresholds.push_back(0.0) ;
 }
 
 Layer::~Layer()
 {}
+
+void Layer::reset()
+{
+	nTracks = 0 ;
+	nDetected.clear() ;
+	multiSum = 0.0 ;
+	multiSquareSum = 0.0 ;
+
+	thresholds.clear() ;
+	efficiencies.clear() ;
+
+	for ( AsicMap::const_iterator it = asics.begin() ; it != asics.end() ; ++it )
+		it->second->reset() ;
+
+}
+
+void Layer::setThresholds(const std::vector<double>& thr)
+{
+	reset() ;
+
+	thresholds = thr ;
+
+	nDetected = std::vector<int>(thresholds.size() , 0) ;
+	efficiencies = std::vector<double>(thresholds.size() , 0.0) ;
+
+	for ( AsicMap::const_iterator it = asics.begin() ; it != asics.end() ; ++it )
+		it->second->setThresholds(thresholds) ;
+}
 
 std::vector<double> Layer::getEfficienciesError() const
 {
@@ -50,15 +80,6 @@ double Layer::getMultiplicity() const
 
 double Layer::getMultiplicityError() const
 {
-	//	if ( nDetected.at(0) )
-	//	{
-	//		double rmsLike = multiSum*multiSum*(1 - 1.0/nDetected.at(0) )/nDetected.at(0) ;
-	//		return std::sqrt( rmsLike/nDetected.at(0) ) ;
-	//	}
-	//	else
-	//		return 0.0 ;
-
-
 	if ( !nDetected.at(0) )
 		return 0.0 ;
 
@@ -75,6 +96,34 @@ double Layer::getMultiplicityError() const
 	return error ;
 }
 
+void Layer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
+{
+	//	std::cout << "impactPos : " << impactPos << std::endl ;
+	//	std::cout << "Layer : " << id << std::endl ;
+
+	nTracks++ ;
+
+	Asic* asic = findAsic(impactPos) ;
+	asic->update(impactPos , cluster) ;
+
+	if (cluster)
+	{
+		for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
+		{
+			if ( cluster->getMaxEnergy() > thresholds.at(i) )
+				nDetected.at(i)++ ;
+		}
+
+		if ( cluster->getMaxEnergy() > thresholds.at(0) )
+		{
+			multiSum += cluster->getHits().size() ;
+			multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
+		}
+	}
+
+	updateEfficiencies() ;
+}
+
 void Layer::updateEfficiencies()
 {
 	for ( unsigned int i = 0 ; i < efficiencies.size() ; ++i )
@@ -88,11 +137,6 @@ SDHCALLayer::SDHCALLayer(int _id, int difL, int difC, int difR)
 	difID[0] = difL ;
 	difID[1] = difC ;
 	difID[2] = difR ;
-
-	nDetected.push_back(0) ; //thr2
-	nDetected.push_back(0) ; //thr3
-	efficiencies.push_back(0.0) ; //thr2
-	efficiencies.push_back(0.0) ; //thr3
 }
 
 void SDHCALLayer::buildAsics()
@@ -109,41 +153,6 @@ void SDHCALLayer::buildAsics()
 			asics.insert( std::make_pair(difID[j]*100+i , asic) ) ;
 		}
 	}
-}
-
-
-void SDHCALLayer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
-{
-	//	std::cout << "impactPos : " << impactPos << std::endl ;
-	//	std::cout << "Layer : " << id << std::endl ;
-
-	nTracks++ ;
-
-	Asic* asic = findAsic(impactPos) ;
-	asic->update(impactPos , cluster) ;
-
-	if (cluster)
-	{
-		nDetected.at(0)++ ;
-
-		int maxThr = 0 ;
-		HitVec hits = cluster->getHits() ;
-		for ( HitVec::const_iterator it = hits.begin() ; it != hits.end() ; ++it )
-		{
-			if ( (*it)->getEnergy() > maxThr )
-				maxThr = static_cast<int>( (*it)->getEnergy() ) ;
-		}
-
-		if ( maxThr >=2 )
-			nDetected.at(1)++ ;
-		if ( maxThr >= 3 )
-			nDetected.at(2)++ ;
-
-		multiSum += cluster->getHits().size() ;
-		multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
-	}
-
-	updateEfficiencies() ;
 }
 
 Asic* SDHCALLayer::findAsic(const CLHEP::Hep3Vector& pos) const

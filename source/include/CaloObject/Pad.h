@@ -23,6 +23,8 @@ class Pad
 		void setAsic(caloobject::Asic* _asic) { asic = _asic ; }
 		void setPosition(CLHEP::Hep3Vector pos) { position = pos ; }
 
+		void setThresholds(const std::vector<double>& thr) ;
+
 		int getNTrack() const { return nTracks ; }
 		double getEfficiency() const { return efficiencies.at(0) ; }
 		virtual const std::vector<double>& getEfficiencies() const { return efficiencies ; }
@@ -35,10 +37,12 @@ class Pad
 		inline const CLHEP::Hep3Vector &getPosition() const { return position ; }
 
 
-		virtual void update(CaloCluster2D* cluster = NULL) = 0 ;
+		virtual void update(CaloCluster2D* cluster = NULL) ;
 
-
+		void reset() ;
 	protected :
+
+
 
 		virtual void updateEfficiencies() ;
 
@@ -49,6 +53,8 @@ class Pad
 
 		double multiSum ;
 		double multiSquareSum ;
+
+		std::vector<double> thresholds ;
 
 		std::vector<double> efficiencies ;
 
@@ -64,7 +70,7 @@ class SDHCALPad : public Pad
 		SDHCALPad(int _id) ;
 		virtual ~SDHCALPad() ;
 
-		virtual void update(CaloCluster2D* cluster = NULL) ;
+//		virtual void update(CaloCluster2D* cluster = NULL) ;
 
 	protected :
 

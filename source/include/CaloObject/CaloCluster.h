@@ -20,10 +20,12 @@ class CaloCluster
 		inline std::vector<caloobject::CaloHit*> &getHits() {return hits;}
 		inline CLHEP::Hep3Vector getPosition() const {return clusterPosition;}
 		inline float getEnergy() const {return energy;}
+		inline float getMaxEnergy() const { return maxEnergy ; }
 	protected:
 		std::vector<caloobject::CaloHit*> hits;
 		CLHEP::Hep3Vector clusterPosition;
-		float energy;
+		float energy ;
+		float maxEnergy ;
 };
 
 class CaloCluster2D : public CaloCluster
