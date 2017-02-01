@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "CaloObject/Layer.h"
-#include "CaloObject/CaloLayer.h"
 #include "CaloObject/CaloCluster.h"
 #include "CaloObject/CaloGeom.h"
 #include "Algorithm/Tracking.h"
