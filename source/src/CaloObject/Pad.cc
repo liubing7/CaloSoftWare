@@ -115,15 +115,12 @@ void Pad::update(CaloCluster2D* cluster)
 	{
 		for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
 		{
-			if ( cluster->getMaxEnergy() > thresholds.at(i) )
+			if ( cluster->getMaxEnergy() >= thresholds.at(i) )
 				nDetected.at(i)++ ;
 		}
 
-		if ( cluster->getMaxEnergy() > thresholds.at(0) )
-		{
-			multiSum += cluster->getHits().size() ;
-			multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
-		}
+		multiSum += cluster->getHits().size() ;
+		multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
 	}
 
 	updateEfficiencies() ;
