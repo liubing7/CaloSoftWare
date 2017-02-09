@@ -5,6 +5,7 @@
 #include <cmath>
 #include <vector>
 
+#include "CaloObject/CaloTrack.h"
 #include "CaloObject/Layer.h"
 #include "CaloObject/CaloCluster.h"
 #include "CaloObject/CaloGeom.h"
@@ -39,6 +40,7 @@ class Efficiency
 
 		inline caloobject::CaloCluster2D* getGoodCluster() const { return goodCluster ; }
 		inline bool isTrack() const { return _isTrack ; }
+		inline caloobject::CaloTrack* getTrack() const { return track ; }
 
 	protected :
 		EfficiencyParameterSetting settings ;
@@ -46,6 +48,9 @@ class Efficiency
 
 		caloobject::CaloCluster2D* goodCluster ;
 		bool _isTrack ;
+		caloobject::CaloTrack* track ;
+
+
 } ;
 
 } //namespace algorithm

@@ -7,6 +7,7 @@ Efficiency::Efficiency()
 {
 	goodCluster = NULL ;
 	_isTrack = false ;
+	track = NULL ;
 }
 
 Efficiency::~Efficiency()
@@ -16,6 +17,7 @@ void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloClust
 {
 	_isTrack = false ;
 	goodCluster = NULL ;
+	track = NULL ;
 
 	std::vector<caloobject::CaloCluster2D*> clusterVec ;
 	std::vector<caloobject::CaloCluster2D*> clustersInLayer ;
@@ -29,7 +31,8 @@ void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloClust
 
 	algorithm::Tracking* algo_tracking = new algorithm::Tracking() ;
 	algo_tracking->SetTrackingParameterSetting(settings.trackingParams) ;
-	caloobject::CaloTrack* track = NULL ;
+
+//	caloobject::CaloTrack* track = NULL ;
 	algo_tracking->Run(clusterVec , track) ;
 	delete algo_tracking ;
 	if (track != NULL)
@@ -89,7 +92,7 @@ void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloClust
 				goodCluster = (*closestIt) ;
 		}
 
-		delete track ;
+//		delete track ;
 	}
 }
 
