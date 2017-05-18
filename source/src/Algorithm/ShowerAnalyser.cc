@@ -64,12 +64,12 @@ void ShowerAnalyser::Run(caloobject::Shower* shower)
 	shower->showerMax = algorithm::map_max_element(edep_layerMap)->first; //x0 unit
 	shower->edepAtMax = algorithm::map_max_element(edep_layerMap)->second;
 
-	shower->nlayer=layers.size();
+	shower->nlayer = layers.size() ;
 
-	algorithm::LinearFit3D* algo_LinearFit3D=new algorithm::LinearFit3D(hitPos,clSize);
-	shower->thrust.clear();
+	algorithm::LinearFit3D* algo_LinearFit3D = new algorithm::LinearFit3D(hitPos,clSize) ;
+	shower->thrust.clear() ;
 	for(int i=0; i<4; i++)
-		shower->thrust.push_back(algo_LinearFit3D->getFitParameters()[i]);
+		shower->thrust.push_back( algo_LinearFit3D->getFitParameters()[i] ) ;
 
 	CLHEP::Hep3Vector orientation = CLHEP::Hep3Vector(-1,0,shower->thrust[1]).cross(CLHEP::Hep3Vector(0,-1,shower->thrust[3]));
 	shower->reconstructedCosTheta = orientation.cosTheta() ;

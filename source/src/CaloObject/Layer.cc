@@ -159,8 +159,8 @@ Asic* SDHCALLayer::findAsic(const CLHEP::Hep3Vector& pos) const
 
 	//	std::cout << "posInLayer : " << posInLayer << std::endl ;
 
-	int i = static_cast<int>( posInLayer.x()/(83.264) ) ; //8*10.408 = 83.264
-	int j = static_cast<int>( posInLayer.y()/(83.264) ) ;
+	int i = static_cast<int>( posInLayer.x()/83.264 ) ; //8*10.408 = 83.264
+	int j = static_cast<int>( posInLayer.y()/83.264 ) ;
 	//	std::cout << "asici : " << i << std::endl ;
 	//	std::cout << "asicj : " << j << std::endl ;
 
