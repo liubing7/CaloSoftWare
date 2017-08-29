@@ -9,37 +9,42 @@
 #include <CaloObject/CaloGeom.h>
 #include <Algorithm/InteractionFinder.h>
 
-namespace algorithm{  
+namespace algorithm
+{
 
 struct ShowerAnalyserParameterSetting
 {
-		std::string energyCalibrationOption; //not implemented yet
-		float maximumRadius; //define the radius of the most outer ring for transverse profile
-		std::vector<float> energyCalibrationFactors;
-		algorithm::InteractionFinderParameterSetting interactionFinderParams;
-		caloobject::GeomParameterSetting geometry;
-		ShowerAnalyserParameterSetting() : energyCalibrationOption(std::string("SiWEcal")) ,
-			maximumRadius(1000.0f)
-		{
-			energyCalibrationFactors.push_back(1.0f);
-		}
-};
+		std::string energyCalibrationOption = "SiWEcal" ; //not implemented yet
+		float maximumRadius = 1000.0f ; //define the radius of the most outer ring for transverse profile
+		std::vector<float> energyCalibrationFactors ;
+		algorithm::InteractionFinderParameterSetting interactionFinderParams ;
+		caloobject::GeomParameterSetting geometry ;
+		ShowerAnalyserParameterSetting()
+			: energyCalibrationFactors( {1.0f} ) , interactionFinderParams() , geometry()
+		{}
+} ;
 
-class ShowerAnalyser {
-	public:
-		ShowerAnalyser(){;}
+class ShowerAnalyser
+{
+	public :
+		ShowerAnalyser()
+			: settings()
+		{;}
 		~ShowerAnalyser(){;}
-		void Run(caloobject::Shower *shower);
-		void Run(caloobject::SDHCALShower *shower);
+		void Run(caloobject::Shower *shower) ;
+		void Run(caloobject::SDHCALShower *shower) ;
 
-		inline void SetShowerAnalyserParameterSetting(ShowerAnalyserParameterSetting params){settings=params;}
-	private:
-		void FindEnergy(caloobject::Shower *shower);
-		void FindEnergy(caloobject::SDHCALShower *shower);
-		void SearchShowerInteraction(caloobject::Shower *shower);
-		void Profile(caloobject::Shower *shower);
-		void Profile(caloobject::SDHCALShower *shower);
-		ShowerAnalyserParameterSetting settings;
-};
-}
+		inline void SetShowerAnalyserParameterSetting(ShowerAnalyserParameterSetting params){ settings = params ; }
+
+	private :
+		void FindEnergy(caloobject::Shower *shower) ;
+		void FindEnergy(caloobject::SDHCALShower *shower) ;
+		void SearchShowerInteraction(caloobject::Shower *shower) ;
+		void Profile(caloobject::Shower *shower) ;
+		void Profile(caloobject::SDHCALShower *shower) ;
+		ShowerAnalyserParameterSetting settings ;
+} ;
+
+} //namespace algorithm
+
 #endif

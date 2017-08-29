@@ -3,16 +3,20 @@
 
 namespace algorithm
 {
+
 PCA::PCA(VectorList &vec)
+	: _eigenValues() , _eigenVectors()
 {
-	Eigen::MatrixXd mat(vec.at(0).size(),vec.size());
+	Eigen::MatrixXd mat(vec.at(0).size(),vec.size()) ;
 
 	unsigned int mat_column;
 	unsigned int mat_line;
 	double mean;
 
-	for(VectorList::iterator it=vec.begin(); it!=vec.end(); ++it){
-		if( (*it).size()!=vec.at(0).size() ){
+	for(VectorList::iterator it=vec.begin(); it!=vec.end(); ++it)
+	{
+		if( (*it).size()!=vec.at(0).size() )
+		{
 			std::cout << "ERROR IN PCA : VECTORS SHOULD HAVE THE SAME SIZE" << std::endl;
 			abort();
 		}
@@ -22,7 +26,8 @@ PCA::PCA(VectorList &vec)
 		mean/=(*it).size();
 
 		mat_column=std::distance(vec.begin(),it);
-		for(std::vector<double>::iterator jt=(*it).begin(); jt!=(*it).end(); ++jt){
+		for(std::vector<double>::iterator jt=(*it).begin(); jt!=(*it).end(); ++jt)
+		{
 			mat_line=std::distance((*it).begin(),jt);
 			mat(mat_line,mat_column)=((*jt)-mean);
 		}
@@ -33,4 +38,5 @@ PCA::PCA(VectorList &vec)
 	for(unsigned int i=0; i<eigensolver.eigenvalues().size(); i++)
 		_eigenValues.push_back(eigensolver.eigenvalues()[i]);
 }
-}
+
+}//namespace algorithm

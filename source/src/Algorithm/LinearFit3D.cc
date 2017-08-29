@@ -3,13 +3,9 @@
 namespace algorithm
 {
 
-LinearFit3D::LinearFit3D( std::vector<CLHEP::Hep3Vector> &pos , std::vector<int> &clustersSize) {
-	_chi2 = _params[0] = _params[1] = _params[2] = _params[3] = 0;
-	_paramsError[0] = _paramsError[1] = _paramsError[2] = _paramsError[3] = 0;
-	_positions = pos;
-	_clusterSize = clustersSize;
-	_params[0] = _params[1] = _params[2] = _params[3] = 0;
-
+LinearFit3D::LinearFit3D( std::vector<CLHEP::Hep3Vector>& pos , std::vector<int>& clustersSize)
+	: _positions(pos) , _clusterSize(clustersSize)
+{
 	float xsum = 0.0;
 	float ysum = 0.0;
 	float zsum = 0.0;
@@ -17,7 +13,8 @@ LinearFit3D::LinearFit3D( std::vector<CLHEP::Hep3Vector> &pos , std::vector<int>
 	float xzsum = 0.0;
 	float yzsum = 0.0;
 
-	for ( unsigned int i=0 ; i<_positions.size() ; i++ ) {
+	for ( unsigned int i=0 ; i<_positions.size() ; i++ )
+	{
 
 		//for equation 1
 		zsum = zsum + _positions.at(i).z();
@@ -58,7 +55,8 @@ void LinearFit3D::ComputeChi2()
 
 	_chi2 = 0;
 	algorithm::Distance<CLHEP::Hep3Vector,float *> dist;
-	for( unsigned int i=0 ; i<_positions.size() ; i++ ) {
+	for( unsigned int i=0 ; i<_positions.size() ; i++ )
+	{
 		float d=dist.getDistance(_positions.at(i),_params);
 		float mult = _clusterSize.at(i);
 		float err = mult/sqrt(12/100.);
@@ -66,4 +64,5 @@ void LinearFit3D::ComputeChi2()
 	}
 	_chi2=_chi2/(_positions.size()-1);
 }
-}
+
+} //namespace algorithm

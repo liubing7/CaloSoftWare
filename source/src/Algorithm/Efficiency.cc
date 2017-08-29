@@ -4,24 +4,22 @@ namespace algorithm
 {
 
 Efficiency::Efficiency()
-{
-	goodCluster = NULL ;
-	_isTrack = false ;
-	track = NULL ;
-}
+	: settings() ,
+	  expectedPos(0,0,0)
+{}
 
 Efficiency::~Efficiency()
 {}
 
-void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloCluster2D*> &clusters)
+void Efficiency::Run(caloobject::Layer* layer, std::vector<caloobject::CaloCluster2D*>& clusters)
 {
 	_isTrack = false ;
-	goodCluster = NULL ;
-	track = NULL ;
+	goodCluster = nullptr ;
+	track = nullptr ;
 
 	std::vector<caloobject::CaloCluster2D*> clusterVec ;
 	std::vector<caloobject::CaloCluster2D*> clustersInLayer ;
-	for( std::vector<caloobject::CaloCluster2D*>::iterator it=clusters.begin() ; it!=clusters.end() ; ++it )
+	for( std::vector<caloobject::CaloCluster2D*>::iterator it = clusters.begin() ; it != clusters.end() ; ++it )
 	{
 		if( (*it)->getLayerID() == layer->getID() )
 			clustersInLayer.push_back(*it) ;
@@ -35,7 +33,7 @@ void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloClust
 //	caloobject::CaloTrack* track = NULL ;
 	algo_tracking->Run(clusterVec , track) ;
 	delete algo_tracking ;
-	if (track != NULL)
+	if (track != nullptr)
 	{
 		_isTrack = true ;
 		expectedPos = CLHEP::Hep3Vector(track->getTrackParameters()[1]*layer->getPosition().z() + track->getTrackParameters()[0] ,
@@ -50,6 +48,8 @@ void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloClust
 		{
 			_isTrack = false ;
 			delete track ;
+			track = nullptr ;
+
 			if( settings.printDebug )
 				std::cout << "expected track impact outside layer " << layer->getID() << ":\t"
 						  << "expectedPos.x() = " << expectedPos.x() << "\t"
@@ -62,6 +62,7 @@ void Efficiency::Run(caloobject::Layer *layer, std::vector<caloobject::CaloClust
 			if( settings.printDebug )
 				std::cout << "find one empty layer = " << layer->getID() << std::endl ;
 			delete track ;
+			track = nullptr ;
 			return ;
 		}
 

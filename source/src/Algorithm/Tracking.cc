@@ -14,7 +14,8 @@ void Tracking::Run(std::vector<caloobject::CaloCluster2D*> &vec,
 	std::vector<CLHEP::Hep3Vector> clusterPos;
 	std::vector<int> clusterSize;
 	std::set<int> nLayerSet;
-	for(std::vector<caloobject::CaloCluster2D*>::iterator it=vec.begin(); it!=vec.end(); ++it){
+	for(std::vector<caloobject::CaloCluster2D*>::iterator it=vec.begin(); it!=vec.end(); ++it)
+	{
 		clusterPos.push_back( (*it)->getPosition() );
 		clusterSize.push_back( (*it)->getHits().size() );
 		x.push_back( (*it)->getPosition().x() );
@@ -22,16 +23,17 @@ void Tracking::Run(std::vector<caloobject::CaloCluster2D*> &vec,
 		z.push_back( (*it)->getPosition().z() );
 		nLayerSet.insert( (*it)->getLayerID() );
 	}
+
 	if( nLayerSet.size() < settings.minNumberOfFiredLayers )
-		return;
+		return ;
+
 	std::vector< std::vector<double> > pcaVec;
 	pcaVec.push_back(x);
 	pcaVec.push_back(y);
 	pcaVec.push_back(z);
 	algorithm::PCA* pca=new algorithm::PCA(pcaVec);
 	std::vector<double> eigenValues=pca->eigenValues();
-	_transverseRatio = sqrt(eigenValues.at(0)*eigenValues.at(0) +
-							eigenValues.at(1)*eigenValues.at(1)) / eigenValues.at(2);
+	_transverseRatio = sqrt(eigenValues.at(0)*eigenValues.at(0) + eigenValues.at(1)*eigenValues.at(1)) / eigenValues.at(2);
 	delete pca;
 	if( _transverseRatio > settings.maxTransverseRatio ){
 		if( settings.printDebug ) std::cout << "Tracking::Run << DEBUG : _transverseRatio = " << _transverseRatio << std::endl;

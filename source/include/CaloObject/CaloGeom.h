@@ -5,40 +5,22 @@
 
 namespace caloobject
 { 
-  
-  struct GeomParameterSetting{
-    int nLayers;
-    int nPixelsPerLayer;
-    int nPixelsX;
-    int nPixelsY;
-    float xmin;
-    float xmax;
-    float ymin;
-    float ymax;
-    float pixelSize;
-    float layerGap;
-    float firstLayerZ;
-    int firstSectionLastLayer; // assume first layer is number 0
-    int secondSectionLastLayer; // assume first layer is number 0
-    int thirdSectionLastLayer; // assume first layer is number 0
-    int fourthSectionLastLayer; // assume first layer is number 0 (start of cms HGCAL FH?)
-  GeomParameterSetting() : nLayers(48) ,
-      nPixelsPerLayer(96) ,
-      nPixelsX(96) ,
-      nPixelsY(96) ,
-      xmin(-500.0) ,
-      xmax(500.0) ,
-      ymin(-500.0) ,
-      ymax(500.0) ,
-	  pixelSize(10.408) ,
-      layerGap(26.131) ,
-      firstLayerZ(10.0),
-      firstSectionLastLayer(10),
-      secondSectionLastLayer(20),
-      thirdSectionLastLayer(30),
-      fourthSectionLastLayer(40)
-    {;}
-  };
-  
-}
+
+struct GeomParameterSetting
+{
+		int nLayers = 48 ;
+		int nPixelsPerLayer = 96 ;
+		int nPixelsX = 96 ;
+		int nPixelsY = 96 ;
+		float xmin = -500.0f ;
+		float xmax = 500.0f ;
+		float ymin = -500.0f ;
+		float ymax = 500.0f ;
+		float pixelSize = 10.408f ;
+		float layerGap = 28.131f ;
+		float firstLayerZ = 10.0f ;
+} ;
+
+}// namespace caloobject
+
 #endif

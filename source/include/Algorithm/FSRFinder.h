@@ -11,40 +11,40 @@
 namespace algorithm
 { 
 
-  struct FSRFinderParameterSetting{
-    float minTransverseRatio;
-    float minMeanEdepPerCell;
-    float minRMSEdepPerCell;
-    float minEdepPerX0;
-    float minSurroundedEdepFraction;
-    bool printDebug;
-    std::vector<float> minEnergyFraction;
-    caloobject::GeomParameterSetting geometry;
-    algorithm::cluster3DParameterSetting clustering;
-    algorithm::ShowerAnalyserParameterSetting showerAnalyser;
-  FSRFinderParameterSetting() : minTransverseRatio(0.02) ,
-      minMeanEdepPerCell(0.001),
-      minRMSEdepPerCell(0.001),
-      minEdepPerX0(0.1),
-      minSurroundedEdepFraction(0.8),
-      printDebug(false)
-    {;}
-  };
+struct FSRFinderParameterSetting
+{
+		float minTransverseRatio = 0.02f ;
+		float minMeanEdepPerCell = 0.001f ;
+		float minRMSEdepPerCell = 0.001f ;
+		float minEdepPerX0 = 0.1f ;
+		float minSurroundedEdepFraction = 0.8f ;
+		bool printDebug = false ;
+		std::vector<float> minEnergyFraction ;
+		caloobject::GeomParameterSetting geometry ;
+		algorithm::cluster3DParameterSetting clustering ;
+		algorithm::ShowerAnalyserParameterSetting showerAnalyser ;
 
-  class FSRFinder
-  {
-  public:
-    FSRFinder(){;}
-    ~FSRFinder(){;}
+		FSRFinderParameterSetting()
+			: minEnergyFraction() , geometry() , clustering() , showerAnalyser()
+		{;}
+} ;
 
-    void Run(std::vector<caloobject::CaloHit*> hits, caloobject::CaloTrack* track, caloobject::CaloCluster3D* gammaCluster);
-    inline void SetFSRFinderParameterSetting(FSRFinderParameterSetting val){settings=val;}
-    
-  private:
-    void rmTrackedHitsFromList(std::vector<caloobject::CaloHit*> &hits, caloobject::CaloTrack* track);
-    bool isGammaCluster( caloobject::CaloCluster3D* fsrCandidate );
-    FSRFinderParameterSetting settings;
-  };
+class FSRFinder
+{
+	public :
+		FSRFinder()
+			: settings()
+		{;}
+		~FSRFinder(){;}
 
-}
+		void Run(std::vector<caloobject::CaloHit*> hits, caloobject::CaloTrack* track, caloobject::CaloCluster3D* gammaCluster) ;
+		inline void SetFSRFinderParameterSetting(FSRFinderParameterSetting val) {settings = val ; }
+
+	private :
+		void rmTrackedHitsFromList(HitVec& hits, caloobject::CaloTrack* track) ;
+		bool isGammaCluster( caloobject::CaloCluster3D* fsrCandidate ) ;
+		FSRFinderParameterSetting settings ;
+} ;
+
+} //namespace algorithm
 #endif

@@ -4,15 +4,16 @@ namespace caloobject
 {
 
 Asic::Asic(int _id , int _difID)
+	: id(_id) ,
+	  difID(_difID) ,
+	  nDetected() ,
+	  thresholds() ,
+	  efficiencies() ,
+	  position() ,
+	  pads()
 {
-	id = _id ;
-	difID = _difID ;
-
-	nTracks = 0 ;
+	thresholds.push_back(0) ;
 	nDetected.push_back(0) ;
-	multiSum = 0.0 ;
-	multiSquareSum = 0.0 ;
-
 	efficiencies.push_back(0.0) ;
 }
 

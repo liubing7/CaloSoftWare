@@ -5,8 +5,10 @@ namespace algorithm
 {
 
 Density::Density()
+	: densityFunc(new DensityDistanceFunction3By3) ,
+	  densityPerHit()
 {
-	densityFunc = new DensityDistanceFunction3By3 ;
+
 }
 
 Density::~Density()

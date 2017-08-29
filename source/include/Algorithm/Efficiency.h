@@ -17,14 +17,15 @@ namespace algorithm
 
 struct EfficiencyParameterSetting
 {
-		float maxRadius ;
-		bool semiDigitalReadout ;
-		bool printDebug ;
+		float maxRadius = 25.0f ;
+		bool semiDigitalReadout = true ;
+		bool printDebug = false ;
 		caloobject::GeomParameterSetting geometry ;
 		algorithm::TrackingParameterSetting trackingParams ;
-		EfficiencyParameterSetting() : maxRadius(25.0) ,
-			semiDigitalReadout(true) ,
-			printDebug(false)
+
+		EfficiencyParameterSetting()
+			: geometry() ,
+			  trackingParams()
 		{;}
 } ;
 
@@ -42,13 +43,16 @@ class Efficiency
 		inline bool isTrack() const { return _isTrack ; }
 		inline caloobject::CaloTrack* getTrack() const { return track ; }
 
+		Efficiency(const Efficiency&) = delete ;
+		void operator=(const Efficiency&) = delete ;
+
 	protected :
 		EfficiencyParameterSetting settings ;
 		CLHEP::Hep3Vector expectedPos ;
 
-		caloobject::CaloCluster2D* goodCluster ;
-		bool _isTrack ;
-		caloobject::CaloTrack* track ;
+		caloobject::CaloCluster2D* goodCluster = nullptr ;
+		bool _isTrack = false ;
+		caloobject::CaloTrack* track = nullptr ;
 
 
 } ;

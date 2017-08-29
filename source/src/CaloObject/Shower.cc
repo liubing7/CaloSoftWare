@@ -2,48 +2,55 @@
 
 namespace caloobject
 {
-Shower::Shower(std::vector<caloobject::CaloHit*> &vec)
+
+Shower::Shower(std::vector<caloobject::CaloHit*>& vec)
+	: hits(vec) , clusters() ,
+	  edepPerCell() ,
+	  hitTimes() ,
+	  thrust() ,
+	  longitudinal() ,
+	  transverse() ,
+	  distanceToAxis() ,
+	  clustersEnergy()
 {
-	hits=vec;
-	energy = 0.0;
-	nlayer = 0;
-	reconstructedCosTheta = 0.0;
-	transverseRatio = 0.0;
-	firstIntCluster=NULL;
+
 }
 
-Shower::Shower(std::vector<caloobject::CaloCluster2D*> &vec)
+Shower::Shower(std::vector<caloobject::CaloCluster2D*>& vec)
+	: hits() , clusters(vec) ,
+	  edepPerCell() ,
+	  hitTimes() ,
+	  thrust() ,
+	  longitudinal() ,
+	  transverse() ,
+	  distanceToAxis() ,
+	  clustersEnergy()
 {
-	clusters=vec;
-	for( std::vector<caloobject::CaloCluster2D*>::iterator it=vec.begin(); it!=vec.end(); ++it )
+	for( std::vector<caloobject::CaloCluster2D*>::iterator it = vec.begin() ; it != vec.end() ; ++it )
 	{
 		clustersEnergy.push_back( (*it)->getEnergy() );
-		for( std::vector<caloobject::CaloHit*>::iterator jt=(*it)->getHits().begin(); jt!=(*it)->getHits().end(); ++jt )
-			hits.push_back(*jt);
+		for( HitVec::iterator jt = (*it)->getHits().begin() ; jt != (*it)->getHits().end() ; ++jt )
+			hits.push_back(*jt) ;
 	}
-	energy = 0.0;
-	nlayer = 0;
-	reconstructedCosTheta = 0.0;
-	transverseRatio = 0.0;
-	firstIntCluster=NULL;
+
 }
 
 Shower::Shower( caloobject::CaloCluster3D* cluster )
+	: hits( cluster->getHits() ) , clusters() ,
+	  edepPerCell() ,
+	  hitTimes() ,
+	  thrust() ,
+	  longitudinal() ,
+	  transverse() ,
+	  distanceToAxis() ,
+	  clustersEnergy()
 {
-	hits=cluster->getHits();
-	energy = 0.0;
-	nlayer = 0;
-	reconstructedCosTheta = 0.0;
-	transverseRatio = 0.0;
-	firstIntCluster=NULL;
-}
-
-SDHCALShower::SDHCALShower(std::vector<caloobject::CaloCluster2D*> &vec) : Shower(vec)
-{
-	sdnhit[0] = 0;
-	sdnhit[1] = 0;
-	sdnhit[2] = 0;
-	nhitAtMax = 0;
-}
 
 }
+
+SDHCALShower::SDHCALShower(std::vector<caloobject::CaloCluster2D*>& vec)
+	: Shower(vec)
+{
+}
+
+} //namespace caloobject

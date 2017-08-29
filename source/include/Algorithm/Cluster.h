@@ -9,38 +9,35 @@
 namespace algorithm
 { 
 
-  struct clusterParameterSetting{
-    int maxLongitudinal;
-    int maxTransversal;
-    bool useDistanceInsteadCellID;
-    float maxLongitudinalDistance;
-    float maxTransversalDistance;
-    bool useEnergyToWeightPosition;
-  clusterParameterSetting() : maxLongitudinal(0) ,
-                              maxTransversal(1) ,
-                              useDistanceInsteadCellID(false),
-                              maxLongitudinalDistance(0.0),
-                              maxTransversalDistance(11.0),
-                              useEnergyToWeightPosition(false){;}
-  };
+struct clusterParameterSetting
+{
+		int maxLongitudinal = 0 ;
+		int maxTransversal = 1 ;
+		bool useDistanceInsteadCellID = false ;
+		float maxLongitudinalDistance = 0.0 ;
+		float maxTransversalDistance = 11.0 ;
+		bool useEnergyToWeightPosition = false ;
+} ;
 
-  class Cluster
-  {
-  public:
-    Cluster(){;}
-    ~Cluster(){;}
-    
-    void Run(std::vector<caloobject::CaloHit*> &hits, std::vector<caloobject::CaloCluster2D*> &outClusterVec);
-    inline void SetClusterParameterSetting(clusterParameterSetting val){settings=val;}
+class Cluster
+{
+	public :
+		Cluster()
+			: _clusterHitList() , settings()
+		{;}
+		~Cluster(){;}
 
-  private:
-    void BuildCluster(std::vector<caloobject::CaloHit*> &temp,
-		      std::vector<caloobject::CaloHit*> &calohit,
-		      caloobject::CaloHit* &hit);
+		void Run(HitVec& hits, std::vector<caloobject::CaloCluster2D*>& outClusterVec) ;
+		inline void SetClusterParameterSetting(clusterParameterSetting val) { settings = val ; }
 
-    std::vector<caloobject::CaloHit*> _clusterHitList;
-    
-    clusterParameterSetting settings;
-  };
-}
+	private :
+		void BuildCluster(HitVec& temp , HitVec& calohit , caloobject::CaloHit*& hit) ;
+
+		HitVec _clusterHitList ;
+
+		clusterParameterSetting settings ;
+} ;
+
+} //namespace algorithm
+
 #endif

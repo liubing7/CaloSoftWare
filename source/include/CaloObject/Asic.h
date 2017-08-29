@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <CLHEP/Vector/ThreeVector.h>
 
-#include <CaloObject/Pad.h>
+#include "CaloObject/Pad.h"
 
 namespace caloobject
 {
@@ -50,28 +50,31 @@ class Asic
 		void reset() ;
 
 
-	protected :
+		Asic(const Asic &toCopy) = delete ;
+		void operator=(const Asic &toCopy) = delete ;
 
+	protected :
 
 		virtual void updateEfficiencies() ;
 
-		caloobject::Layer* layer ;
 
-		int nTracks ;
-		std::vector<int> nDetected ;
-
-		double multiSum ;
-		double multiSquareSum ;
-
-		std::vector<double> thresholds ;
-
-		std::vector<double> efficiencies ;
-
-		CLHEP::Hep3Vector position ; //top left corner position
+	protected :
 
 		int id ;
 		int difID ;
 
+		caloobject::Layer* layer = nullptr ;
+
+		int nTracks = 0 ;
+		std::vector<int> nDetected ;
+
+		double multiSum = 0 ;
+		double multiSquareSum = 0 ;
+
+		std::vector<double> thresholds ;
+		std::vector<double> efficiencies ;
+
+		CLHEP::Hep3Vector position ; //top left corner position
 
 		PadMap pads ;
 } ;

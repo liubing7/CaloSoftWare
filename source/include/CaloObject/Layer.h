@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <limits>
+#include <vector>
 
 #include <CaloObject/Asic.h>
 
@@ -40,28 +41,30 @@ class Layer
 		virtual void buildAsics() = 0 ;
 
 		void reset() ;
+
+		Layer(const Layer &toCopy) = delete ;
+		void operator=(const Layer &toCopy) = delete ;
+
 	protected :
-
-
-
 		virtual void updateEfficiencies() ;
 
-		int nTracks ;
+
+	protected :
+
+		int id ;
+
+		int nTracks = 0 ;
 		std::vector<int> nDetected ;
 
-		double multiSum ;
-		double multiSquareSum ;
+		double multiSum = 0 ;
+		double multiSquareSum = 0 ;
 
 		std::vector<double> thresholds ;
-
 		std::vector<double> efficiencies ;
 
 		CLHEP::Hep3Vector position ; //top left corner position
 
-		int id ;
-
 		AsicMap asics ;
-
 } ;
 
 class SDHCALLayer : public Layer
@@ -70,7 +73,7 @@ class SDHCALLayer : public Layer
 		SDHCALLayer(int _id , int difL , int difC , int difR) ;
 		virtual ~SDHCALLayer() { ; }
 
-//		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
+		//		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
 
 
 		static const int asicTab[12][4] ;

@@ -10,40 +10,43 @@
 namespace algorithm
 { 
 
-  struct cluster3DParameterSetting{
-    int maxLongitudinal;
-    float maxTransverseDistance;
-    bool useEnergyToWeightPosition;
-    bool printDebug;
-    caloobject::GeomParameterSetting geometry;
-  cluster3DParameterSetting() : maxLongitudinal(3) ,
-      maxTransverseDistance(30.0),
-      useEnergyToWeightPosition(false),
-      printDebug(false)
-    {;}
-  };
+struct cluster3DParameterSetting
+{
+		int maxLongitudinal = 3 ;
+		float maxTransverseDistance = 30.0f ;
+		bool useEnergyToWeightPosition = false ;
+		bool printDebug = false ;
+		caloobject::GeomParameterSetting geometry ;
 
-  class Cluster3D
-  {
-  public:
-    Cluster3D(){;}
-    ~Cluster3D(){;}
+		cluster3DParameterSetting()
+			: geometry()
+		{;}
+} ;
 
-    void Run(std::vector<caloobject::CaloHit*> &hits, std::vector<caloobject::CaloCluster3D*> &outClusterVec);
-    void Run(std::vector<caloobject::CaloHit*> &hits, std::vector<caloobject::CaloCluster3D*> &outClusterVec, CLHEP::Hep3Vector seed, CLHEP::Hep3Vector direction);
-    inline void SetCluster3DParameterSetting(cluster3DParameterSetting val){settings=val;}
+class Cluster3D
+{
+	public:
+		Cluster3D()
+			: _clusterHitList() , settings()
+		{;}
+		~Cluster3D(){;}
 
-  private:
-    void BuildCluster(std::vector<caloobject::CaloHit*> &temp,
-		      std::vector<caloobject::CaloHit*> &calohit,
-		      caloobject::CaloHit* &hit,
-		      CLHEP::Hep3Vector seed,
-		      CLHEP::Hep3Vector direction);
+		void Run(HitVec &hits, std::vector<caloobject::CaloCluster3D*> &outClusterVec) ;
+		void Run(HitVec &hits, std::vector<caloobject::CaloCluster3D*> &outClusterVec, CLHEP::Hep3Vector seed, CLHEP::Hep3Vector direction) ;
+		inline void SetCluster3DParameterSetting(cluster3DParameterSetting val) { settings = val ; }
 
-    std::vector<caloobject::CaloHit*> _clusterHitList;
-    
-    cluster3DParameterSetting settings;
-  };
+	private:
+		void BuildCluster(HitVec &temp,
+						  HitVec &calohit,
+						  caloobject::CaloHit* &hit,
+						  CLHEP::Hep3Vector seed,
+						  CLHEP::Hep3Vector direction) ;
 
-}
+		HitVec _clusterHitList ;
+
+		cluster3DParameterSetting settings ;
+} ;
+
+} //namespace algorithm
+
 #endif

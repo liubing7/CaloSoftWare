@@ -1,10 +1,13 @@
 #ifndef CALOTRACK_HH
 #define CALOTRACK_HH
 
+
+
 #include <iostream>
 #include <vector>
-#include "CLHEP/Vector/ThreeVector.h"
+
 #include "CaloObject/CaloCluster.h"
+#include "CLHEP/Vector/ThreeVector.h"
 
 namespace caloobject
 { 
@@ -12,13 +15,15 @@ namespace caloobject
 class CaloTrack
 {
 	public:
-		CaloTrack(std::vector<caloobject::CaloCluster2D*> &vec);
+		CaloTrack(Cluster2DVec& vec) ;
 		~CaloTrack(){;}
 
-		inline void setChi2(float chi2){_chi2=chi2;}
-		inline void setTrackParameters(float *params){
-			_params.clear();
-			for(unsigned int i=0; i<4; i++) _params.push_back(params[i]);
+		inline void setChi2(float chi2){ _chi2 = chi2 ; }
+		inline void setTrackParameters(float* params)
+		{
+			_params.clear() ;
+			for(unsigned int i = 0 ; i < 4 ; i++)
+				_params.push_back(params[i]) ;
 		}
 
 		inline const caloobject::CaloCluster2D* getTrackStartingCluster(){return (*clusters.begin());}
@@ -41,11 +46,13 @@ class CaloTrack
 		inline const CLHEP::Hep3Vector orientationVector(){
 			return CLHEP::Hep3Vector(-1., 0., _params[1]).cross(CLHEP::Hep3Vector(0., -1., _params[3]));
 		}
-	private:
 
-		std::vector<caloobject::CaloCluster2D*> clusters;
-		float _chi2;
-		std::vector<float> _params;
-};
-}
+	private :
+
+		Cluster2DVec clusters ;
+		float _chi2 = 0 ;
+		std::vector<float> _params ;
+} ;
+
+} //namespace caloobject
 #endif

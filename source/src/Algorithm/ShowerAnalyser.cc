@@ -6,24 +6,21 @@
 #include <set>
 #include <map>
 
-
 namespace algorithm
 {
 void ShowerAnalyser::Run(caloobject::Shower* shower)
 {
-	std::set<int> layers;
-	std::vector<CLHEP::Hep3Vector> hitPos;
-	std::vector<int> clSize; //=1 because it use hits and not clusters
-	std::map<int,float> edep_layerMap;
-	std::vector<double> x,y,z;
+	std::set<int> layers ;
+	std::vector<CLHEP::Hep3Vector> hitPos ;
+	std::vector<int> clSize ; //=1 because it use hits and not clusters
+	std::map<int,float> edep_layerMap ;
+	std::vector<double> x,y,z ;
 
-	shower->edep=0.0f;
-	shower->f1=0.0f;
-	shower->f2=0.0f;
-	shower->f3=0.0f;
-	shower->f4=0.0f;
-	shower->rmsEdep=0.0f;
-	for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
+	shower->edep = 0.0f ;
+
+	shower->rmsEdep = 0.0f ;
+	for ( HitVec::const_iterator it = shower->getHits().begin() ; it != shower->getHits().end() ; ++it )
+	{
 		shower->edep+=(*it)->getEnergy();
 		shower->edepPerCell.push_back( (*it)->getEnergy() );
 		shower->rmsEdep+=(*it)->getEnergy()*(*it)->getEnergy();
@@ -37,14 +34,7 @@ void ShowerAnalyser::Run(caloobject::Shower* shower)
 		else
 			edep_layerMap[ (*it)->getCellID()[2] ] = (*it)->getEnergy() ;
 
-		if( (*it)->getCellID()[2]<settings.geometry.firstSectionLastLayer )
-			shower->f1+=(*it)->getEnergy();
-		if( (*it)->getCellID()[2]<settings.geometry.secondSectionLastLayer )
-			shower->f2+=(*it)->getEnergy();
-		if( (*it)->getCellID()[2]<settings.geometry.thirdSectionLastLayer )
-			shower->f3+=(*it)->getEnergy();
-		if( (*it)->getCellID()[2]<settings.geometry.fourthSectionLastLayer )
-			shower->f4+=(*it)->getEnergy();
+
 
 		x.push_back( (*it)->getPosition().x() );
 		y.push_back( (*it)->getPosition().y() );
@@ -56,10 +46,6 @@ void ShowerAnalyser::Run(caloobject::Shower* shower)
 
 	FindEnergy(shower);
 
-	shower->f1/=shower->edep;
-	shower->f2/=shower->edep;
-	shower->f3/=shower->edep;
-	shower->f4/=shower->edep;
 
 	shower->showerMax = algorithm::map_max_element(edep_layerMap)->first; //x0 unit
 	shower->edepAtMax = algorithm::map_max_element(edep_layerMap)->second;
@@ -120,9 +106,9 @@ void ShowerAnalyser::Profile(caloobject::Shower* shower)
 	for(int i=0; i<(int)(settings.maximumRadius/settings.geometry.pixelSize); i++)
 		shower->transverse.push_back(0);
 
-	int begin=0;
-	if( shower->firstIntCluster!=NULL )
-		begin=shower->firstIntCluster->getLayerID();
+//	int begin=0;
+//	if( shower->firstIntCluster!=NULL )
+//		begin=shower->firstIntCluster->getLayerID();
 
 
 	Distance<caloobject::CaloHit,CLHEP::Hep3Vector> dist;
@@ -155,10 +141,7 @@ void ShowerAnalyser::Run(caloobject::SDHCALShower* shower)
 	std::map<int,int> nhit_layerMap;
 	std::vector<double> x,y,z;
 
-	shower->f1=0.0f;
-	shower->f2=0.0f;
-	shower->f3=0.0f;
-	shower->f4=0.0f;
+
 	for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it)
 	{
 		layers.insert( (*it)->getCellID()[2] );
@@ -170,14 +153,6 @@ void ShowerAnalyser::Run(caloobject::SDHCALShower* shower)
 		else
 			nhit_layerMap[ (*it)->getCellID()[2] ] = 1 ;
 
-		if( (*it)->getCellID()[2]<settings.geometry.firstSectionLastLayer )
-			shower->f1 ++;
-		if( (*it)->getCellID()[2]<settings.geometry.secondSectionLastLayer )
-			shower->f2 ++;
-		if( (*it)->getCellID()[2]<settings.geometry.thirdSectionLastLayer )
-			shower->f3 ++;
-		if( (*it)->getCellID()[2]<settings.geometry.fourthSectionLastLayer )
-			shower->f4 ++;
 
 		x.push_back( (*it)->getPosition().x() );
 		y.push_back( (*it)->getPosition().y() );
@@ -191,11 +166,6 @@ void ShowerAnalyser::Run(caloobject::SDHCALShower* shower)
 			shower->sdnhit[2]++;
 
 	}
-
-	shower->f1/=shower->hits.size();
-	shower->f2/=shower->hits.size();
-	shower->f3/=shower->hits.size();
-	shower->f4/=shower->hits.size();
 
 	shower->showerMax = algorithm::map_max_element(nhit_layerMap)->first; //x0 unit
 	shower->nhitAtMax = algorithm::map_max_element(nhit_layerMap)->second;
@@ -219,18 +189,30 @@ void ShowerAnalyser::Run(caloobject::SDHCALShower* shower)
 	vecList.push_back(y);
 	vecList.push_back(z);
 	algorithm::PCA* algo_PCA=new algorithm::PCA(vecList);
-	shower->transverseRatio=std::sqrt( algo_PCA->eigenValues()[0]*algo_PCA->eigenValues()[0] +
-							algo_PCA->eigenValues()[1]*algo_PCA->eigenValues()[1] )/algo_PCA->eigenValues()[2];
+	shower->transverseRatio = std::sqrt( algo_PCA->eigenValues()[0]*algo_PCA->eigenValues()[0] + algo_PCA->eigenValues()[1]*algo_PCA->eigenValues()[1] )/algo_PCA->eigenValues()[2] ;
 	delete algo_PCA;
 
 	FindEnergy(shower);
-	SearchShowerInteraction(shower);
-	Profile(shower);
+	SearchShowerInteraction(shower) ;
+
+	int lastLayer = -10 ;
+
+//	for ( auto jt = shower->getClusters().begin() ; jt != shower->getClusters().end() ; ++jt )
+	for ( auto& jt : shower->getClusters() )
+	{
+		if ( jt->getLayerID() > lastLayer )
+			lastLayer = jt->getLayerID() ;
+	}
+
+	shower->lastClusterPosition = lastLayer ;
+
+	Profile(shower) ;
 }
 
 void ShowerAnalyser::FindEnergy(caloobject::SDHCALShower* shower)
 {
-	if( settings.energyCalibrationOption==std::string("SDHCAL_Quadratic") ){
+	if( settings.energyCalibrationOption==std::string("SDHCAL_Quadratic") )
+	{
 		int NhitTot=shower->sdnhit[0]+shower->sdnhit[1]+shower->sdnhit[2];
 		if( settings.energyCalibrationFactors.size() != 9 )
 			return;
@@ -251,13 +233,15 @@ void ShowerAnalyser::Profile(caloobject::SDHCALShower* shower)
 	for(int i=0; i<(int)(settings.maximumRadius/settings.geometry.pixelSize); i++)
 		shower->transverse.push_back(0);
 
-	int begin=0;
-	if( shower->firstIntCluster!=NULL )
-		begin=shower->firstIntCluster->getLayerID();
+//	int begin=0;
+//	if( shower->firstIntCluster!=NULL )
+//		begin=shower->firstIntCluster->getLayerID();
 
 	Distance<caloobject::CaloHit,CLHEP::Hep3Vector> dist;
-	for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it){
-		if( (*it)->getCellID()[2] >= settings.geometry.nLayers ){
+	for(std::vector<caloobject::CaloHit*>::const_iterator it=shower->getHits().begin(); it!=shower->getHits().end(); ++it)
+	{
+		if( (*it)->getCellID()[2] >= settings.geometry.nLayers )
+		{
 			std::cout << "Problem in ShowerAnalyser::Profile \n\t => Hit found at " << (*it)->getCellID()[2] << " while settings.geometry.nLayers = " << settings.geometry.nLayers << std::endl;
 			continue;
 		}

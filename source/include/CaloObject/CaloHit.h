@@ -30,7 +30,7 @@ class CaloHit
 		float _time ;
 } ;
 
-}
+} //namespace caloobject
 
 typedef std::vector<caloobject::CaloHit*> HitVec ;
 

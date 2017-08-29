@@ -3,6 +3,7 @@
 
 #include <limits>
 #include <map>
+#include <vector>
 
 #include <CLHEP/Vector/ThreeVector.h>
 
@@ -40,19 +41,23 @@ class Pad
 		virtual void update(CaloCluster2D* cluster = NULL) ;
 
 		void reset() ;
+
+		Pad(const Pad &toCopy) = delete ;
+		void operator=(const Pad &toCopy) = delete ;
+
 	protected :
-
-
-
 		virtual void updateEfficiencies() ;
 
-		caloobject::Asic* asic ;
 
-		int nTracks ;
+	protected :
+		int id ;
+		caloobject::Asic* asic = nullptr ;
+
+		int nTracks = 0 ;
 		std::vector<int> nDetected ;
 
-		double multiSum ;
-		double multiSquareSum ;
+		double multiSum = 0 ;
+		double multiSquareSum = 0 ;
 
 		std::vector<double> thresholds ;
 
@@ -60,7 +65,7 @@ class Pad
 
 		CLHEP::Hep3Vector position ;
 
-		int id ;
+
 
 } ;
 
@@ -70,7 +75,7 @@ class SDHCALPad : public Pad
 		SDHCALPad(int _id) ;
 		virtual ~SDHCALPad() ;
 
-//		virtual void update(CaloCluster2D* cluster = NULL) ;
+		//		virtual void update(CaloCluster2D* cluster = NULL) ;
 
 	protected :
 

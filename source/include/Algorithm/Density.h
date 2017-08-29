@@ -43,12 +43,14 @@ class Density
 
 		double compute(HitVec& hitVec) ;
 
+		Density(const Density&) = delete ;
+		void operator=(const Density&) = delete ;
+
 
 	protected :
-		std::map<caloobject::CaloHit* , double> densityPerHit ;
-
 		DensityDistanceFunction* densityFunc ;
 
+		std::map<caloobject::CaloHit* , double> densityPerHit ;
 } ;
 
 

@@ -3,7 +3,8 @@
 #include "Algorithm/ClusteringHelper.h"
 #include <algorithm>
 
-namespace algorithm{
+namespace algorithm
+{
 
 void FSRFinder::Run(std::vector<caloobject::CaloHit*> hits, caloobject::CaloTrack* track, caloobject::CaloCluster3D* gammaCluster)
 {
@@ -32,7 +33,7 @@ void FSRFinder::Run(std::vector<caloobject::CaloHit*> hits, caloobject::CaloTrac
 		gammaCluster=fsrCandidate;
 }
 
-void FSRFinder::rmTrackedHitsFromList(std::vector<caloobject::CaloHit*> &hits, caloobject::CaloTrack* track)
+void FSRFinder::rmTrackedHitsFromList(HitVec& hits, caloobject::CaloTrack* track)
 {
 	std::vector<caloobject::CaloHit*> trackedHits;
 	for(std::vector<caloobject::CaloCluster2D*>::iterator it=track->getClusters().begin(); it!=track->getClusters().end(); ++it)
@@ -47,7 +48,7 @@ void FSRFinder::rmTrackedHitsFromList(std::vector<caloobject::CaloHit*> &hits, c
 
 bool FSRFinder::isGammaCluster( caloobject::CaloCluster3D* fsrCandidate )
 {
-	return false;
+	return false ;
 }
 
 }

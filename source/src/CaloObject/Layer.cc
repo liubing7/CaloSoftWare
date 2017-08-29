@@ -5,18 +5,18 @@ namespace caloobject
 {
 
 Layer::Layer(int _id)
+	: id(_id) ,
+	  nDetected() ,
+	  thresholds() ,
+	  efficiencies() ,
+	  position() ,
+	  asics()
 {
-	id = _id ;
-
-	nTracks = 0 ;
+	thresholds.push_back(0) ;
 	nDetected.push_back(0) ;
-	multiSum = 0.0 ;
-	multiSquareSum = 0.0 ;
-
 	efficiencies.push_back(0.0) ;
-
-	thresholds.push_back(0.0) ;
 }
+
 
 Layer::~Layer()
 {}

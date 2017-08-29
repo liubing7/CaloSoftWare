@@ -11,24 +11,31 @@
 
 namespace algorithm 
 { 
-class ShowerAnalyser;
-} 
+
+class ShowerAnalyser ;
+
+}  //namespace algorithm
 
 namespace caloobject
 {
+
 class Shower
 {
-		friend class algorithm::ShowerAnalyser;
+		friend class algorithm::ShowerAnalyser ;
+
 	public:
-		Shower(std::vector<caloobject::CaloHit*> &vec);
-		Shower(std::vector<caloobject::CaloCluster2D*> &vec);
+		Shower(std::vector<caloobject::CaloHit*>& vec);
+		Shower(std::vector<caloobject::CaloCluster2D*>& vec);
 		Shower(caloobject::CaloCluster3D* cluster);
 		~Shower(){;}
 
-		inline const std::vector<caloobject::CaloHit*> &getHits(){return hits;}
+		inline const std::vector<caloobject::CaloHit*> &getHits() const { return hits ; }
+		inline const std::vector<caloobject::CaloCluster2D*> &getClusters() const { return clusters ; }
 
-		inline CLHEP::Hep3Vector getStartingPosition(){return startingPosition;}
-		inline int getNhit(){return hits.size();}
+		inline caloobject::CaloCluster2D* getFirstIntCluster() const { return firstIntCluster ; }
+		inline CLHEP::Hep3Vector getStartingPosition() const {return startingPosition ; }
+		inline double getLastClusterPosition() const { return lastClusterPosition ; }
+		inline unsigned int getNhit() const { return static_cast<unsigned int>( hits.size() ) ; }
 		inline float getEnergy(){return energy;}
 		inline float getEdep(){return edep;}
 		inline float getMeanEdep(){return meanEdep;}
@@ -39,10 +46,7 @@ class Shower
 		inline float getTransverseRatio(){return transverseRatio;}
 		inline float getEta(){return eta;}
 		inline float getPhi(){return phi;}
-		inline float getF1(){return f1;}
-		inline float getF2(){return f2;}
-		inline float getF3(){return f3;}
-		inline float getF4(){return f4;}
+
 		inline float getShowerMax(){return showerMax;}
 		inline float getEdepAtMax(){return edepAtMax;}
 		inline std::vector<double> &getEdepPerCell(){return edepPerCell;}
@@ -53,52 +57,58 @@ class Shower
 		inline std::vector<double> &getClustersEnergy(){return clustersEnergy;}
 		inline std::vector<double> &getHitTimes(){return hitTimes;}
 
-	protected:
-		std::vector<caloobject::CaloHit*> hits;
-		std::vector<caloobject::CaloCluster2D*> clusters;
-		caloobject::CaloCluster2D* firstIntCluster;
-		CLHEP::Hep3Vector startingPosition;
-		float energy;
-		float edep;
-		std::vector<double> edepPerCell;
-		std::vector<double> hitTimes;
-		int nlayer;
+		Shower(const Shower &toCopy) = delete ;
+		void operator=(const Shower &toCopy) = delete ;
+
+	protected :
+
+		std::vector<caloobject::CaloHit*> hits ;
+		std::vector<caloobject::CaloCluster2D*> clusters ;
+		caloobject::CaloCluster2D* firstIntCluster = nullptr ;
+		CLHEP::Hep3Vector startingPosition = CLHEP::Hep3Vector(0,0,0) ;
+
+		double lastClusterPosition = 0 ;
+
+		float energy = 0.0f ;
+		float edep = 0.0f ;
+		std::vector<double> edepPerCell ;
+		std::vector<double> hitTimes ;
+		int nlayer = 0 ;
 		//shower thrust ; x = thrust[0] + thrust[1]*z ; y = thrust[2] + thrust[3]*z ;
-		std::vector<float> thrust;
-		float reconstructedCosTheta;
-		float transverseRatio;
-		float eta;
-		float phi;
+		std::vector<float> thrust ;
+		float reconstructedCosTheta = 0.0f ;
+		float transverseRatio = 0.0f ;
+		float eta = 0.0f ;
+		float phi = 0.0f ;
 
-		float f1; //edep in 10 first layers/total edep
-		float f2; //edep in 20 first layers/total edep
-		float f3; //edep in 30 first layers/total edep
-		float f4; //edep in 40 first layers/total edep
-		float meanEdep;
-		float rmsEdep;
-		float showerMax; //x0 unit
-		float edepAtMax;
+		float meanEdep = 0.0f ;
+		float rmsEdep = 0.0f ;
+		float showerMax = 0.0f ; //x0 unit
+		float edepAtMax = 0.0f ;
 
-		bool findInteraction_;
+		bool findInteraction_ = false ;
 
-		std::vector<double> longitudinal;
-		std::vector<double> transverse;
-		std::vector<double> distanceToAxis;
-		std::vector<double> clustersEnergy;
-};
+		std::vector<double> longitudinal ;
+		std::vector<double> transverse ;
+		std::vector<double> distanceToAxis ;
+		std::vector<double> clustersEnergy ;
+} ;
 
 class SDHCALShower : public Shower
 {
-		friend class algorithm::ShowerAnalyser;
-	public :
-		SDHCALShower( std::vector<caloobject::CaloCluster2D*> &vec );
-		~SDHCALShower(){;}
-		int *getSDNHits(){return sdnhit;}
-		int getNHitsAtMax(){return nhitAtMax;}
-	protected :
-		int sdnhit[3];
-		int nhitAtMax;
-};
+		friend class algorithm::ShowerAnalyser ;
 
-}
+	public :
+		SDHCALShower( std::vector<caloobject::CaloCluster2D*> &vec ) ;
+		~SDHCALShower() { ; }
+		int* getSDNHits() { return sdnhit ; }
+		int getNHitsAtMax() { return nhitAtMax ; }
+
+	protected :
+		int sdnhit[3] = {0,0,0} ;
+		int nhitAtMax = 0 ;
+} ;
+
+} //namespace caloobject
+
 #endif
