@@ -12,11 +12,11 @@
 namespace caloobject
 {
 
-class CaloCluster
+class Cluster
 {
 	public :
-		CaloCluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
-		~CaloCluster(){ hits.clear() ; }
+		Cluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
+		~Cluster() ;
 
 		inline const std::vector<caloobject::CaloHit*>& getHits() const { return hits ; }
 		inline CLHEP::Hep3Vector getPosition() const { return clusterPosition ; }
@@ -30,7 +30,7 @@ class CaloCluster
 		float maxEnergy = 0.f ;
 } ;
 
-class CaloCluster2D : public CaloCluster
+class CaloCluster2D : public Cluster
 {
 	public :
 		CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWeight = 0) ;
@@ -41,7 +41,7 @@ class CaloCluster2D : public CaloCluster
 		int layerID ;
 } ;
 
-class CaloCluster3D : public CaloCluster
+class CaloCluster3D : public Cluster
 {
 	public :
 		CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight=0);
@@ -55,7 +55,7 @@ class CaloCluster3D : public CaloCluster
 
 }//namespace caloobject
 
-typedef std::vector<caloobject::CaloCluster*> ClusterVec ;
+typedef std::vector<caloobject::Cluster*> ClusterVec ;
 typedef std::vector<caloobject::CaloCluster2D*> Cluster2DVec ;
 
 #endif

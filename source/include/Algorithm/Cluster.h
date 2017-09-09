@@ -19,13 +19,13 @@ struct clusterParameterSetting
 		bool useEnergyToWeightPosition = false ;
 } ;
 
-class Cluster
+class Clustering
 {
 	public :
-		Cluster()
+		Clustering()
 			: settings()
 		{;}
-		~Cluster(){;}
+		~Clustering(){;}
 
 		void Run(HitVec& hits, std::vector<caloobject::CaloCluster2D*>& outClusterVec) ;
 		inline void SetClusterParameterSetting(clusterParameterSetting val) { settings = val ; }

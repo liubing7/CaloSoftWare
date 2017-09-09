@@ -1,14 +1,17 @@
 #include "CaloObject/CaloCluster.h"
 
+#include <algorithm>
+
 namespace caloobject
 {
 
-CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
+Cluster::Cluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight)
 	: hits(vec) ,
 	  clusterPosition()
 {
 	for(HitVec::iterator it = hits.begin() ; it != hits.end() ; ++it)
 	{
+		(*it)->setCluster(this) ;
 		if( useWeight )
 			clusterPosition+=(*it)->getPosition()*(*it)->getEnergy() ;
 		else
@@ -27,10 +30,16 @@ CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
 		clusterPosition /= hits.size() ;
 }
 
+Cluster::~Cluster()
+{
+	auto removeCluster = [](caloobject::CaloHit*& hit) { hit->setCluster(nullptr) ; } ;
+	std::for_each(hits.begin() , hits.end() , removeCluster) ;
+}
+
 /**********************/
 
 CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
-	: CaloCluster(vec,useWeight) ,
+	: Cluster(vec,useWeight) ,
 	  layerID( hits.at(0)->getCellID()[2] )
 {
 
@@ -39,7 +48,7 @@ CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWei
 /**********************/
 
 CaloCluster3D::CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
-	: CaloCluster(vec,useWeight) ,
+	: Cluster(vec,useWeight) ,
 	  barycenter()
 {
 	std::map<int,int> counter ;
