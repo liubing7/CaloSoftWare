@@ -28,8 +28,8 @@ Shower::Shower(std::vector<caloobject::CaloCluster2D*>& vec)
 {
 	for( std::vector<caloobject::CaloCluster2D*>::iterator it = vec.begin() ; it != vec.end() ; ++it )
 	{
-		clustersEnergy.push_back( (*it)->getEnergy() );
-		for( HitVec::iterator jt = (*it)->getHits().begin() ; jt != (*it)->getHits().end() ; ++jt )
+		clustersEnergy.push_back( (*it)->getEnergy() ) ;
+		for( HitVec::const_iterator jt = (*it)->getHits().begin() ; jt != (*it)->getHits().end() ; ++jt )
 			hits.push_back(*jt) ;
 	}
 

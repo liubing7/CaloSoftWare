@@ -11,7 +11,7 @@
 # ADD_DEFINITIONS( "-pedantic -Wunused-value -O2" )
 # ADD_DEFINITIONS("-Wno-long-long -Wreturn-type -Werror")
 
-ADD_DEFINITIONS( "-Wall -ansi -pedantic -std=c++11" )
+ADD_DEFINITIONS( "-Wall -ansi -pedantic -std=c++11 -O3" )
 ADD_DEFINITIONS( "-Wno-long-long" )
 
 # include directories

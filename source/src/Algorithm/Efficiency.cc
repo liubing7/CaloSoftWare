@@ -87,7 +87,7 @@ void Efficiency::Run(caloobject::Layer* layer, std::vector<caloobject::CaloClust
 		}
 
 		Distance<caloobject::CaloHit,caloobject::CaloTrack> distHit ;
-		for(std::vector<caloobject::CaloHit*>::iterator it = (*closestIt)->getHits().begin() ; it != (*closestIt)->getHits().end() ; ++it)
+		for(std::vector<caloobject::CaloHit*>::const_iterator it = (*closestIt)->getHits().begin() ; it != (*closestIt)->getHits().end() ; ++it)
 		{
 			if( distHit.getDistanceInLayer( (*it),track ) < settings.maxRadius )
 				goodCluster = (*closestIt) ;

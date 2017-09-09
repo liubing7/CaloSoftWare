@@ -29,9 +29,8 @@ void Cluster::BuildCluster(HitVec& temp, HitVec& hits, caloobject::CaloHit* &hit
 
 		if ( !settings.useDistanceInsteadCellID )
 		{
-			if( std::fabs( (hit)->getCellID()[0]-(*it)->getCellID()[0] )<=settings.maxTransversal &&
-				std::fabs( (hit)->getCellID()[1]-(*it)->getCellID()[1] )<=settings.maxTransversal &&
-				std::fabs( (hit)->getCellID()[2]-(*it)->getCellID()[2] )==settings.maxLongitudinal )
+			if( std::abs( (hit)->getCellID()[0]-(*it)->getCellID()[0] ) + std::abs( (hit)->getCellID()[1]-(*it)->getCellID()[1] ) <= settings.maxTransversal &&
+				std::abs( (hit)->getCellID()[2]-(*it)->getCellID()[2] ) <= settings.maxLongitudinal )
 			{
 				_clusterHitList.push_back(*it);
 				temp.push_back(*it);
@@ -40,9 +39,11 @@ void Cluster::BuildCluster(HitVec& temp, HitVec& hits, caloobject::CaloHit* &hit
 		}
 		else
 		{
-			if( std::fabs( (hit)->getPosition().x()-(*it)->getPosition().x() )<=settings.maxTransversalDistance &&
-				std::fabs( (hit)->getPosition().y()-(*it)->getPosition().y() )<=settings.maxTransversalDistance &&
-				std::fabs( (hit)->getPosition().z()-(*it)->getPosition().z() )==settings.maxLongitudinalDistance )
+			double deltaX = std::abs( (hit)->getPosition().x()-(*it)->getPosition().x() ) ;
+			double deltaY = std::abs( (hit)->getPosition().y()-(*it)->getPosition().y() ) ;
+
+			if( deltaX*deltaX + deltaY*deltaY <= settings.maxTransversalDistance*settings.maxTransversalDistance &&
+				std::abs( (hit)->getPosition().z()-(*it)->getPosition().z() ) <= settings.maxLongitudinalDistance )
 			{
 				_clusterHitList.push_back(*it);
 				temp.push_back(*it);

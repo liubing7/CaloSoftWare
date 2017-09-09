@@ -23,7 +23,7 @@ class Cluster
 {
 	public :
 		Cluster()
-			: _clusterHitList() , settings()
+			: settings()
 		{;}
 		~Cluster(){;}
 
@@ -33,7 +33,7 @@ class Cluster
 	private :
 		void BuildCluster(HitVec& temp , HitVec& calohit , caloobject::CaloHit*& hit) ;
 
-		HitVec _clusterHitList ;
+		HitVec _clusterHitList {} ;
 
 		clusterParameterSetting settings ;
 } ;

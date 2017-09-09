@@ -28,6 +28,9 @@ class Layer
 		double getMultiplicity() const ;
 		double getMultiplicityError() const ;
 
+//		virtual const std::vector<double>& getMultiplicities() const { return multiplicities ; }
+//		virtual std::vector<double>& getMultiplicitiesError() const ;
+
 		virtual Asic* findAsic(const CLHEP::Hep3Vector& pos) const = 0 ;
 
 
@@ -61,6 +64,9 @@ class Layer
 
 		std::vector<double> thresholds ;
 		std::vector<double> efficiencies ;
+
+//		std::vector<int> nStatMultiplicity {} ; //for multiplicity
+//		std::vector<double> multiplicities {} ;
 
 		CLHEP::Hep3Vector position ; //top left corner position
 

@@ -1,5 +1,7 @@
 #include <CaloObject/Layer.h>
 
+#include <Algorithm/Cluster.h>
+
 
 namespace caloobject
 {
@@ -112,6 +114,10 @@ void Layer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
 		{
 			if ( cluster->getMaxEnergy() >= thresholds.at(i) )
 				nDetected.at(i)++ ;
+			
+			
+//			algorithm::Cluster clustering ;
+			
 		}
 
 		multiSum += cluster->getHits().size() ;

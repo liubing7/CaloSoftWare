@@ -15,10 +15,10 @@ namespace caloobject
 class CaloCluster
 {
 	public :
-		CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight = 0) ;
+		CaloCluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
 		~CaloCluster(){ hits.clear() ; }
 
-		inline std::vector<caloobject::CaloHit*> &getHits() { return hits ; }
+		inline const std::vector<caloobject::CaloHit*>& getHits() const { return hits ; }
 		inline CLHEP::Hep3Vector getPosition() const { return clusterPosition ; }
 		inline float getEnergy() const { return energy ; }
 		inline float getMaxEnergy() const { return maxEnergy ; }
