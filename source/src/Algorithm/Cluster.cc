@@ -3,7 +3,7 @@
 namespace algorithm
 {
 
-void Cluster::Run(HitVec& hits , std::vector<caloobject::CaloCluster2D*>& outClusterVec)
+void Clustering::Run(HitVec& hits , std::vector<caloobject::CaloCluster2D*>& outClusterVec)
 {
 	HitVec temp ;
 	for( HitVec::iterator it = hits.begin() ; it != hits.end() ; ++it )
@@ -20,7 +20,7 @@ void Cluster::Run(HitVec& hits , std::vector<caloobject::CaloCluster2D*>& outClu
 	temp.clear() ;
 }
 
-void Cluster::BuildCluster(HitVec& temp, HitVec& hits, caloobject::CaloHit* &hit)
+void Clustering::BuildCluster(HitVec& temp, HitVec& hits, caloobject::CaloHit* &hit)
 {
 	for( HitVec::iterator it = hits.begin() ; it != hits.end() ; ++it )
 	{

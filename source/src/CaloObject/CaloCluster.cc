@@ -3,7 +3,7 @@
 namespace caloobject
 {
 
-CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
+Cluster::Cluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
 	: hits(vec) ,
 	  clusterPosition()
 {
@@ -30,7 +30,7 @@ CaloCluster::CaloCluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
 /**********************/
 
 CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
-	: CaloCluster(vec,useWeight) ,
+	: Cluster(vec,useWeight) ,
 	  layerID( hits.at(0)->getCellID()[2] )
 {
 
@@ -39,7 +39,7 @@ CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWei
 /**********************/
 
 CaloCluster3D::CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
-	: CaloCluster(vec,useWeight) ,
+	: Cluster(vec,useWeight) ,
 	  barycenter()
 {
 	std::map<int,int> counter ;
