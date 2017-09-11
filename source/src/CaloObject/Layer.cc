@@ -1,6 +1,6 @@
 #include <CaloObject/Layer.h>
 
-#include <Algorithm/Cluster.h>
+#include <Algorithm/Clustering.h>
 
 
 namespace caloobject

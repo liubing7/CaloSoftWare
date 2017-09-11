@@ -9,6 +9,7 @@
 namespace caloobject
 { 
 
+class Cluster ;
 class CaloHit
 {
 	public :
@@ -17,15 +18,21 @@ class CaloHit
 
 		~CaloHit(){ ; }
 
-		inline const CLHEP::Hep3Vector getPosition() { return _hitPosition ; }
-		inline const int* getCellID() { return _cellID ; }
+		inline const CLHEP::Hep3Vector getPosition() const { return _hitPosition ; }
+		inline const int* getCellID() const { return _cellID ; }
 		inline float getEnergy() const { return _energy ; }
 		inline float getTime() const { return _time ; }
 
+		Cluster* getCluster() const { return cluster ; }
+		void setCluster(Cluster* _cluster) { cluster = _cluster ; }
+
+		CaloHit(const CaloHit &toCopy) = delete ;
+		void operator=(const CaloHit &toCopy) = delete ;
 
 	private :
 		int _cellID[3] ;
 		CLHEP::Hep3Vector _hitPosition ;
+		Cluster* cluster = nullptr ;
 		float _energy ;
 		float _time ;
 } ;

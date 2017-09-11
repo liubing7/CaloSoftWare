@@ -1,4 +1,5 @@
 #include "CaloObject/CaloHit.h"
+#include "CaloObject/CaloCluster.h"
 
 namespace caloobject
 {

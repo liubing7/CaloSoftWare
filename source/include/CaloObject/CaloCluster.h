@@ -16,7 +16,7 @@ class Cluster
 {
 	public :
 		Cluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
-		~Cluster(){ hits.clear() ; }
+		~Cluster() ;
 
 		inline const std::vector<caloobject::CaloHit*>& getHits() const { return hits ; }
 		inline CLHEP::Hep3Vector getPosition() const { return clusterPosition ; }

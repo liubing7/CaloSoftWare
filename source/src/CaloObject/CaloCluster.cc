@@ -1,14 +1,17 @@
 #include "CaloObject/CaloCluster.h"
 
+#include <algorithm>
+
 namespace caloobject
 {
 
-Cluster::Cluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
+Cluster::Cluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight)
 	: hits(vec) ,
 	  clusterPosition()
 {
 	for(HitVec::iterator it = hits.begin() ; it != hits.end() ; ++it)
 	{
+		(*it)->setCluster(this) ;
 		if( useWeight )
 			clusterPosition+=(*it)->getPosition()*(*it)->getEnergy() ;
 		else
@@ -25,6 +28,12 @@ Cluster::Cluster(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
 		clusterPosition /= (hits.size()*energy) ;
 	else
 		clusterPosition /= hits.size() ;
+}
+
+Cluster::~Cluster()
+{
+	auto removeCluster = [](caloobject::CaloHit*& hit) { hit->setCluster(nullptr) ; } ;
+	std::for_each(hits.begin() , hits.end() , removeCluster) ;
 }
 
 /**********************/
