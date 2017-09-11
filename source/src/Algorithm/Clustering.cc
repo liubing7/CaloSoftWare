@@ -1,18 +1,15 @@
-#include "Algorithm/Cluster.h"
+#include "Algorithm/Clustering.h"
 
 namespace algorithm
 {
 
 void Clustering::Run(HitVec& hits , std::vector<caloobject::CaloCluster2D*>& outClusterVec)
 {
+	HitVec temp ;
 	for( caloobject::CaloHit* it : hits )
 	{
-		if ( it->getCluster() )
+		if ( std::find(temp.begin() , temp.end() , (*it)) != temp.end() )
 			continue ;
-
-		HitVec temp ;
-//		if ( std::find(temp.begin() , temp.end() , (*it)) != temp.end() )
-//			continue ;
 		_clusterHitList.push_back(it) ;
 		temp.push_back(it) ;
 		BuildCluster(temp,hits,it) ;
@@ -26,8 +23,6 @@ void Clustering::BuildCluster(HitVec& temp, HitVec& hits, caloobject::CaloHit*& 
 {
 	for( caloobject::CaloHit* it : hits )
 	{
-		if ( it->getCluster() )
-			continue ;
 		if ( std::find( temp.begin() , temp.end() , it ) != temp.end() )
 			continue ;
 
