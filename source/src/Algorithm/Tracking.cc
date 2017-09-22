@@ -2,11 +2,11 @@
 #include "set"
 namespace algorithm
 {
-void Tracking::Run(std::vector<caloobject::CaloCluster2D*> &vec,
-				   caloobject::CaloTrack* &track)
+void Tracking::Run(std::vector<caloobject::CaloCluster2D*> &vec , caloobject::CaloTrack* &track)
 {
-	track=NULL;
-	if( vec.size()==0 ) return;
+	track = nullptr ;
+	if( vec.size() == 0 )
+		return ;
 	_transverseRatio=0.0;
 	std::vector<double> x;
 	std::vector<double> y;
@@ -31,19 +31,19 @@ void Tracking::Run(std::vector<caloobject::CaloCluster2D*> &vec,
 	pcaVec.push_back(x);
 	pcaVec.push_back(y);
 	pcaVec.push_back(z);
-	algorithm::PCA* pca=new algorithm::PCA(pcaVec);
-	std::vector<double> eigenValues=pca->eigenValues();
+	algorithm::PCA* pca = new algorithm::PCA(pcaVec);
+	std::vector<double> eigenValues = pca->eigenValues();
 	_transverseRatio = sqrt(eigenValues.at(0)*eigenValues.at(0) + eigenValues.at(1)*eigenValues.at(1)) / eigenValues.at(2);
-	delete pca;
+	delete pca ;
 	if( _transverseRatio > settings.maxTransverseRatio ){
 		if( settings.printDebug ) std::cout << "Tracking::Run << DEBUG : _transverseRatio = " << _transverseRatio << std::endl;
 		return;
 	}
-	algorithm::LinearFit3D *fit=new algorithm::LinearFit3D(clusterPos,clusterSize);
+	algorithm::LinearFit3D* fit = new algorithm::LinearFit3D(clusterPos,clusterSize);
 	if( fit->getChi2() > settings.chiSquareLimit ){
 		if( settings.printDebug ) std::cout << "Tracking::Run << DEBUG : chiSquare = " << fit->getChi2() << std::endl;
-		delete fit;
-		return;
+		delete fit ;
+		return ;
 	}
 	if( fit->getFitParameters()[0]!=fit->getFitParameters()[0] ||
 		fit->getFitParameters()[1]!=fit->getFitParameters()[1] ||

@@ -9,12 +9,17 @@ Efficiency::Efficiency()
 {}
 
 Efficiency::~Efficiency()
-{}
-
-void Efficiency::Run(caloobject::Layer* layer, std::vector<caloobject::CaloCluster2D*>& clusters)
 {
-	_isTrack = false ;
+	if (track)
+		delete track ;
+}
+
+Efficiency::Status Efficiency::Run(caloobject::Layer* layer, std::vector<caloobject::CaloCluster2D*>& clusters)
+{
 	goodCluster = nullptr ;
+
+	if (track)
+		delete track ;
 	track = nullptr ;
 
 	std::vector<caloobject::CaloCluster2D*> clusterVec ;
@@ -30,40 +35,32 @@ void Efficiency::Run(caloobject::Layer* layer, std::vector<caloobject::CaloClust
 	algorithm::Tracking* algo_tracking = new algorithm::Tracking() ;
 	algo_tracking->SetTrackingParameterSetting(settings.trackingParams) ;
 
-//	caloobject::CaloTrack* track = NULL ;
 	algo_tracking->Run(clusterVec , track) ;
 	delete algo_tracking ;
+
 	if (track != nullptr)
 	{
-		_isTrack = true ;
 		expectedPos = CLHEP::Hep3Vector(track->getTrackParameters()[1]*layer->getPosition().z() + track->getTrackParameters()[0] ,
 										track->getTrackParameters()[3]*layer->getPosition().z() + track->getTrackParameters()[2] ,
 										layer->getPosition().z() ) ;
 
-//		std::cout << "expectedPos : " << expectedPos << std::endl ;
 		if(expectedPos.x()>settings.geometry.xmax ||
 		   expectedPos.x()<settings.geometry.xmin ||
 		   expectedPos.y()>settings.geometry.ymax ||
 		   expectedPos.y()<settings.geometry.ymin)
 		{
-			_isTrack = false ;
-			delete track ;
-			track = nullptr ;
-
 			if( settings.printDebug )
 				std::cout << "expected track impact outside layer " << layer->getID() << ":\t"
 						  << "expectedPos.x() = " << expectedPos.x() << "\t"
 						  << "expectedPos.y() = " << expectedPos.y() << std::endl ;
-			return ;
+			return oufOfBounds ;
 		}
 
 		if ( clustersInLayer.empty() )
 		{
 			if( settings.printDebug )
 				std::cout << "find one empty layer = " << layer->getID() << std::endl ;
-			delete track ;
-			track = nullptr ;
-			return ;
+			return ok ;
 		}
 
 		Distance<caloobject::CaloCluster2D,caloobject::CaloTrack> dist ;
@@ -93,12 +90,11 @@ void Efficiency::Run(caloobject::Layer* layer, std::vector<caloobject::CaloClust
 				goodCluster = (*closestIt) ;
 		}
 
-//		delete track ;
+		return ok ;
 	}
+
+	return noTrack ;
 }
-
-
-
 
 
 

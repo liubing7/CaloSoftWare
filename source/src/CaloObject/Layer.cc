@@ -100,9 +100,6 @@ double Layer::getMultiplicityError() const
 
 void Layer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
 {
-	//	std::cout << "impactPos : " << impactPos << std::endl ;
-	//	std::cout << "Layer : " << id << std::endl ;
-
 	nTracks++ ;
 
 	Asic* asic = findAsic(impactPos) ;
@@ -114,10 +111,6 @@ void Layer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
 		{
 			if ( cluster->getMaxEnergy() >= thresholds.at(i) )
 				nDetected.at(i)++ ;
-			
-			
-//			algorithm::Cluster clustering ;
-			
 		}
 
 		multiSum += cluster->getHits().size() ;
@@ -160,19 +153,15 @@ void SDHCALLayer::buildAsics()
 
 Asic* SDHCALLayer::findAsic(const CLHEP::Hep3Vector& pos) const
 {
-	//	std::cout << "SDHCALLayer::findAsic" << pos << std::endl ;
 	CLHEP::Hep3Vector posInLayer = pos - position ;
-
-	//	std::cout << "posInLayer : " << posInLayer << std::endl ;
 
 	int i = static_cast<int>( posInLayer.x()/83.264 ) ; //8*10.408 = 83.264
 	int j = static_cast<int>( posInLayer.y()/83.264 ) ;
-	//	std::cout << "asici : " << i << std::endl ;
-	//	std::cout << "asicj : " << j << std::endl ;
 
 	if ( j/4 > 2 )
 	{
 		std::cout << "Error in SDHCALLayer::findAsic : dif not possible" << std::endl ;
+		std::cout << "layer : " << id << std::endl ;
 		std::cout << "pos : " << pos << std::endl ;
 		std::cout << "posInLayer : " << posInLayer << std::endl ;
 		return NULL ;
@@ -184,7 +173,7 @@ Asic* SDHCALLayer::findAsic(const CLHEP::Hep3Vector& pos) const
 	if ( it == asics.end() )
 	{
 		std::cout << "Error in SDHCALLayer::findAsic : non existing asic : "  << std::endl ;
-		std::cout << "dif : " << difj << " , asic : " << asicTab[i][difj] << std::endl ;
+		std::cout << "dif : " << difj << " , iAsic : " << i << std::endl ;
 		return NULL ;
 	}
 
@@ -207,6 +196,7 @@ const int SDHCALLayer::asicTab[12][4] =
 	{44,43,42,41},
 	{45,46,47,48},
 } ;
+
 const int SDHCALLayer::iAsicTab[48] =
 {
 	0, 0, 0, 0, 1, 1, 1, 1, 2,

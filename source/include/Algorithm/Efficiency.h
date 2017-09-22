@@ -35,12 +35,13 @@ class Efficiency
 		Efficiency() ;
 		~Efficiency() ;
 
+		enum Status { ok , oufOfBounds , emptyLayer , noTrack } ;
+
 		inline void SetEfficiencyParameterSetting(EfficiencyParameterSetting params) { settings = params ; }
-		inline CLHEP::Hep3Vector &getExpectedPosition() { return expectedPos ; }
-		void Run(caloobject::Layer* layer, std::vector<caloobject::CaloCluster2D*> &clusters) ;
+		inline const CLHEP::Hep3Vector& getExpectedPosition() const { return expectedPos ; }
+		Status Run(caloobject::Layer* layer, std::vector<caloobject::CaloCluster2D*> &clusters) ;
 
 		inline caloobject::CaloCluster2D* getGoodCluster() const { return goodCluster ; }
-		inline bool isTrack() const { return _isTrack ; }
 		inline caloobject::CaloTrack* getTrack() const { return track ; }
 
 		Efficiency(const Efficiency&) = delete ;
@@ -51,10 +52,7 @@ class Efficiency
 		CLHEP::Hep3Vector expectedPos ;
 
 		caloobject::CaloCluster2D* goodCluster = nullptr ;
-		bool _isTrack = false ;
 		caloobject::CaloTrack* track = nullptr ;
-
-
 } ;
 
 } //namespace algorithm
