@@ -24,7 +24,7 @@ class Cluster
 		inline float getMaxEnergy() const { return maxEnergy ; }
 
 	protected :
-		std::vector<caloobject::CaloHit*> hits ;
+		HitVec hits ;
 		CLHEP::Hep3Vector clusterPosition ;
 		float energy = 0.f ;
 		float maxEnergy = 0.f ;
@@ -33,7 +33,7 @@ class Cluster
 class CaloCluster2D : public Cluster
 {
 	public :
-		CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWeight = 0) ;
+		CaloCluster2D(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
 		~CaloCluster2D(){ ; }
 		inline int getLayerID() const { return layerID ; }
 
@@ -44,10 +44,10 @@ class CaloCluster2D : public Cluster
 class CaloCluster3D : public Cluster
 {
 	public :
-		CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight=0);
+		CaloCluster3D(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
 		~CaloCluster3D();
-		inline std::map< int, CLHEP::Hep3Vector > getBarycenter() const {return barycenter;}
-		void printInfo();
+		inline std::map<int, CLHEP::Hep3Vector> getBarycenter() const { return barycenter ; }
+		void printInfo() ;
 
 	private :
 		std::map<int, CLHEP::Hep3Vector> barycenter ;

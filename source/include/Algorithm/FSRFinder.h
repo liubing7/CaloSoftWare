@@ -22,10 +22,10 @@ struct FSRFinderParameterSetting
 		std::vector<float> minEnergyFraction ;
 		caloobject::GeomParameterSetting geometry ;
 		algorithm::cluster3DParameterSetting clustering ;
-		algorithm::ShowerAnalyserParameterSetting showerAnalyser ;
+//		algorithm::ShowerAnalyserParameterSetting showerAnalyser ;
 
 		FSRFinderParameterSetting()
-			: minEnergyFraction() , geometry() , clustering() , showerAnalyser()
+			: minEnergyFraction() , geometry() , clustering() //, showerAnalyser()
 		{;}
 } ;
 

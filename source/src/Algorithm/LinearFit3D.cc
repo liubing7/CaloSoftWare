@@ -42,10 +42,10 @@ LinearFit3D::LinearFit3D( std::vector<CLHEP::Hep3Vector>& pos , std::vector<int>
 	_params[2] = (D1*C2-E2*A1)/(B1*D1-A1*A1);
 	_params[3] = (E2*B1-C2*A1)/(B1*D1-A1*A1);
 
-	_paramsError[0] = sqrt(D1/(B1*D1-A1*A1));
-	_paramsError[1] = sqrt(B1/(B1*D1-A1*A1));
-	_paramsError[2] = sqrt(D1/(B1*D1-A1*A1));
-	_paramsError[3] = sqrt(B1/(B1*D1-A1*A1));
+	_paramsError[0] = std::sqrt(D1/(B1*D1-A1*A1));
+	_paramsError[1] = std::sqrt(B1/(B1*D1-A1*A1));
+	_paramsError[2] = std::sqrt(D1/(B1*D1-A1*A1));
+	_paramsError[3] = std::sqrt(B1/(B1*D1-A1*A1));
 
 	ComputeChi2();
 }

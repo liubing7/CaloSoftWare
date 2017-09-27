@@ -17,7 +17,7 @@ struct GeomParameterSetting
 		float ymin = -500.0f ;
 		float ymax = 500.0f ;
 		float pixelSize = 10.408f ;
-		float layerGap = 28.131f ;
+		float layerGap = 26.131f ;
 		float firstLayerZ = 10.0f ;
 } ;
 

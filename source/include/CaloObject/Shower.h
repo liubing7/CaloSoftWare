@@ -3,8 +3,12 @@
 
 #include <iostream>
 #include <vector>
+#include <array>
+#include <set>
 #include <cstring>
 
+#include <Algorithm/InteractionFinder.h>
+#include <CaloObject/CaloGeom.h>
 #include <CaloObject/CaloHit.h>
 #include <CaloObject/CaloCluster.h>
 #include <CLHEP/Vector/ThreeVector.h>
@@ -21,92 +25,141 @@ namespace caloobject
 
 class Shower
 {
-		friend class algorithm::ShowerAnalyser ;
+	public :
+		Shower(const HitVec& vec) ;
+		Shower(const Cluster2DVec& vec) ;
+		Shower(const caloobject::CaloCluster3D* cluster) ;
+		virtual ~Shower() ;
 
-	public:
-		Shower(std::vector<caloobject::CaloHit*>& vec);
-		Shower(std::vector<caloobject::CaloCluster2D*>& vec);
-		Shower(caloobject::CaloCluster3D* cluster);
-		~Shower(){;}
 
-		inline const std::vector<caloobject::CaloHit*> &getHits() const { return hits ; }
-		inline const std::vector<caloobject::CaloCluster2D*> &getClusters() const { return clusters ; }
+		void computePCA() ;
+		void computeThrust() ;
+		void computeInteraction() ;
+
+		void computeProfile() ;
+
+
+		inline const std::vector<caloobject::CaloHit*>& getHits() const { return hits ; }
+		inline const std::vector<caloobject::CaloCluster2D*>& getClusters() const { return clusters ; }
+
+		inline unsigned int getNhit() const { return static_cast<unsigned int>( hits.size() ) ; }
+
+		inline const std::set<int>& getFiredLayers() const { return firedLayers ; }
+		inline const std::set<int>& getInteractingLayers() const { return interactingLayers ; }
 
 		inline caloobject::CaloCluster2D* getFirstIntCluster() const { return firstIntCluster ; }
-		inline CLHEP::Hep3Vector getStartingPosition() const {return startingPosition ; }
-		inline double getLastClusterPosition() const { return lastClusterPosition ; }
-		inline unsigned int getNhit() const { return static_cast<unsigned int>( hits.size() ) ; }
-		inline float getEnergy(){return energy;}
-		inline float getEdep(){return edep;}
-		inline float getMeanEdep(){return meanEdep;}
-		inline float getRMSEdep(){return rmsEdep;}
-		inline int getNlayer(){return nlayer;}
-		inline std::vector<float> getThrust() const {return thrust ; }
-		inline float getReconstructedCosTheta(){return reconstructedCosTheta;}
-		inline float getTransverseRatio(){return transverseRatio;}
-		inline float getEta(){return eta;}
-		inline float getPhi(){return phi;}
+		inline CLHEP::Hep3Vector getStartingPosition() const { return startingPosition ; }
 
-		inline float getShowerMax(){return showerMax;}
-		inline float getEdepAtMax(){return edepAtMax;}
-		inline std::vector<double> &getEdepPerCell(){return edepPerCell;}
-		inline bool findInteraction(){return findInteraction_;}
-		inline std::vector<double> &getLongitudinal(){return longitudinal;}
-		inline std::vector<double> &getTransverse(){return transverse;}
-		inline std::vector<double> &getDistancesToAxis(){return distanceToAxis;}
-		inline std::vector<double> &getClustersEnergy(){return clustersEnergy;}
-		inline std::vector<double> &getHitTimes(){return hitTimes;}
+		inline int getLastClusterLayer() const { return lastClusterLayer ; }
 
-		Shower(const Shower &toCopy) = delete ;
-		void operator=(const Shower &toCopy) = delete ;
+		inline std::vector<float> getThrust() const { return thrust ; }
+		inline float getReconstructedCosTheta() const { return reconstructedCosTheta ; }
+		inline float getTransverseRatio() const { return transverseRatio ; }
+		inline float getEta() const { return eta ; }
+		inline float getPhi() const { return phi ; }
+
+//		inline float getShowerMax() const { return showerMax ; }
+
+		inline const std::vector<double>& getLongitudinalProfile() const { return longitudinalProfile ; }
+		inline const std::vector<double>& getTransverseProfile() const { return transverseProfile ; }
+		inline const std::vector<double>& getDistanceToAxis() const { return distanceToAxis ; }
+		inline const std::vector<double>& getHitTimes() const { return hitTimes ; }
+
+
+
+
+		inline void setInteractionSettings(algorithm::InteractionFinderParameterSetting s) { interactionSettings = s ; }
+		inline void setGeometrySettings(caloobject::GeomParameterSetting s) { geometrySettings = s ; }
+
+		Shower(const Shower& toCopy) = delete ;
+		void operator=(const Shower& toCopy) = delete ;
 
 	protected :
+		Shower() ;
 
-		std::vector<caloobject::CaloHit*> hits ;
-		std::vector<caloobject::CaloCluster2D*> clusters ;
+		virtual double valueOfHitForProfile(const caloobject::CaloHit* hit) const = 0 ;
+
+		algorithm::InteractionFinderParameterSetting interactionSettings ;
+		caloobject::GeomParameterSetting geometrySettings ;
+
+		HitVec hits = {} ;
+		Cluster2DVec clusters = {} ;
 		caloobject::CaloCluster2D* firstIntCluster = nullptr ;
 		CLHEP::Hep3Vector startingPosition = CLHEP::Hep3Vector(0,0,0) ;
 
-		double lastClusterPosition = 0 ;
+		int lastClusterLayer = 0 ;
 
-		float energy = 0.0f ;
-		float edep = 0.0f ;
-		std::vector<double> edepPerCell ;
-		std::vector<double> hitTimes ;
-		int nlayer = 0 ;
-		//shower thrust ; x = thrust[0] + thrust[1]*z ; y = thrust[2] + thrust[3]*z ;
-		std::vector<float> thrust ;
+		std::vector<double> hitTimes = {} ;
+		std::set<int> firedLayers = {} ;
+		std::set<int> interactingLayers = {} ;
+
+		std::vector<float> thrust = {} ;
 		float reconstructedCosTheta = 0.0f ;
 		float transverseRatio = 0.0f ;
 		float eta = 0.0f ;
 		float phi = 0.0f ;
 
-		float meanEdep = 0.0f ;
-		float rmsEdep = 0.0f ;
-		float showerMax = 0.0f ; //x0 unit
-		float edepAtMax = 0.0f ;
+		std::vector<double> longitudinalProfile = {} ;
+		std::vector<double> transverseProfile = {} ;
+		std::vector<double> distanceToAxis = {} ;
 
-		bool findInteraction_ = false ;
 
-		std::vector<double> longitudinal ;
-		std::vector<double> transverse ;
-		std::vector<double> distanceToAxis ;
-		std::vector<double> clustersEnergy ;
+		bool isThrustComputed = false ;
+		bool isInteractionComputed = false ;
+
 } ;
 
-class SDHCALShower : public Shower
+class AnalogShower : public Shower
 {
-		friend class algorithm::ShowerAnalyser ;
 
 	public :
-		SDHCALShower( std::vector<caloobject::CaloCluster2D*> &vec ) ;
-		~SDHCALShower() { ; }
-		int* getSDNHits() { return sdnhit ; }
-		int getNHitsAtMax() { return nhitAtMax ; }
+		AnalogShower(const HitVec& vec) ;
+		AnalogShower(const Cluster2DVec& vec) ;
+		AnalogShower(const caloobject::CaloCluster3D* cluster) ;
+		virtual ~AnalogShower() ;
+
+
+		inline float getEnergy() const { return energy ; }
+		inline float getEdep() const { return edep ; }
+		inline float getMeanEdep() const { return meanEdep ; }
+		inline float getRMSEdep() const { return rmsEdep ; }
+
+
+//		inline float getEdepAtMax(){return edepAtMax;}
+		inline const std::vector<double>& getEdepPerCell() const { return edepPerCell ; }
+
+		inline const std::vector<double>& getClustersEnergy() const { return clustersEnergy ; }
+
 
 	protected :
-		int sdnhit[3] = {0,0,0} ;
-		int nhitAtMax = 0 ;
+
+		virtual double valueOfHitForProfile(const caloobject::CaloHit* hit) const ;
+
+		float energy = 0.0f ;
+		float edep = 0.0f ;
+		std::vector<double> edepPerCell = {} ;
+
+		float meanEdep = 0.0f ;
+		float rmsEdep = 0.0f ;
+//		float edepAtMax = 0.0f ;
+
+		std::vector<double> clustersEnergy = {} ;
+} ;
+
+class DigitalShower : public Shower
+{
+
+	public :
+		DigitalShower(const Cluster2DVec& vec) ;
+		~DigitalShower() { ; }
+
+		inline std::vector<int> getNHits() const { return nHits ; }
+
+	protected :
+
+		virtual double valueOfHitForProfile(const caloobject::CaloHit*) const ;
+
+		std::vector<int> nHits = {0,0,0,0} ;
 } ;
 
 } //namespace caloobject
