@@ -16,7 +16,7 @@ class Cluster
 {
 	public :
 		Cluster(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
-		~Cluster() ;
+		virtual ~Cluster() ;
 
 		inline const std::vector<caloobject::CaloHit*>& getHits() const { return hits ; }
 		inline CLHEP::Hep3Vector getPosition() const { return clusterPosition ; }
@@ -34,7 +34,7 @@ class CaloCluster2D : public Cluster
 {
 	public :
 		CaloCluster2D(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
-		~CaloCluster2D(){ ; }
+		virtual ~CaloCluster2D() ;
 		inline int getLayerID() const { return layerID ; }
 
 	private :
@@ -45,7 +45,7 @@ class CaloCluster3D : public Cluster
 {
 	public :
 		CaloCluster3D(std::vector<caloobject::CaloHit*>& vec, bool useWeight = 0) ;
-		~CaloCluster3D();
+		virtual ~CaloCluster3D() ;
 		inline std::map<int, CLHEP::Hep3Vector> getBarycenter() const { return barycenter ; }
 		void printInfo() ;
 

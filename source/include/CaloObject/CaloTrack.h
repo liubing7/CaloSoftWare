@@ -26,12 +26,12 @@ class CaloTrack
 				_params.push_back(params[i]) ;
 		}
 
-		inline const caloobject::CaloCluster2D* getTrackStartingCluster(){return (*clusters.begin());}
-		inline const caloobject::CaloCluster2D* getTrackLastCluster(){return (*(clusters.end()-1));}
-		inline std::vector<caloobject::CaloCluster2D*> &getClusters(){return clusters;} // someone may need to rearrange the vector with sort
-		inline const float getChi2(){return _chi2;}
-		inline const std::vector<float> getTrackParameters(){return _params;}
-		inline const void addCluster(caloobject::CaloCluster2D* cluster){clusters.push_back(cluster);}
+		inline caloobject::CaloCluster2D* getTrackStartingCluster() const { return (*clusters.begin()) ; }
+		inline caloobject::CaloCluster2D* getTrackLastCluster() const { return (*(clusters.end()-1)) ; }
+		inline std::vector<caloobject::CaloCluster2D*>& getClusters() { return clusters ; } // someone may need to rearrange the vector with sort
+		inline float getChi2() const { return _chi2 ; }
+		inline std::vector<float> getTrackParameters() const { return _params ; }
+		inline void addCluster(caloobject::CaloCluster2D* cluster) { clusters.push_back(cluster) ; }
 		const CLHEP::Hep3Vector expectedTrackProjection(float z)
 		{
 			return CLHEP::Hep3Vector(_params[0]+_params[1]*z,

@@ -36,7 +36,7 @@ void FSRFinder::Run(std::vector<caloobject::CaloHit*> hits, caloobject::CaloTrac
 void FSRFinder::rmTrackedHitsFromList(HitVec& hits, caloobject::CaloTrack* track)
 {
 	std::vector<caloobject::CaloHit*> trackedHits;
-	for(std::vector<caloobject::CaloCluster2D*>::iterator it=track->getClusters().begin(); it!=track->getClusters().end(); ++it)
+	for(std::vector<caloobject::CaloCluster2D*>::const_iterator it=track->getClusters().begin(); it!=track->getClusters().end(); ++it)
 		trackedHits.insert( trackedHits.begin(), (*it)->getHits().begin(), (*it)->getHits().end() );
 
 	for(std::vector<caloobject::CaloHit*>::iterator it=hits.begin(); it!=hits.end(); ++it)

@@ -158,7 +158,7 @@ void Tracking::TryToAddAClusterInTrack(caloobject::CaloCluster2D* cluster, caloo
 void Tracking::splitTrack(caloobject::CaloTrack* track)
 {
 	int ref=track->getTrackStartingCluster()->getLayerID();
-	for(std::vector<caloobject::CaloCluster2D*>::iterator it=track->getClusters().begin(); it!=track->getClusters().end(); ++it){
+	for(std::vector<caloobject::CaloCluster2D*>::const_iterator it=track->getClusters().begin(); it!=track->getClusters().end(); ++it){
 		if( (*it)->getLayerID()-ref>settings.maxDiffBetweenLayer )
 			break;
 		else

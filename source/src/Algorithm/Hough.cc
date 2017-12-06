@@ -221,7 +221,7 @@ void Hough::runHough(std::vector<caloobject::CaloCluster2D*> &clusters, std::vec
 			}
 
 			tracks.push_back(track);
-			for(std::vector<caloobject::CaloCluster2D*>::iterator jt = track->getClusters().begin() ; jt != track->getClusters().end() ; ++jt)
+			for(std::vector<caloobject::CaloCluster2D*>::const_iterator jt = track->getClusters().begin() ; jt != track->getClusters().end() ; ++jt)
 			{
 				for( std::vector< HoughObject* >::iterator kt = houghObjects.begin() ; kt != houghObjects.end() ; ++kt)
 				{

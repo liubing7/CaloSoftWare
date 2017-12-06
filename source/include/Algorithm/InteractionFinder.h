@@ -19,6 +19,12 @@ struct InteractionFinderParameterSetting
 		float minEnergy = 0.001f ;
 		bool printDebug = false ;
 
+		//alternative interaction finder
+		int maxFiredLayers = 35 ;
+		int maxLastFiredLayer = 42 ;
+
+
+
 		// minSize : minimum cluster size to have an interaction
 		// maxRadius : maximum transversal distance from event thrust to find interaction point
 		// maxDepth : maximum depth (in layer unit) to search clusters to find an interaction
@@ -34,10 +40,11 @@ class InteractionFinder
 			: settings()
 		{;}
 		~InteractionFinder(){;}
-		void Run(std::vector<caloobject::CaloCluster2D*> &clusters, const std::vector<float> params) ;
+		void Run(const std::vector<caloobject::CaloCluster2D*>& clusters, const std::vector<float> params) ;
+		void Run(const std::vector<caloobject::CaloCluster2D*>& clusters, std::vector<caloobject::CaloTrack*> tracks, const std::vector<float> params) ;
 		void SetInteractionFinderParameterSetting(InteractionFinderParameterSetting params){ settings = params ; }
-		bool FindInteraction(){ return findInteraction ; }
-		caloobject::CaloCluster2D* getFirstInteractionCluster(){ return firstCluster ; }
+		bool FindInteraction() const { return findInteraction ; }
+		caloobject::CaloCluster2D* getFirstInteractionCluster() const { return firstCluster ; }
 
 		InteractionFinder(const InteractionFinder&) = delete ;
 		void operator=(const InteractionFinder&) = delete ;

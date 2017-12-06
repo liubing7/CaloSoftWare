@@ -45,6 +45,10 @@ CaloCluster2D::CaloCluster2D(std::vector<caloobject::CaloHit*> &vec, bool useWei
 
 }
 
+CaloCluster2D::~CaloCluster2D()
+{
+}
+
 /**********************/
 
 CaloCluster3D::CaloCluster3D(std::vector<caloobject::CaloHit*> &vec, bool useWeight)
