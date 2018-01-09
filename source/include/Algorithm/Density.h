@@ -16,7 +16,7 @@ class DensityDistanceFunction
 		DensityDistanceFunction() ;
 		virtual ~DensityDistanceFunction() ;
 
-		virtual double eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const = 0 ;
+		virtual float eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const = 0 ;
 
 	protected :
 
@@ -28,7 +28,7 @@ class DensityDistanceFunction3By3 : public DensityDistanceFunction
 		DensityDistanceFunction3By3() ;
 		virtual ~DensityDistanceFunction3By3() ;
 
-		virtual double eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const ;
+		virtual float eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const ;
 
 	protected :
 
@@ -41,9 +41,9 @@ class Density
 		Density() ;
 		~Density() ;
 
-		double compute(HitVec& hitVec) ;
+		float compute(HitVec& hitVec) ;
 
-		const std::map<caloobject::CaloHit* , double>& getDensityPerHit() const { return densityPerHit ; }
+		const std::map<caloobject::CaloHit* , float>& getDensityPerHit() const { return densityPerHit ; }
 
 		Density(const Density&) = delete ;
 		void operator=(const Density&) = delete ;
@@ -52,7 +52,7 @@ class Density
 	protected :
 		DensityDistanceFunction* densityFunc ;
 
-		std::map<caloobject::CaloHit* , double> densityPerHit ;
+		std::map<caloobject::CaloHit* , float> densityPerHit ;
 } ;
 
 

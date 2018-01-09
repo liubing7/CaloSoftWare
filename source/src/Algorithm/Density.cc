@@ -16,7 +16,7 @@ Density::~Density()
 	delete densityFunc ;
 }
 
-double Density::compute(HitVec& hitVec)
+float Density::compute(HitVec& hitVec)
 {
 	densityPerHit.clear() ;
 
@@ -24,7 +24,7 @@ double Density::compute(HitVec& hitVec)
 	{
 		for( HitVec::const_iterator jt = it ; jt != hitVec.end() ; ++jt )
 		{
-			double d = densityFunc->eval(*it , *jt) ;
+			float d = densityFunc->eval(*it , *jt) ;
 			densityPerHit[*it] += d ;
 
 			if ( it != jt )
@@ -33,8 +33,8 @@ double Density::compute(HitVec& hitVec)
 
 	}
 
-	double density = 0 ;
-	for ( std::map<caloobject::CaloHit* , double>::const_iterator it = densityPerHit.begin() ; it != densityPerHit.end() ; ++it )
+	float density = 0 ;
+	for ( std::map<caloobject::CaloHit* , float>::const_iterator it = densityPerHit.begin() ; it != densityPerHit.end() ; ++it )
 		density += it->second ;
 
 	density /= densityPerHit.size() ;
@@ -55,12 +55,12 @@ DensityDistanceFunction3By3::DensityDistanceFunction3By3()
 DensityDistanceFunction3By3::~DensityDistanceFunction3By3()
 {}
 
-double DensityDistanceFunction3By3::eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const
+float DensityDistanceFunction3By3::eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const
 {
 	if ( std::abs(hitA->getCellID()[0] - hitB->getCellID()[0]) <= 1 && std::abs(hitA->getCellID()[1] - hitB->getCellID()[1]) <= 1 && hitA->getCellID()[2] == hitB->getCellID()[2] )
-		return 1.0 ;
+		return 1.0f ;
 	else
-		return 0.0 ;
+		return 0.0f ;
 }
 
 
