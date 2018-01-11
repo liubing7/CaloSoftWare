@@ -28,11 +28,11 @@ class Asic
 
 		int getNTrack() const { return nTracks ; }
 		double getEfficiency() const { return efficiencies.at(0) ; }
-		virtual const std::vector<double>& getEfficiencies() const { return efficiencies ; }
+		virtual const std::vector<double>& getEfficiencies() { updateEfficiencies() ; return efficiencies ; }
 		virtual std::vector<double> getEfficienciesError() const ;
 
-		double getMultiplicity() const ;
-		double getMultiplicityError() const ;
+		virtual const std::vector<double>& getMultiplicities() { updateMultiplicities() ; return multiplicities ; }
+		virtual std::vector<double> getMultiplicitiesError() const ;
 
 
 		virtual Pad* findPad(const CLHEP::Hep3Vector& pos) const = 0 ;
@@ -42,7 +42,7 @@ class Asic
 		inline const CLHEP::Hep3Vector &getPosition() const { return position ; }
 		inline const PadMap& getPads() const { return pads ; }
 
-		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
+		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = nullptr) ;
 
 		virtual void buildPads() = 0 ;
 
@@ -54,9 +54,8 @@ class Asic
 		void operator=(const Asic &toCopy) = delete ;
 
 	protected :
-
 		virtual void updateEfficiencies() ;
-
+		virtual void updateMultiplicities() ;
 
 	protected :
 
@@ -66,13 +65,16 @@ class Asic
 		caloobject::Layer* layer = nullptr ;
 
 		int nTracks = 0 ;
-		std::vector<int> nDetected ;
+		std::vector<int> nDetected = {} ;
 
-		double multiSum = 0 ;
-		double multiSquareSum = 0 ;
+		std::vector<double> thresholds = {} ;
+		std::vector<double> efficiencies = {} ;
 
-		std::vector<double> thresholds ;
-		std::vector<double> efficiencies ;
+
+		std::vector<double> multiSumVec = {} ;
+		std::vector<double> multiSquareSumVec = {} ;
+
+		std::vector<double> multiplicities = {} ;
 
 		CLHEP::Hep3Vector position ; //top left corner position
 
@@ -100,28 +102,6 @@ class SDHCALAsic : public Asic
 	protected :
 
 } ;
-
-
-/*
-class SDHCALAsicCustom : public Asic  //with analog hits for polya studies
-{
-	public :
-		SDHCALAsicCustom(int _id) ;
-		virtual ~SDHCALAsicCustom(){ ; }
-
-		void setPoints( std::vector<double> _thresholds) { thresholds = _thresholds ; efficiencies = std::vector<int>(thresholds.size() , 0) ; }
-
-		inline std::vector<double> getThresholds() const { return thresholds ; }
-//		std::vector<double> getEfficiencies() const ;
-//		std::vector<double> getEfficienciesError() const ;
-
-		virtual void update(CLHEP::Hep3Vector impactPos , CaloCluster2D* cluster = NULL) ;
-
-	private :
-		std::vector<double> thresholds ;
-		std::vector<int> efficiencies ;
-} ;
-*/
 
 
 } //namespace caloobject

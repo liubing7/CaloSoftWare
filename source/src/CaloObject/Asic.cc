@@ -6,15 +6,15 @@ namespace caloobject
 Asic::Asic(int _id , int _difID)
 	: id(_id) ,
 	  difID(_difID) ,
-	  nDetected() ,
-	  thresholds() ,
-	  efficiencies() ,
 	  position() ,
 	  pads()
 {
 	thresholds.push_back(0) ;
 	nDetected.push_back(0) ;
 	efficiencies.push_back(0.0) ;
+	multiSumVec.push_back(0.0) ;
+	multiSquareSumVec.push_back(0.0) ;
+	multiplicities.push_back(0.0) ;
 }
 
 Asic::~Asic()
@@ -24,15 +24,15 @@ void Asic::reset()
 {
 	nTracks = 0 ;
 	nDetected.clear() ;
-	multiSum = 0.0 ;
-	multiSquareSum = 0.0 ;
 
 	thresholds.clear() ;
 	efficiencies.clear() ;
+	multiSumVec.clear() ;
+	multiSquareSumVec.clear() ;
+	multiplicities.clear() ;
 
 	for ( PadMap::const_iterator it = pads.begin() ; it != pads.end() ; ++it )
 		it->second->reset() ;
-
 }
 
 void Asic::setThresholds(const std::vector<double>& thr)
@@ -43,6 +43,10 @@ void Asic::setThresholds(const std::vector<double>& thr)
 
 	nDetected = std::vector<int>(thresholds.size() , 0) ;
 	efficiencies = std::vector<double>(thresholds.size() , 0.0) ;
+
+	multiSumVec = std::vector<double>(thresholds.size() , 0.0) ;
+	multiSquareSumVec = std::vector<double>(thresholds.size() , 0.0) ;
+	multiplicities = std::vector<double>(thresholds.size() , 0.0) ;
 
 	for ( PadMap::const_iterator it = pads.begin() ; it != pads.end() ; ++it )
 		it->second->setThresholds(thresholds) ;
@@ -70,30 +74,29 @@ std::vector<double> Asic::getEfficienciesError() const
 	return toReturn ;
 }
 
-double Asic::getMultiplicity() const
+std::vector<double> Asic::getMultiplicitiesError() const
 {
-	if ( nDetected.at(0) )
-		return multiSum/nDetected.at(0) ;
-	else
-		return 0.0 ;
-}
+	std::vector<double> toReturn ;
 
-double Asic::getMultiplicityError() const
-{
-	if ( !nDetected.at(0) )
-		return 0.0 ;
+	for ( unsigned int i = 0 ; i < nDetected.size() ; ++i )
+	{
+		double mulErr ;
+		if ( !nDetected.at(0) )
+			mulErr = 0.0 ;
 
-	double var = multiSquareSum/nDetected.at(0) - (multiSum/nDetected.at(0))*(multiSum/nDetected.at(0)) ;
+		double var = multiSquareSumVec.at(i)/nDetected.at(i) - (multiSumVec.at(i)/nDetected.at(i))*(multiSumVec.at(i)/nDetected.at(i)) ;
 
-	if ( var < std::numeric_limits<double>::epsilon() )
-		var = 1.0/( std::sqrt(12*nDetected.at(0)) ) ;
+		if ( var < std::numeric_limits<double>::epsilon() )
+			var = 1.0/( std::sqrt(12*nDetected.at(i)) ) ;
 
-	double error ;
-	if ( nDetected.at(0) < 2 )
-		error = multiSum/nDetected.at(0) ;
-	else
-		error = sqrt( var/(nDetected.at(0)-1.0) ) ;
-	return error ;
+		if ( nDetected.at(i) < 2 )
+			mulErr = multiSumVec.at(i)/nDetected.at(i) ;
+		else
+			mulErr = sqrt( var/(nDetected.at(i)-1.0) ) ;
+
+		toReturn.push_back(mulErr) ;
+	}
+	return toReturn ;
 }
 
 void Asic::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
@@ -108,22 +111,40 @@ void Asic::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
 		for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
 		{
 			if ( cluster->getMaxEnergy() >= thresholds.at(i) )
-				nDetected.at(i)++ ;
+			{
+				nDetected.at(i) ++ ;
+
+				int nHitsOfThisThreshold = 0 ;
+				for ( const auto hit : cluster->getHits() )
+				{
+					if ( hit->getEnergy() >= thresholds.at(i) )
+						nHitsOfThisThreshold ++ ;
+				}
+
+				multiSumVec.at(i) += nHitsOfThisThreshold ;
+				multiSquareSumVec.at(i) += nHitsOfThisThreshold*nHitsOfThisThreshold ;
+			}
+			else
+				break ;
 		}
-
-
-		multiSum += cluster->getHits().size() ;
-		multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
-
 	}
-
-	updateEfficiencies() ;
 }
 
 void Asic::updateEfficiencies()
 {
 	for ( unsigned int i = 0 ; i < efficiencies.size() ; ++i )
 		efficiencies.at(i) = 1.0*nDetected.at(i)/nTracks ;
+}
+
+void Asic::updateMultiplicities()
+{
+	for ( unsigned int i = 0 ; i < multiplicities.size() ; ++i )
+	{
+		if ( nDetected.at(i) )
+			multiplicities.at(i) = multiSumVec.at(i)/nDetected.at(i) ;
+		else
+			multiplicities.at(i) = 0.0 ;
+	}
 }
 
 SDHCALAsic::SDHCALAsic(int _id, int _difID)

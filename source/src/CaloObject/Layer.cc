@@ -8,15 +8,15 @@ namespace caloobject
 
 Layer::Layer(int _id)
 	: id(_id) ,
-	  nDetected() ,
-	  thresholds() ,
-	  efficiencies() ,
 	  position() ,
 	  asics()
 {
 	thresholds.push_back(0) ;
 	nDetected.push_back(0) ;
 	efficiencies.push_back(0.0) ;
+	multiSumVec.push_back(0.0) ;
+	multiSquareSumVec.push_back(0.0) ;
+	multiplicities.push_back(0.0) ;
 }
 
 
@@ -27,15 +27,15 @@ void Layer::reset()
 {
 	nTracks = 0 ;
 	nDetected.clear() ;
-	multiSum = 0.0 ;
-	multiSquareSum = 0.0 ;
 
 	thresholds.clear() ;
 	efficiencies.clear() ;
+	multiSumVec.clear() ;
+	multiSquareSumVec.clear() ;
+	multiplicities.clear() ;
 
 	for ( AsicMap::const_iterator it = asics.begin() ; it != asics.end() ; ++it )
 		it->second->reset() ;
-
 }
 
 void Layer::setThresholds(const std::vector<double>& thr)
@@ -46,6 +46,10 @@ void Layer::setThresholds(const std::vector<double>& thr)
 
 	nDetected = std::vector<int>(thresholds.size() , 0) ;
 	efficiencies = std::vector<double>(thresholds.size() , 0.0) ;
+
+	multiSumVec = std::vector<double>(thresholds.size() , 0.0) ;
+	multiSquareSumVec = std::vector<double>(thresholds.size() , 0.0) ;
+	multiplicities = std::vector<double>(thresholds.size() , 0.0) ;
 
 	for ( AsicMap::const_iterator it = asics.begin() ; it != asics.end() ; ++it )
 		it->second->setThresholds(thresholds) ;
@@ -72,30 +76,29 @@ std::vector<double> Layer::getEfficienciesError() const
 	return toReturn ;
 }
 
-double Layer::getMultiplicity() const
+std::vector<double> Layer::getMultiplicitiesError() const
 {
-	if ( nDetected.at(0) )
-		return multiSum/nDetected.at(0) ;
-	else
-		return 0.0 ;
-}
+	std::vector<double> toReturn ;
 
-double Layer::getMultiplicityError() const
-{
-	if ( !nDetected.at(0) )
-		return 0.0 ;
+	for ( unsigned int i = 0 ; i < nDetected.size() ; ++i )
+	{
+		double mulErr ;
+		if ( !nDetected.at(0) )
+			mulErr = 0.0 ;
 
-	double var = multiSquareSum/nDetected.at(0) - (multiSum/nDetected.at(0))*(multiSum/nDetected.at(0)) ;
+		double var = multiSquareSumVec.at(i)/nDetected.at(i) - (multiSumVec.at(i)/nDetected.at(i))*(multiSumVec.at(i)/nDetected.at(i)) ;
 
-	if ( var < std::numeric_limits<double>::epsilon() )
-		var = 1.0/( std::sqrt(12*nDetected.at(0)) ) ;
+		if ( var < std::numeric_limits<double>::epsilon() )
+			var = 1.0/( std::sqrt(12*nDetected.at(i)) ) ;
 
-	double error ;
-	if ( nDetected.at(0) < 2 )
-		error = multiSum/nDetected.at(0) ;
-	else
-		error = sqrt( var/(nDetected.at(0)-1.0) ) ;
-	return error ;
+		if ( nDetected.at(i) < 2 )
+			mulErr = multiSumVec.at(i)/nDetected.at(i) ;
+		else
+			mulErr = sqrt( var/(nDetected.at(i)-1.0) ) ;
+
+		toReturn.push_back(mulErr) ;
+	}
+	return toReturn ;
 }
 
 void Layer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
@@ -110,20 +113,40 @@ void Layer::update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster)
 		for ( unsigned int i = 0 ; i < thresholds.size() ; ++i )
 		{
 			if ( cluster->getMaxEnergy() >= thresholds.at(i) )
-				nDetected.at(i)++ ;
+			{
+				nDetected.at(i) ++ ;
+
+				int nHitsOfThisThreshold = 0 ;
+				for ( const auto hit : cluster->getHits() )
+				{
+					if ( hit->getEnergy() >= thresholds.at(i) )
+						nHitsOfThisThreshold ++ ;
+				}
+
+				multiSumVec.at(i) += nHitsOfThisThreshold ;
+				multiSquareSumVec.at(i) += nHitsOfThisThreshold*nHitsOfThisThreshold ;
+			}
+			else
+				break ;
 		}
-
-		multiSum += cluster->getHits().size() ;
-		multiSquareSum += cluster->getHits().size()*cluster->getHits().size() ;
 	}
-
-	updateEfficiencies() ;
 }
 
 void Layer::updateEfficiencies()
 {
 	for ( unsigned int i = 0 ; i < efficiencies.size() ; ++i )
 		efficiencies.at(i) = 1.0*nDetected.at(i)/nTracks ;
+}
+
+void Layer::updateMultiplicities()
+{
+	for ( unsigned int i = 0 ; i < multiplicities.size() ; ++i )
+	{
+		if ( nDetected.at(i) )
+			multiplicities.at(i) = multiSumVec.at(i)/nDetected.at(i) ;
+		else
+			multiplicities.at(i) = 0.0 ;
+	}
 }
 
 

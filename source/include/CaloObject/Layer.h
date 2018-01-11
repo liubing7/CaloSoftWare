@@ -22,14 +22,12 @@ class Layer
 
 		int getNTrack() const { return nTracks ; }
 		double getEfficiency() const { return efficiencies.at(0) ; }
-		virtual const std::vector<double>& getEfficiencies() const { return efficiencies ; }
+		virtual const std::vector<double>& getEfficiencies() { updateEfficiencies() ; return efficiencies ; }
 		virtual std::vector<double> getEfficienciesError() const ;
 
-		double getMultiplicity() const ;
-		double getMultiplicityError() const ;
 
-//		virtual const std::vector<double>& getMultiplicities() const { return multiplicities ; }
-//		virtual std::vector<double>& getMultiplicitiesError() const ;
+		virtual const std::vector<double>& getMultiplicities() { updateMultiplicities() ; return multiplicities ; }
+		virtual std::vector<double> getMultiplicitiesError() const ;
 
 		virtual Asic* findAsic(const CLHEP::Hep3Vector& pos) const = 0 ;
 
@@ -39,7 +37,7 @@ class Layer
 		inline const AsicMap& getAsics() const { return asics ; }
 
 
-		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = NULL) ;
+		virtual void update(const CLHEP::Hep3Vector& impactPos , CaloCluster2D* cluster = nullptr) ;
 
 		virtual void buildAsics() = 0 ;
 
@@ -50,23 +48,24 @@ class Layer
 
 	protected :
 		virtual void updateEfficiencies() ;
-
+		virtual void updateMultiplicities() ;
 
 	protected :
 
 		int id ;
 
 		int nTracks = 0 ;
-		std::vector<int> nDetected ;
+		std::vector<int> nDetected = {} ;
 
-		double multiSum = 0 ;
-		double multiSquareSum = 0 ;
+		std::vector<double> thresholds = {} ;
+		std::vector<double> efficiencies = {} ;
 
-		std::vector<double> thresholds ;
-		std::vector<double> efficiencies ;
 
-//		std::vector<int> nStatMultiplicity {} ; //for multiplicity
-//		std::vector<double> multiplicities {} ;
+		std::vector<double> multiSumVec = {} ;
+		std::vector<double> multiSquareSumVec = {} ;
+
+		std::vector<double> multiplicities = {} ;
+
 
 		CLHEP::Hep3Vector position ; //top left corner position
 
