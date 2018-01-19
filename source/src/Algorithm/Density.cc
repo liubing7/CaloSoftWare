@@ -1,5 +1,5 @@
 #include "Algorithm/Density.h"
-
+#include "Algorithm/Distance.h"
 
 namespace algorithm
 {
@@ -57,7 +57,8 @@ DensityDistanceFunction3By3::~DensityDistanceFunction3By3()
 
 float DensityDistanceFunction3By3::eval(caloobject::CaloHit* hitA , caloobject::CaloHit* hitB) const
 {
-	if ( std::abs(hitA->getCellID()[0] - hitB->getCellID()[0]) <= 1 && std::abs(hitA->getCellID()[1] - hitB->getCellID()[1]) <= 1 && hitA->getCellID()[2] == hitB->getCellID()[2] )
+	if ( std::abs(hitA->getCellID()[0] - hitB->getCellID()[0]) <= 1 && std::abs(hitA->getCellID()[1] - hitB->getCellID()[1]) <= 1 && hitA->getCellID()[2] == hitB->getCellID()[2]
+		 && Distance<caloobject::CaloHit,caloobject::CaloHit>().getDistance(hitA,hitB)<20 )
 		return 1.0f ;
 	else
 		return 0.0f ;
