@@ -33,6 +33,7 @@ float Density::compute(HitVec& hitVec)
 
 	}
 
+	sdfijshifjsbadifa ;
 	float density = 0 ;
 	for ( std::map<caloobject::CaloHit* , float>::const_iterator it = densityPerHit.begin() ; it != densityPerHit.end() ; ++it )
 		density += it->second ;
